@@ -42,7 +42,7 @@ public:
   typedef typename Base::SP_boundary            SP_base;
   typedef detran_utilities::SP<BoundaryMOC<D> > SP_boundary;
   typedef typename Base::SP_input               SP_input;
-  typedef detran_geometry::Mesh                 Mesh;
+  typedef detran_geometry::CartesianMesh                 Mesh;
   typedef Mesh::SP_mesh                         SP_mesh;
   typedef detran_angle::ProductQuadrature       QuadratureMOC;
   typedef detran_utilities::SP<QuadratureMOC>   SP_quadrature;

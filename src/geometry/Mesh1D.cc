@@ -13,7 +13,7 @@ namespace detran_geometry
 
 //---------------------------------------------------------------------------//
 Mesh1D::Mesh1D(vec_int xfm, vec_dbl xcme, vec_int mat_map)
-  : Mesh(1,
+  : CartesianMesh(1,
          xfm,
          vec_int(1, 1),
          vec_int(1, 1),
@@ -32,7 +32,7 @@ Mesh1D::Mesh1D(vec_int xfm, vec_dbl xcme, vec_int mat_map)
 
 //---------------------------------------------------------------------------//
 Mesh1D::Mesh1D(vec_dbl xfme, vec_int mat_map)
-  : Mesh(1,
+  : CartesianMesh(1,
          xfme,
          vec_dbl(2, 0.0),
          vec_dbl(2, 0.0),

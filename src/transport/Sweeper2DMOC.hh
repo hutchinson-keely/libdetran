@@ -50,7 +50,7 @@ public:
   typedef EQ                                            Equation_T;
   typedef BoundaryMOC<_2D>                              Boundary_T;
   typedef typename Boundary_T::SP_boundary              SP_boundary;
-  typedef detran_geometry::Mesh::SP_mesh                SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh                SP_mesh;
   typedef detran_angle::ProductQuadrature::SP_quadrature SP_quadrature;
   typedef detran_geometry::TrackDB::SP_trackdb          SP_trackdb;
   typedef detran_geometry::Track::SP_track              SP_track;

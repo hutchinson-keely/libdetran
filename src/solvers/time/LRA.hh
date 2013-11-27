@@ -57,7 +57,7 @@ public:
   //-------------------------------------------------------------------------//
 
   typedef detran::TimeDependentMaterial             Base;
-  typedef detran_geometry::Mesh::SP_mesh            SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh            SP_mesh;
   typedef detran::MultiPhysics::SP_multiphysics     SP_multiphysics;
 
   //-------------------------------------------------------------------------//

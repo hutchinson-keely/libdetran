@@ -79,7 +79,7 @@ public:
   /// SP Constructor
   static SP_sweeper
   Create(detran_utilities::InputDB::SP_input        input,
-         detran_geometry::Mesh::SP_mesh             mesh,
+         detran_geometry::CartesianMesh::SP_mesh             mesh,
          detran_material::Material::SP_material     material,
          detran_angle::Quadrature::SP_quadrature    quadrature,
          State::SP_state                            state,

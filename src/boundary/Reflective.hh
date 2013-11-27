@@ -45,7 +45,7 @@ public:
   typedef typename Base::size_t               size_t;
   typedef detran_utilities::vec_int           vec_int;
   typedef detran_utilities::vec2_int          vec2_int;
-  typedef detran_geometry::Mesh               Mesh;
+  typedef detran_geometry::CartesianMesh               Mesh;
 
   //-------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR

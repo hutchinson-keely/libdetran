@@ -39,7 +39,7 @@ public:
   typedef detran_utilities::size_t                size_t;
   typedef detran_utilities::vec_dbl               vec_dbl;
   typedef detran_utilities::vec_int               vec_int;
-  typedef detran_geometry::Mesh::SP_mesh          SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh          SP_mesh;
   typedef detran_geometry::Geometry::SP_geometry  SP_geometry;
   typedef detran::State::SP_state                 SP_state;
 

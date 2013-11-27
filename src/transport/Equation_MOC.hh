@@ -40,7 +40,7 @@ public:
   //-------------------------------------------------------------------------//
 
   typedef detran_material::Material::SP_material          SP_material;
-  typedef detran_geometry::Mesh::SP_mesh                  SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh                  SP_mesh;
   typedef detran_geometry::TrackDB::SP_trackdb            SP_trackdb;
   typedef detran_angle::ProductQuadrature::SP_quadrature  SP_quadrature;
   typedef detran_utilities::vec_dbl                       moments_type;

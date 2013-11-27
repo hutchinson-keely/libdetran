@@ -34,7 +34,7 @@ public:
   typedef typename Fixed_T::SP_manager                  SP_mg_solver;
   typedef detran_utilities::InputDB::SP_input           SP_input;
   typedef State::SP_state                               SP_state;
-  typedef detran_geometry::Mesh::SP_mesh                SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh                SP_mesh;
   typedef detran_material::Material::SP_material        SP_material;
   typedef detran_angle::Quadrature::SP_quadrature       SP_quadrature;
   typedef BoundaryBase<D>                               Boundary_T;

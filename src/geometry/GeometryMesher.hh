@@ -38,7 +38,7 @@ public:
   //--------------------------------------------------------------------------//
 
   typedef Geometry::SP_geometry             SP_geometry;
-  typedef Mesh::SP_mesh                     SP_mesh;
+  typedef CartesianMesh::SP_mesh                     SP_mesh;
   typedef detran_utilities::size_t          size_t;
   typedef detran_utilities::vec_size_t      vec_size_t;
   typedef detran_utilities::vec_dbl         vec_dbl;

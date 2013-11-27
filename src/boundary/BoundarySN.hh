@@ -48,7 +48,7 @@ public:
   typedef typename std::vector<vec_boundary_flux>   vec2_boundary_flux;
   typedef typename std::vector<vec2_boundary_flux>  vec3_boundary_flux;
   typedef typename BoundaryCondition<D>::SP_bc      SP_bc;
-  typedef detran_geometry::Mesh                     Mesh;
+  typedef detran_geometry::CartesianMesh                     Mesh;
   typedef detran_utilities::vec_dbl                 vec_dbl;
   typedef detran_utilities::size_t                  size_t;
   typedef D                                         D_T;

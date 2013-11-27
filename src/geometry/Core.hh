@@ -28,12 +28,12 @@ public:
   // TYPEDEFS
   //--------------------------------------------------------------------------//
 
-  typedef detran_utilities::SP<Core>    SP_core;
-  typedef Mesh::SP_mesh                 SP_mesh;
-  typedef Assembly::SP_assembly         SP_assembly;
-  typedef std::vector<SP_assembly>      vec_assembly;
-  typedef Mesh::vec_int                 vec_int;
-  typedef Mesh::vec_dbl                 vec_dbl;
+  typedef detran_utilities::SP<Core>        SP_core;
+  typedef CartesianMesh::SP_cartesianmesh   SP_mesh;
+  typedef Assembly::SP_assembly             SP_assembly;
+  typedef std::vector<SP_assembly>          vec_assembly;
+  typedef CartesianMesh::vec_int            vec_int;
+  typedef CartesianMesh::vec_dbl            vec_dbl;
 
   //--------------------------------------------------------------------------//
   // PUBLIC INTERFACE
@@ -49,10 +49,10 @@ public:
    */
   Core(int dimension, vec_assembly assemblies, vec_int assembly_map);
 
-  /*!
-   *  \brief Constructor.
+  /**
+   *  @brief Constructor.
    *
-   *  \param    dimension   Number of pins per row (e.g 17 for 17x17)
+   *  @param    dimension   Number of pins per row (e.g 17 for 17x17)
    */
   explicit Core(int dimension);
 
@@ -65,7 +65,7 @@ public:
   }
 
   /// Return underlying meshed object.
-  Mesh::SP_mesh mesh()
+  SP_mesh mesh()
   {
     return d_mesh;
   }

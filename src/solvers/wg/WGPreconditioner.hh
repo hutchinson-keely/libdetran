@@ -39,7 +39,7 @@ public:
   typedef detran_utilities::SP<WGPreconditioner>    SP_preconditioner;
   typedef detran_utilities::InputDB::SP_input       SP_input;
   typedef detran_material::Material::SP_material    SP_material;
-  typedef detran_geometry::Mesh::SP_mesh            SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh            SP_mesh;
   typedef callow::LinearSolver::SP_solver           SP_solver;
   typedef std::vector<SP_solver>                    vec_solver;
   typedef callow::MatrixBase::SP_matrix             SP_operator;

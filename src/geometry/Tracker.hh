@@ -11,7 +11,7 @@
 
 #include "Track.hh"
 #include "TrackDB.hh"
-#include "Mesh.hh"
+#include "CartesianMesh.hh"
 #include "Geometry.hh"
 #include "angle/ProductQuadrature.hh"
 #include "utilities/DBC.hh"
@@ -44,7 +44,7 @@ public:
 
   typedef detran_utilities::SP<Tracker>                   SP_tracker;
   typedef detran_utilities::InputDB::SP_input             SP_db;
-  typedef Mesh::SP_mesh                                   SP_mesh;
+  typedef CartesianMesh::SP_cartesianmesh                 SP_mesh;
   typedef Geometry::SP_geometry                           SP_geometry;
   typedef detran_angle::ProductQuadrature::SP_quadrature  SP_quadrature;
   typedef Track::SP_track                                 SP_track;
