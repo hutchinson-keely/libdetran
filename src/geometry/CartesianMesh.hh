@@ -304,6 +304,10 @@ struct GEOMETRY_EXPORT Mesh3D
   }
 };
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> Moved helper mesh classes into CartesianMesh as simpler structs.  Modified tests to reflect this change.
 } // end namespace detran_geometry
 
 //----------------------------------------------------------------------------//

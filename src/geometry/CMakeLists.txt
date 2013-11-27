@@ -9,7 +9,6 @@ SET(LIB_NAME "geometry")
 #-----------------------------------------------------------------------------#
 
 SET(SRC
-    CartesianMesh.cc
     Mesh.cc
     CartesianMesh.cc
     PinCell.cc
