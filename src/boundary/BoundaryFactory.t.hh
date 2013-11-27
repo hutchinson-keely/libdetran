@@ -35,7 +35,7 @@ public:
   typedef BoundaryDiffusion<D>                          Boundary_T;
   typedef typename Boundary_T::SP_boundary              SP_boundary;
   typedef detran_utilities::InputDB::SP_input           SP_input;
-  typedef detran_geometry::Mesh::SP_mesh                SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh                SP_mesh;
   typedef detran_angle::Quadrature::SP_quadrature       SP_quadrature;
   static SP_boundary build(SP_input input, SP_mesh mesh, SP_quadrature quad);
 };
@@ -63,7 +63,7 @@ public:
   typedef BoundarySN<D>                                 Boundary_T;
   typedef typename Boundary_T::SP_boundary              SP_boundary;
   typedef detran_utilities::InputDB::SP_input           SP_input;
-  typedef detran_geometry::Mesh::SP_mesh                SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh                SP_mesh;
   typedef detran_angle::Quadrature::SP_quadrature       SP_quadrature;
   static SP_boundary build(SP_input input, SP_mesh mesh, SP_quadrature quad);
 };
@@ -81,12 +81,12 @@ BoundaryFactory<D, BoundarySN>::build(SP_input      input,
 
   // boundary conditions
   std::vector<std::string> names(6);
-  names[Mesh::WEST]   = "bc_west";
-  names[Mesh::EAST]   = "bc_east";
-  names[Mesh::SOUTH]  = "bc_south";
-  names[Mesh::NORTH]  = "bc_north";
-  names[Mesh::BOTTOM] = "bc_bottom";
-  names[Mesh::TOP]    = "bc_top";
+  names[CartesianMesh::WEST]   = "bc_west";
+  names[CartesianMesh::EAST]   = "bc_east";
+  names[CartesianMesh::SOUTH]  = "bc_south";
+  names[CartesianMesh::NORTH]  = "bc_north";
+  names[CartesianMesh::BOTTOM] = "bc_bottom";
+  names[CartesianMesh::TOP]    = "bc_top";
 
   // Assign boundary conditions.
   for(int side = 0; side < 2*D::dimension; side++)
@@ -137,7 +137,7 @@ public:
   typedef BoundaryMOC<D>                                Boundary_T;
   typedef typename Boundary_T::SP_boundary              SP_boundary;
   typedef detran_utilities::InputDB::SP_input           SP_input;
-  typedef detran_geometry::Mesh::SP_mesh                SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh                SP_mesh;
   typedef detran_angle::Quadrature::SP_quadrature       SP_quadrature;
   static SP_boundary build(SP_input input, SP_mesh mesh, SP_quadrature quad);
 };

@@ -40,7 +40,7 @@ public:
   //--------------------------------------------------------------------------//
 
   typedef detran_utilities::SP<ScatterSource>       SP_scattersource;
-  typedef detran_geometry::Mesh::SP_mesh            SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh            SP_mesh;
   typedef detran_material::Material::SP_material    SP_material;
   typedef State::SP_state                           SP_state;
   typedef State::moments_type                       moments_type;

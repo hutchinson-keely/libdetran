@@ -81,7 +81,7 @@ StupidParser::SP_mesh StupidParser::parse_mesh()
 }
 
 //---------------------------------------------------------------------------//
-detran_geometry::Mesh::SP_mesh StupidParser::parse_mesh_text()
+detran_geometry::CartesianMesh::SP_mesh StupidParser::parse_mesh_text()
 {
   Insist(d_input, "Input must be parsed before mesh!");
   using namespace detran_geometry;

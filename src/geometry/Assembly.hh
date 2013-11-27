@@ -34,7 +34,7 @@ public:
   //--------------------------------------------------------------------------//
 
   typedef detran_utilities::SP<Assembly>    SP_assembly;
-  typedef Mesh::SP_mesh                     SP_mesh;
+  typedef CartesianMesh::SP_cartesianmesh   SP_mesh;
   typedef PinCell::SP_pincell               SP_pincell;
   typedef std::vector<SP_pincell>           vec_pincell;
   typedef detran_utilities::vec_dbl         vec_dbl;
@@ -58,7 +58,7 @@ public:
                             const size_t number_y = 0);
 
   /// Return underlying meshed object.
-  Mesh::SP_mesh mesh();
+  SP_mesh mesh();
 
   /// Add a pincell
   void add_pincell(SP_pincell pin);
@@ -95,7 +95,7 @@ private:
   //--------------------------------------------------------------------------//
 
   /// Meshed object
-  Mesh2D::SP_mesh d_mesh;
+  SP_mesh d_mesh;
   //@{
   /// Dimension per direction, e.g. 17 in 17x17.
   size_t d_number_x;

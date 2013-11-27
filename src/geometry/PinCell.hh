@@ -56,10 +56,10 @@ public:
   // TYPEDEFS
   //--------------------------------------------------------------------------//
 
-  typedef detran_utilities::SP<PinCell>   SP_pincell;
-  typedef Mesh::SP_mesh                   SP_mesh;
-  typedef Mesh::vec_dbl                   vec_dbl;
-  typedef Mesh::vec_int                   vec_int;
+  typedef detran_utilities::SP<PinCell>       SP_pincell;
+  typedef CartesianMesh::SP_cartesianmesh     SP_mesh;
+  typedef CartesianMesh::vec_dbl              vec_dbl;
+  typedef CartesianMesh::vec_int              vec_int;
 
   //--------------------------------------------------------------------------//
   // PUBLIC INTERFACE
@@ -88,7 +88,7 @@ public:
          const Point      &pincenter = Point(0));
 
   /// Return the smart pointer to my mesh.
-  Mesh::SP_mesh mesh()
+  SP_mesh mesh()
   {
     return d_mesh;
   }
@@ -152,7 +152,7 @@ private:
   /// Pin center
   Point d_pin_center;
   /// Meshed pin cell
-  Mesh2D::SP_mesh d_mesh;
+  SP_mesh d_mesh;
 
   //--------------------------------------------------------------------------//
   // IMPLEMENTATION

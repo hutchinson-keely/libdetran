@@ -47,7 +47,7 @@ public:
   //--------------------------------------------------------------------------//
 
   typedef detran_utilities::SP<CoarseMesh>  SP_coarsemesh;
-  typedef detran_geometry::Mesh::SP_mesh    SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh    SP_mesh;
   typedef detran_utilities::size_t          size_t;
   typedef detran_utilities::vec_int         vec_int;
   typedef detran_utilities::vec2_int        vec2_int;

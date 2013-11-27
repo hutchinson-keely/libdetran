@@ -64,7 +64,7 @@ public:
 
   typedef detran_utilities::SP<Equation>                  SP_equation;
   typedef detran_material::Material::SP_material          SP_material;
-  typedef detran_geometry::Mesh::SP_mesh                  SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh                  SP_mesh;
   typedef detran_angle::Quadrature::SP_quadrature         SP_quadrature;
   typedef detran_utilities::vec_dbl                       moments_type;
   typedef detran_utilities::vec_dbl                       angular_flux_type;

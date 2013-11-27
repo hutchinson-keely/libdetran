@@ -28,7 +28,7 @@ inline void Equation_SD_2D::solve(const size_t i,
   // Preconditions.  (The client *must* set group and angles.)
   Require(k == 0);
 
-  typedef detran_geometry::Mesh Mesh;
+  typedef detran_geometry::CartesianMesh Mesh;
 
   // Compute cell-center angular flux.
   int cell = d_mesh->index(i, j);
