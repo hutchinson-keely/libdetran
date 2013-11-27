@@ -55,9 +55,7 @@
 %include "Ray.hh"
 //
 %include "Mesh.hh"
-%include "Mesh1D.hh"
-%include "Mesh2D.hh"
-%include "Mesh3D.hh"
+%include "CartesianMesh.hh"
 %include "PinCell.hh"
 %include "Assembly.hh"
 %include "Core.hh"
@@ -80,9 +78,10 @@
 
 
 %template(MeshSP)     detran_utilities::SP<detran_geometry::Mesh>;
-%template(Mesh1DSP)   detran_utilities::SP<detran_geometry::Mesh1D>;
-%template(Mesh2DSP)   detran_utilities::SP<detran_geometry::Mesh2D>;
-%template(Mesh3DSP)   detran_utilities::SP<detran_geometry::Mesh3D>;
+%template(CMeshSP)    detran_utilities::SP<detran_geometry::CartesianMesh>;
+//%template(Mesh1DSP)   detran_utilities::SP<detran_geometry::Mesh1D>;
+//%template(Mesh2DSP)   detran_utilities::SP<detran_geometry::Mesh2D>;
+//%template(Mesh3DSP)   detran_utilities::SP<detran_geometry::Mesh3D>;
 
 %template(PinCellSP)  detran_utilities::SP<detran_geometry::PinCell>;
 %template(AssemblySP) detran_utilities::SP<detran_geometry::Assembly>;

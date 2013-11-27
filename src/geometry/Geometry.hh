@@ -59,6 +59,16 @@ public:
   //@}
   size_t dimension() const {return 2;}
 
+  //--------------------------------------------------------------------------//
+  // ABSTRACT INTERFACE -- ALL MESHES MUST IMPLEMENT THESE
+  //--------------------------------------------------------------------------//
+
+  /// Find the cell containing a point
+ // int find_cell(const Point &p) const;
+
+  /// Display some key features
+//  void display() const;
+
 private:
 
   //--------------------------------------------------------------------------//

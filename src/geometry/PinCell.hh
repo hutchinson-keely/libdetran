@@ -9,7 +9,7 @@
 #ifndef detran_geometry_PinCell_HH_
 #define detran_geometry_PinCell_HH_
 
-#include "Mesh2D.hh"
+#include "geometry/CartesianMesh.hh"
 
 namespace detran_geometry
 {
