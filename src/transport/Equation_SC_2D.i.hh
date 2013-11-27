@@ -32,7 +32,7 @@ inline void Equation_SC_2D::solve(const size_t       i,
   Require(j < d_mesh->number_cells_y());
   Require(k == 0);
 
-  typedef detran_geometry::Mesh Mesh;
+  typedef detran_geometry::CartesianMesh Mesh;
 
   int cell = d_mesh->index(i, j);
   double sigma = d_material->sigma_t(d_mat_map[cell], d_g);

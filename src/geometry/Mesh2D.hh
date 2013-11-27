@@ -9,7 +9,7 @@
 #ifndef detran_geometry_MESH2D_HH_
 #define detran_geometry_MESH2D_HH_
 
-#include "Mesh.hh"
+#include "CartesianMesh.hh"
 #ifdef DETRAN_ENABLE_BOOST
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/base_object.hpp>
@@ -27,13 +27,13 @@ namespace detran_geometry
  *  This is mostly a convenience interface.
  */
 //---------------------------------------------------------------------------//
-class GEOMETRY_EXPORT Mesh2D : public Mesh
+class GEOMETRY_EXPORT Mesh2D : public CartesianMesh
 {
 
 public:
 
-  typedef Mesh            Base;
-  typedef Base::SP_mesh   SP_mesh;
+  typedef CartesianMesh            Base;
+  typedef Base::SP_cartesianmesh   SP_mesh;
 
   /**
    *  @brief Constructor.
@@ -77,7 +77,7 @@ protected:
    *   We keep this as an option in the event inherited meshes need
    *   more flexibility.
    */
-  Mesh2D() : Mesh(2) {}
+  Mesh2D() : CartesianMesh(2) {}
 
 private:
 

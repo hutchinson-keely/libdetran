@@ -38,7 +38,7 @@ public:
 
   typedef detran_utilities::InputDB::SP_input         SP_input;
   typedef State::SP_state                             SP_state;
-  typedef detran_geometry::Mesh::SP_mesh              SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh              SP_mesh;
   typedef detran_material::Material::SP_material      SP_material;
   typedef typename BoundaryBase<D>::SP_boundary       SP_boundary;
   typedef detran_external_source::

@@ -31,15 +31,15 @@ inline void Equation_DD_2D::solve(const size_t       i,
   double coef = 1.0 / (d_material->sigma_t(d_mat_map[cell], d_g) +
                        d_coef_x[i] + d_coef_y[j]);
   double psi_center = coef * (source[cell] +
-                              d_coef_x[i] * psi_in[detran_geometry::Mesh::VERT] +
-                              d_coef_y[j] * psi_in[detran_geometry::Mesh::HORZ] );
+                              d_coef_x[i] * psi_in[detran_geometry::CartesianMesh::VERT] +
+                              d_coef_y[j] * psi_in[detran_geometry::CartesianMesh::HORZ] );
 
   // Compute outgoing fluxes.
   double two_psi_center = 2.0 * psi_center;
-  psi_out[detran_geometry::Mesh::HORZ] =
-    two_psi_center - psi_in[detran_geometry::Mesh::HORZ];
-  psi_out[detran_geometry::Mesh::VERT] =
-    two_psi_center - psi_in[detran_geometry::Mesh::VERT];
+  psi_out[detran_geometry::CartesianMesh::HORZ] =
+    two_psi_center - psi_in[detran_geometry::CartesianMesh::HORZ];
+  psi_out[detran_geometry::CartesianMesh::VERT] =
+    two_psi_center - psi_in[detran_geometry::CartesianMesh::VERT];
 
   // Compute flux moments.
   phi[cell] += d_quadrature->weight(d_angle) * psi_center;

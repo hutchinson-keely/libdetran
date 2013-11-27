@@ -9,7 +9,7 @@
 #ifndef detran_geometry_MESH1D_HH_
 #define detran_geometry_MESH1D_HH_
 
-#include "Mesh.hh"
+#include "CartesianMesh.hh"
 #ifdef DETRAN_ENABLE_BOOST
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/base_object.hpp>
@@ -27,12 +27,12 @@ namespace detran_geometry
  *  This is mostly a convenience interface.
  */
 //---------------------------------------------------------------------------//
-class GEOMETRY_EXPORT Mesh1D : public Mesh
+class GEOMETRY_EXPORT Mesh1D : public CartesianMesh
 {
 
 public:
 
-  typedef Mesh Base;
+  typedef CartesianMesh Base;
   typedef Base::SP_mesh SP_mesh;
 
   /**
@@ -53,7 +53,7 @@ public:
   Mesh1D(vec_dbl xfme, vec_int mat_map);
 
   /// SP constructor
-  static detran_utilities::SP<Mesh>
+  static detran_utilities::SP<CartesianMesh>
   Create(vec_int xfm, vec_dbl xcme, vec_int mat_map)
   {
     SP_mesh p(new Mesh1D(xfm, xcme, mat_map));
@@ -61,7 +61,7 @@ public:
   }
 
   /// SP constructor
-  static detran_utilities::SP<Mesh>
+  static detran_utilities::SP<CartesianMesh>
   Create(vec_dbl xfme, vec_int mat_map)
   {
     SP_mesh p(new Mesh1D(xfme, mat_map));
@@ -74,7 +74,7 @@ protected:
    *   We keep this as an option in the event inherited meshes need
    *   more flexibility.
    */
-  Mesh1D() : Mesh(1) {}
+  Mesh1D() : CartesianMesh(1) {}
 
 private:
 

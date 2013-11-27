@@ -46,7 +46,7 @@ public:
   typedef detran_utilities::SP<Operator_T>            SP_operator;
   typedef detran_utilities::InputDB::SP_input         SP_input;
   typedef detran_material::Material::SP_material      SP_material;
-  typedef detran_geometry::Mesh::SP_mesh              SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh              SP_mesh;
   typedef ScatterSource::SP_scattersource             SP_scattersource;
   typedef FissionSource::SP_fissionsource             SP_fissionsource;
   typedef detran_utilities::size_t                    size_t;

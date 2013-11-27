@@ -45,7 +45,7 @@ public:
   typedef typename Base::size_t               size_t;
   typedef detran_utilities::vec_int           vec_int;
   typedef detran_utilities::vec2_int          vec2_int;
-  typedef detran_geometry::Mesh               Mesh;
+  typedef detran_geometry::CartesianMesh               Mesh;
 
   //-------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
@@ -58,18 +58,18 @@ public:
            SP_quadrature quadrature)
     : Base(boundary, side, input, mesh, quadrature)
   {
-    if (d_side == detran_geometry::Mesh::WEST)
-      d_periodic_side = detran_geometry::Mesh::EAST;
-    else if (d_side == detran_geometry::Mesh::EAST)
-      d_periodic_side = detran_geometry::Mesh::WEST;
-    else if (d_side == detran_geometry::Mesh::SOUTH)
-      d_periodic_side = detran_geometry::Mesh::NORTH;
-    else if (d_side == detran_geometry::Mesh::NORTH)
-      d_periodic_side = detran_geometry::Mesh::SOUTH;
-    else if (d_side == detran_geometry::Mesh::BOTTOM)
-      d_periodic_side = detran_geometry::Mesh::TOP;
+    if (d_side == detran_geometry::CartesianMesh::WEST)
+      d_periodic_side = detran_geometry::CartesianMesh::EAST;
+    else if (d_side == detran_geometry::CartesianMesh::EAST)
+      d_periodic_side = detran_geometry::CartesianMesh::WEST;
+    else if (d_side == detran_geometry::CartesianMesh::SOUTH)
+      d_periodic_side = detran_geometry::CartesianMesh::NORTH;
+    else if (d_side == detran_geometry::CartesianMesh::NORTH)
+      d_periodic_side = detran_geometry::CartesianMesh::SOUTH;
+    else if (d_side == detran_geometry::CartesianMesh::BOTTOM)
+      d_periodic_side = detran_geometry::CartesianMesh::TOP;
     else
-      d_periodic_side = detran_geometry::Mesh::BOTTOM;
+      d_periodic_side = detran_geometry::CartesianMesh::BOTTOM;
   }
 
   //-------------------------------------------------------------------------//

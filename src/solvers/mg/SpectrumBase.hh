@@ -32,7 +32,7 @@ public:
 
   typedef detran_utilities::InputDB::SP_input       SP_input;
   typedef detran_material::Material::SP_material    SP_material;
-  typedef detran_geometry::Mesh::SP_mesh            SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh            SP_mesh;
   typedef detran_utilities::vec_int                 vec_int;
   typedef detran_utilities::vec_dbl                 vec_dbl;
   typedef detran_utilities::vec2_dbl                vec2_dbl;

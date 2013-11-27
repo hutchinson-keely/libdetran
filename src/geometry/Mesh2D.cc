@@ -15,7 +15,7 @@ namespace detran_geometry
 Mesh2D::Mesh2D(vec_int xfm, vec_int yfm, 
 			   vec_dbl xcme, vec_dbl ycme, 
 			   vec_int mat_map)
-  : Mesh(2,
+  : CartesianMesh(2,
          xfm,
          yfm,
          vec_int(1, 1),
@@ -31,7 +31,7 @@ Mesh2D::Mesh2D(vec_int xfm, vec_int yfm,
 
 //---------------------------------------------------------------------------//
 Mesh2D::Mesh2D(vec_dbl xfme, vec_dbl yfme, vec_int mat_map)
-  : Mesh(2,
+  : CartesianMesh(2,
          xfme,
          yfme,
          vec_dbl(2, 0.0),

@@ -13,13 +13,7 @@ namespace detran_geometry
 {
 
 //----------------------------------------------------------------------------//
-inline Mesh::size_t Mesh::number_cells() const
-{
-  return d_number_cells;
-}
-
-//----------------------------------------------------------------------------//
-inline Mesh::size_t Mesh::number_cells(size_t dim) const
+inline CartesianMesh::size_t CartesianMesh::number_cells(size_t dim) const
 {
   if (dim == 0)
     return d_number_cells_x;
@@ -30,22 +24,22 @@ inline Mesh::size_t Mesh::number_cells(size_t dim) const
 }
 
 //----------------------------------------------------------------------------//
-inline Mesh::size_t Mesh::number_cells_x() const
+inline CartesianMesh::size_t CartesianMesh::number_cells_x() const
 {
   return d_number_cells_x;
 }
-inline Mesh::size_t Mesh::number_cells_y() const
+inline CartesianMesh::size_t CartesianMesh::number_cells_y() const
 {
   return d_number_cells_y;
 }
-inline Mesh::size_t Mesh::number_cells_z() const
+inline CartesianMesh::size_t CartesianMesh::number_cells_z() const
 {
   return d_number_cells_z;
 }
 
 //----------------------------------------------------------------------------//
 
-inline double Mesh::width(size_t dim, size_t ijk) const
+inline double CartesianMesh::width(size_t dim, size_t ijk) const
 {
   Require(dim <  3);
   if (dim == 0)
@@ -55,38 +49,24 @@ inline double Mesh::width(size_t dim, size_t ijk) const
   else
     return dz(ijk);
 }
-inline double Mesh::dx(size_t i) const
+inline double CartesianMesh::dx(size_t i) const
 {
   Require (i < d_number_cells_x);
   return d_dx[i];
 }
-inline double Mesh::dy(size_t j) const
+inline double CartesianMesh::dy(size_t j) const
 {
   Require (j < d_number_cells_y);
   return d_dy[j];
 }
-inline double Mesh::dz(size_t k) const
+inline double CartesianMesh::dz(size_t k) const
 {
   Require (k < d_number_cells_z);
   return d_dz[k];
 }
 
 //----------------------------------------------------------------------------//
-inline const Mesh::vec_dbl& Mesh::dx() const
-{
-  return d_dx;
-}
-inline const Mesh::vec_dbl& Mesh::dy() const
-{
-  return d_dy;
-}
-inline const Mesh::vec_dbl& Mesh::dz() const
-{
-  return d_dz;
-}
-
-//----------------------------------------------------------------------------//
-inline double Mesh::volume(size_t cell) const
+inline double CartesianMesh::volume(const size_t cell) const
 {
   Require(cell < d_number_cells);
   double v = dx(cell_to_i(cell)) *
@@ -97,27 +77,22 @@ inline double Mesh::volume(size_t cell) const
 }
 
 //----------------------------------------------------------------------------//
-inline double Mesh::total_width_x() const
+inline double CartesianMesh::total_width_x() const
 {
   return d_total_width_x;
 }
-inline double Mesh::total_width_y() const
+inline double CartesianMesh::total_width_y() const
 {
   return d_total_width_y;
 }
-inline double Mesh::total_width_z() const
+inline double CartesianMesh::total_width_z() const
 {
   return d_total_width_z;
 }
 
 //----------------------------------------------------------------------------//
-inline Mesh::size_t Mesh::dimension() const
-{
-  return d_dimension;
-}
-
-//----------------------------------------------------------------------------//
-inline Mesh::size_t Mesh::index(size_t i, size_t j, size_t k)
+inline CartesianMesh::size_t
+CartesianMesh::index(const size_t i, const size_t j, const size_t k) const
 {
   Require(i >= 0);
   Require(i < d_number_cells_x);
@@ -129,7 +104,7 @@ inline Mesh::size_t Mesh::index(size_t i, size_t j, size_t k)
 }
 
 //----------------------------------------------------------------------------//
-inline Mesh::size_t Mesh::cell_to_i(size_t cell) const
+inline CartesianMesh::size_t CartesianMesh::cell_to_i(const size_t cell) const
 {
   Require(cell >= 0);
   Require(cell < d_number_cells);
@@ -137,7 +112,7 @@ inline Mesh::size_t Mesh::cell_to_i(size_t cell) const
   Ensure(i < d_number_cells_x);
   return i;
 }
-inline Mesh::size_t Mesh::cell_to_j(size_t cell) const
+inline CartesianMesh::size_t CartesianMesh::cell_to_j(const size_t cell) const
 {
   Require(cell >= 0);
   Require(cell < d_number_cells);
@@ -147,7 +122,7 @@ inline Mesh::size_t Mesh::cell_to_j(size_t cell) const
   Ensure(j < d_number_cells_y);
   return j;
 }
-inline Mesh::size_t Mesh::cell_to_k(size_t cell) const
+inline CartesianMesh::size_t CartesianMesh::cell_to_k(const size_t cell) const
 {
   Require(cell >= 0);
   Require(cell < d_number_cells);
@@ -156,9 +131,22 @@ inline Mesh::size_t Mesh::cell_to_k(size_t cell) const
   Ensure(k < d_number_cells_z);
   return k;
 }
+inline CartesianMesh::size_t
+CartesianMesh::cell_to_ijk(const size_t dim, const size_t cell) const
+{
+  Require(cell >= 0);
+  Require(cell < d_number_cells);
+  Require(dim >= 0 && dim < dimension());
+  if (dim == 0)
+    return cell_to_i(cell);
+  else if (dim == 1)
+    return cell_to_j(cell);
+  else
+    return cell_to_k(cell);
+}
 
 //----------------------------------------------------------------------------//
-inline int Mesh::find_cell(Point p)
+inline int CartesianMesh::find_cell(const Point &p) const
 {
   // Default is -1, meaning not found
   int cell;
@@ -192,12 +180,6 @@ inline int Mesh::find_cell(Point p)
     cell = index(ijk[0], ijk[1], ijk[2]);
   }
   return cell;
-}
-
-/// Return a const reference to the full map (useful for IO)
-inline const Mesh::mesh_map_type& Mesh::get_mesh_map() const
-{
-  return d_mesh_map;
 }
 
 } // end namespace detran

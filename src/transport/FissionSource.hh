@@ -35,7 +35,7 @@ public:
 
   typedef detran_utilities::SP<FissionSource>       SP_fissionsource;
   typedef State::SP_state                           SP_state;
-  typedef detran_geometry::Mesh::SP_mesh            SP_mesh;
+  typedef detran_geometry::CartesianMesh::SP_mesh            SP_mesh;
   typedef detran_material::Material::SP_material    SP_material;
   typedef detran_utilities::vec_int                 vec_int;
   typedef detran_utilities::size_t                  size_t;

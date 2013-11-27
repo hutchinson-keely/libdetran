@@ -23,7 +23,7 @@ inline void Equation_DD_3D::solve(const size_t i,
                                   moments_type &phi,
                                   angular_flux_type &psi)
 {
-  typedef detran_geometry::Mesh Mesh;
+  typedef detran_geometry::CartesianMesh Mesh;
 
   // Compute cell-center angular flux.
   int cell = d_mesh->index(i, j, k);

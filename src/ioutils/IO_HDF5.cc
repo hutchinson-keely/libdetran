@@ -189,7 +189,7 @@ void IO_HDF5::write(SP_mesh mesh)
   Assert(status);
 
   // Write all mesh maps.  Note, at *least* MATERIAL must be present.
-  detran_geometry::Mesh::mesh_map_type map = mesh->get_mesh_map();
+  detran_geometry::CartesianMesh::mesh_map_type map = mesh->get_mesh_map();
 
   status = write_map(group, "mesh_map", map);
   Assert(status);
@@ -336,7 +336,7 @@ detran_material::Material::SP_material IO_HDF5::read_material()
 }
 
 //---------------------------------------------------------------------------//
-detran_geometry::Mesh::SP_mesh IO_HDF5::read_mesh()
+detran_geometry::CartesianMesh::SP_mesh IO_HDF5::read_mesh()
 {
   // Mesh to fill
   SP_mesh mesh;
@@ -382,7 +382,7 @@ detran_geometry::Mesh::SP_mesh IO_HDF5::read_mesh()
     ez[i + 1] = ez[i] + dz[i];
 
   // Fill the mesh maps, and extract the material map.
-  detran_geometry::Mesh::mesh_map_type map;
+  detran_geometry::CartesianMesh::mesh_map_type map;
   Insist(read_map(group, "mesh_map", map),
     "Problem reading mesh map.  It is missing or empty.");
   vec_int mt = map["MATERIAL"];
@@ -396,7 +396,7 @@ detran_geometry::Mesh::SP_mesh IO_HDF5::read_mesh()
     mesh = new detran_geometry::Mesh3D(ex, ey, ez, mt);
 
   // Add the rest of the maps.
-  detran_geometry::Mesh::mesh_map_type::iterator it = map.begin();
+  detran_geometry::CartesianMesh::mesh_map_type::iterator it = map.begin();
   for (; it != map.end(); it++)
   {
     if (it->first != "MATERIAL")
