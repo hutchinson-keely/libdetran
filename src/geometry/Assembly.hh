@@ -9,7 +9,6 @@
 #ifndef detran_geometry_ASSEMBLY_HH_
 #define detran_geometry_ASSEMBLY_HH_
 
-#include "Mesh2D.hh"
 #include "PinCell.hh"
 
 namespace detran_geometry

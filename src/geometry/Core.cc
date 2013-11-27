@@ -172,7 +172,9 @@ void Core::finalize(vec_int assembly_map)
   }
 
   // Create my mesh and add mesh maps.
-  d_mesh = new Mesh2D(edges, edges, core_mat_map);
+  vec_dbl zedges(2, 0.0);
+  zedges[1] = 1.0;
+  d_mesh = new CartesianMesh(2, edges, edges, zedges, core_mat_map);
   d_mesh->add_mesh_map("REGION",     core_reg_map);
   d_mesh->add_mesh_map("PINS",       core_pin_map);
   d_mesh->add_mesh_map("ASSEMBLIES", core_ass_map);
@@ -181,3 +183,6 @@ void Core::finalize(vec_int assembly_map)
 
 } // end namespace detran_geometry
 
+//----------------------------------------------------------------------------//
+//              end of Core.cc
+//----------------------------------------------------------------------------//

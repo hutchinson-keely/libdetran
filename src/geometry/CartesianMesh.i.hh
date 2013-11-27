@@ -1,13 +1,13 @@
 //----------------------------------*-C++-*-----------------------------------//
 /**
- *  @file  Mesh.i.hh
+ *  @file  CartesianMesh.i.hh
  *  @brief Mesh inline member definitions
  *  @note  Copyright (C) 2012-2013 Jeremy Roberts
  */
 //----------------------------------------------------------------------------//
 
-#ifndef detran_geometry_MESH_I_HH_
-#define detran_geometry_MESH_I_HH_
+#ifndef detran_geometry_CARTESIANMESH_I_HH_
+#define detran_geometry_CARTESIANMESH_I_HH_
 
 namespace detran_geometry
 {
@@ -184,8 +184,8 @@ inline int CartesianMesh::find_cell(const Point &p) const
 
 } // end namespace detran
 
-#endif // MESH_I_HH_ 
+#endif // detran_geometry_CARTESIANMESH_I_HH_
 
 //----------------------------------------------------------------------------//
-//              end of file Mesh.i.hh
+//              end of file CartesianMesh.i.hh
 //----------------------------------------------------------------------------//

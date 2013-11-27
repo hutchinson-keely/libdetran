@@ -32,7 +32,7 @@
 namespace detran_geometry
 {
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 /**
  *  @class Mesh
  *  @brief Abstract Cartesian mesh class.
@@ -41,15 +41,15 @@ namespace detran_geometry
  *  the Mesh class.  Rather, use the dimension-specific subclasses.  We
  *  could use a pure virtual destructor as an alternative.
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 class GEOMETRY_EXPORT CartesianMesh: public Mesh
 {
 
 public:
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // ENUMERATIONS
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   enum SIDES
   {
@@ -66,21 +66,18 @@ public:
     YZ, XZ, XY
   };
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // TYPEDEFS
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   typedef detran_utilities::SP<CartesianMesh>   SP_cartesianmesh;
-  typedef TrackDB::SP_trackdb                   SP_trackdb;
 
-  // Note, these constructors are protected to hide them from the
-  // user.  These are to be called by inherited classes.  I keep
-  // the constructors at the top for convention.
-protected:
+  //--------------------------------------------------------------------------//
+  // CONSTRUCTORS & DESTRUCTORS
+  //--------------------------------------------------------------------------//
 
   /**
    *  @brief Constructor.
-   *
    *  @param    dim         Spatial dimension
    *  @param    xfm         Fine meshes per coarse mesh in x dimension.
    *  @param    yfm         Fine meshes per coarse mesh in y dimension.
@@ -90,33 +87,27 @@ protected:
    *  @param    zcme        Coarse mesh edges z dimension.
    */
   CartesianMesh(size_t dim,
-       vec_int xfm,  vec_int yfm,  vec_int zfm,
-       vec_dbl xcme, vec_dbl ycme, vec_dbl zcme,
-       vec_int mat_map);
+                vec_int xfm,  vec_int yfm,  vec_int zfm,
+                vec_dbl xcme, vec_dbl ycme, vec_dbl zcme,
+                vec_int mat_map);
 
   /**
    *  @brief Constructor.
-   *
    *  @param    dim         Spatial dimension
    *  @param    xfme        Fine mesh edges x dimension.
    *  @param    yfme        Fine mesh edges y dimension.
    *  @param    zfme        Fine mesh edges z dimension.
    */
   CartesianMesh(size_t dim,
-       vec_dbl xfme, vec_dbl yfme, vec_dbl zfme,
-       vec_int mat_map);
-
-  CartesianMesh(size_t dim) : Mesh(dim) {}
-
-public:
+                vec_dbl xfme, vec_dbl yfme, vec_dbl zfme,
+                vec_int mat_map);
 
   /// Virtual destructor
   virtual ~CartesianMesh(){}
 
-
-  //------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // Setters
-  //------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   /**
    * @brief  Add map of coarse mesh integer properties.
@@ -128,7 +119,8 @@ public:
    * @param  map_key   String description of map.
    * @param  mesh_map  Logically multi-dimensional map as 1-d vector.
    */
-  void add_coarse_mesh_map(const std::string& map_key, const vec_int &mesh_map);
+  void add_coarse_mesh_map(const std::string &map_key,
+                           const vec_int     &mesh_map);
 
   //------------------------------------------------------------------------//
   // Getters
@@ -177,21 +169,15 @@ public:
   size_t cell_to_ijk(const size_t dim, const size_t cell) const;
   //@}
 
-  /// Display some key features
-  void display() const;
-
-  void set_tracks(SP_trackdb tracks)
-  {
-    Require(tracks);
-    d_tracks = tracks;
-  }
-
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL MESHES MUST IMPLEMENT THESE
   //--------------------------------------------------------------------------//
 
   /// Find the cell containing a point
   int find_cell(const Point &p) const;
+
+  /// Display some key features
+  void display() const;
 
 protected:
 
@@ -225,8 +211,6 @@ protected:
   size_t d_number_cells_y;
   /// Number of cells in y direction
   size_t d_number_cells_z;
-  /// Track database
-  SP_trackdb d_tracks;
 
 private:
 
@@ -269,16 +253,67 @@ private:
 
 GEOMETRY_TEMPLATE_EXPORT(detran_utilities::SP<CartesianMesh>)
 
+//----------------------------------------------------------------------------//
+struct GEOMETRY_EXPORT Mesh1D
+{
+  typedef detran_utilities::vec_dbl vec_dbl;
+  typedef detran_utilities::vec_int vec_int;
+  static CartesianMesh::SP_cartesianmesh
+  Create(vec_int xfm, vec_dbl xcm, vec_int mat_map)
+  {
+    vec_int yfm(1, 1);
+    vec_dbl ycm(2, 0.0);
+    ycm[1] = 1.0;
+    CartesianMesh::SP_cartesianmesh
+    p(new CartesianMesh(1, xfm, yfm, yfm, xcm, ycm, ycm, mat_map));
+    return p;
+  }
+};
+
+//----------------------------------------------------------------------------//
+struct GEOMETRY_EXPORT Mesh2D
+{
+  typedef detran_utilities::vec_dbl vec_dbl;
+  typedef detran_utilities::vec_int vec_int;
+  static CartesianMesh::SP_cartesianmesh
+  Create(vec_int xfm, vec_int yfm, vec_dbl xcm, vec_dbl ycm, vec_int mat_map)
+  {
+    vec_int zfm(1, 1);
+    vec_dbl zcm(2, 0.0);
+    zcm[1] = 1.0;
+    CartesianMesh::SP_cartesianmesh
+    p(new CartesianMesh(2, xfm, yfm, zfm, xcm, ycm, zcm, mat_map));
+    return p;
+  }
+};
+
+//----------------------------------------------------------------------------//
+struct GEOMETRY_EXPORT Mesh3D
+{
+  typedef detran_utilities::vec_dbl vec_dbl;
+  typedef detran_utilities::vec_int vec_int;
+  static CartesianMesh::SP_cartesianmesh
+  Create(vec_int xfm, vec_int yfm, vec_int zfm,
+         vec_dbl xcm, vec_dbl ycm, vec_dbl zcm,
+         vec_int mat_map)
+  {
+    CartesianMesh::SP_cartesianmesh
+    p(new CartesianMesh(3, xfm, yfm, zfm, xcm, ycm, zcm, mat_map));
+    return p;
+  }
+};
+
+
 } // end namespace detran_geometry
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 // INLINE FUNCTIONS
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #include "CartesianMesh.i.hh"
 
 #endif /* detran_geometry_CARTESIANMESH_HH_ */
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 //              end of Mesh.hh
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//

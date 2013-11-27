@@ -84,6 +84,9 @@ public:
   /// Find the cell containing a point.  Returns negative if not found.
   virtual int find_cell(const Point &p) const = 0;
 
+  /// Display mesh information
+  virtual void display() const = 0;
+
 protected:
 
   //--------------------------------------------------------------------------//
