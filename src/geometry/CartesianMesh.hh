@@ -42,6 +42,7 @@ namespace detran_geometry
  *  could use a pure virtual destructor as an alternative.
  */
 //----------------------------------------------------------------------------//
+
 class GEOMETRY_EXPORT CartesianMesh: public Mesh
 {
 
@@ -302,7 +303,6 @@ struct GEOMETRY_EXPORT Mesh3D
     return p;
   }
 };
-
 
 } // end namespace detran_geometry
 
