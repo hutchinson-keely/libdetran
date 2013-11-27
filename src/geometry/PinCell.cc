@@ -112,7 +112,8 @@ void PinCell::meshify(int number_meshes, bool flag)
     }
 
     // Create my mesh.
-    d_mesh = new Mesh2D(edges, edges, tmp_mat_map);
+    vec_dbl zedges(2, 0.0); zedges[1] = 1.0;
+    d_mesh = new CartesianMesh(2, edges, edges, zedges, tmp_mat_map);
 
     // Add maps
     d_mesh->add_mesh_map("MATERIAL", tmp_mat_map);
@@ -218,7 +219,7 @@ void PinCell::meshify(int number_meshes, bool flag)
     }
 
     // Create my mesh.
-    d_mesh = new Mesh2D(fine, fine, coarse, coarse, material);
+    d_mesh = Mesh2D::Create(fine, fine, coarse, coarse, material);
     d_mesh->add_coarse_mesh_map("REGION", regions);
 
   }

@@ -16,8 +16,6 @@
 #include "TestDriver.hh"
 #include "Tracker.hh"
 #include "RegionFactory.hh"
-#include "Mesh2D.hh"
-#include "Mesh3D.hh"
 #include "csg_fixture.hh"
 #include "angle/QuadratureFactory.hh"
 #include "ioutils/PSPlotter.hh"
@@ -50,7 +48,8 @@ int test_Tracker_2d_mesh(int argc, char *argv[])
   cm[1] = 1.0;
   vec_int fm(1,  2);
   vec_int mt(1,  0);
-  Mesh::SP_mesh mesh(new Mesh2D(fm, fm, cm, cm, mt));
+  CartesianMesh::SP_cartesianmesh mesh
+    = Mesh2D::Create(fm, fm, cm, cm, mt);
 
   InputDB::SP_input db = InputDB::Create();
   db->put<double>("tracker_maximum_spacing", 1.0);
@@ -105,7 +104,8 @@ int test_Tracker_3d_mesh(int argc, char *argv[])
   cm[1] = 1.0;
   vec_int fm(1,  2);
   vec_int mt(1,  0);
-  Mesh::SP_mesh mesh(new Mesh3D(fm, fm, fm, cm, cm, cm, mt));
+  CartesianMesh::SP_cartesianmesh mesh
+    = Mesh3D::Create(fm, fm, fm, cm, cm, cm, mt);
 
   InputDB::SP_input db = InputDB::Create();
   db->put<double>("tracker_maximum_spacing", 1.0);
@@ -133,7 +133,6 @@ int test_Tracker_3d_mesh(int argc, char *argv[])
   Tracker::SP_region r = geo->region(0);
   COUT(r->bound_max() << r->bound_min());
   bool v = geo->region(0)->intersects_bounding_box(R, 10.0);
-  COUT("v fucking is " << v)
   tracker.trackit(mesh);
   tracker.trackdb()->display();
 
@@ -188,7 +187,7 @@ int test_Tracker_pin_2d(int argc, char *argv[])
 
   Tracker::SP_quadrature q = detran_angle::QuadratureFactory::build(db, 2);
 
-  COUT("FUCK THIS BOX: " << pin->region(1)->bound_min() << " " << pin->region(1)->bound_max())
+  COUT(" THIS BOX: " << pin->region(1)->bound_min() << " " << pin->region(1)->bound_max())
 //  Tracker tracker(db, q);
 //
 //  tracker.trackit(pin);

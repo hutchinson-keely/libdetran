@@ -167,7 +167,9 @@ void Assembly::finalize(vec_int pincell_map)
   }
 
   // Create my mesh.
-  d_mesh = new Mesh2D(edges, edges, ass_mat_map);
+  vec_dbl zedges(2, 0.0);
+  zedges[1] = 1.0;
+  d_mesh = new CartesianMesh(2, edges, edges, zedges, ass_mat_map);
   // Add maps.
   d_mesh->add_mesh_map("REGION", ass_reg_map);
   // Assigns unique edit region for each pin in an assembly.
@@ -178,5 +180,5 @@ void Assembly::finalize(vec_int pincell_map)
 } // end namespace detran_geometry
 
 //----------------------------------------------------------------------------//
-//              end of Assembly.hh
+//              end of Assembly.cc
 //----------------------------------------------------------------------------//

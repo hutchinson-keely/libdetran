@@ -9,7 +9,6 @@
 #ifndef detran_geometry_CORE_HH_
 #define detran_geometry_CORE_HH_
 
-#include "Mesh2D.hh"
 #include "Assembly.hh"
 
 namespace detran_geometry
@@ -101,7 +100,7 @@ private:
   //--------------------------------------------------------------------------//
 
   /// Meshed object
-  Mesh2D::SP_mesh d_mesh;
+  SP_mesh d_mesh;
   /// Dimension, e.g. 17 in 17x17. Number assemblies along one dimension.
   int d_number_x;
   int d_number_y;

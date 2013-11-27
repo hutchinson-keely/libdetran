@@ -2,17 +2,12 @@
 # libdetran/src/geometry/test/CMakeLists.txt
 #------------------------------------------------------------------------------#
 
-ADD_EXECUTABLE(test_Mesh1D                  test_Mesh1D.cc)
-TARGET_LINK_LIBRARIES(test_Mesh1D           geometry utilities angle)
-ADD_TEST(test_Mesh1D                        test_Mesh1D 0)
-
-ADD_EXECUTABLE(test_Mesh2D                  test_Mesh2D.cc)
-TARGET_LINK_LIBRARIES(test_Mesh2D           geometry utilities angle)
-ADD_TEST(test_Mesh2D                        test_Mesh2D 0)
-
-ADD_EXECUTABLE(test_Mesh3D                  test_Mesh3D.cc)
-TARGET_LINK_LIBRARIES(test_Mesh3D           geometry utilities angle)
-ADD_TEST(test_Mesh3D                        test_Mesh3D 0)
+ADD_EXECUTABLE(test_CartesianMesh           test_CartesianMesh.cc)
+TARGET_LINK_LIBRARIES(test_CartesianMesh    geometry utilities angle)
+ADD_TEST(test_Mesh1D                        test_CartesianMesh 0)
+ADD_TEST(test_Mesh2D                        test_CartesianMesh 1)
+ADD_TEST(test_Mesh3D                        test_CartesianMesh 2)
+ADD_TEST(test_Mesh1D_serialize              test_CartesianMesh 3)
 
 ADD_EXECUTABLE(test_PinCell                 test_PinCell.cc)
 TARGET_LINK_LIBRARIES(test_PinCell          geometry utilities angle)

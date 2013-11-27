@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
 int test_PinCell(int argc, char *argv[])
 {
   // Get the pincell and mesh
-  SP_pincell pin = pincell_fixture();
-  SP_mesh mesh = pin->mesh();
+  PinCell::SP_pincell pin = pincell_fixture();
+  PinCell::SP_mesh mesh = pin->mesh();
 
   // Do tests
   TEST(mesh->number_cells()     == 49);

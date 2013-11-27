@@ -39,6 +39,13 @@ Mesh::size_t Mesh::number_cells() const
 }
 
 //----------------------------------------------------------------------------//
+double Mesh::volume(const size_t cell) const
+{
+  Require(cell < d_volume.size());
+  return d_volume[cell];
+}
+
+//----------------------------------------------------------------------------//
 void Mesh::add_mesh_map(const std::string &map_key, const vec_int &mesh_map)
 {
   Require(!map_key.empty());
