@@ -46,18 +46,18 @@ public:
    *  @param map            Map of where spectra are located, size = [#cells]
    *  @param quadrature     Quadrature
    */
-  DiscreteSource(size_t         number_groups,
-                 SP_mesh        mesh,
-                 vec3_dbl       spectra,
-                 vec_int        map,
-                 SP_quadrature  quadrature);
+  DiscreteSource(const size_t    number_groups,
+                 SP_mesh         mesh,
+                 const vec3_dbl &spectra,
+                 const vec_int  &map,
+                 SP_quadrature   quadrature);
 
   static SP_externalsource
-  Create(size_t                     number_groups,
-         SP_mesh                    mesh,
-         detran_utilities::vec3_dbl spectra,
-         detran_utilities::vec_int  map,
-         SP_quadrature  quadrature)
+  Create(const size_t    number_groups,
+         SP_mesh         mesh,
+         const vec3_dbl &spectra,
+         const vec_int  &map,
+         SP_quadrature   quadrature)
   {
     SP_externalsource
       p(new DiscreteSource(number_groups, mesh, spectra, map, quadrature));
@@ -85,9 +85,7 @@ public:
     return value;
   }
 
-  double source(const size_t cell,
-                const size_t group,
-                const size_t angle)
+  double source(const size_t cell, const size_t group, const size_t angle)
   {
     Require(cell < d_mesh->number_cells());
     Require(group < d_number_groups);
@@ -97,19 +95,15 @@ public:
 
 private:
 
-
   //--------------------------------------------------------------------------//
   // DATA
   //--------------------------------------------------------------------------//
 
   /// Angle-dependent source spectra
   vec3_dbl d_source_spectra;
+
   /// Fine mesh source map
   vec_int d_source_map;
-
-  //--------------------------------------------------------------------------//
-  // IMPLEMENTATION
-  //--------------------------------------------------------------------------//
 
 };
 

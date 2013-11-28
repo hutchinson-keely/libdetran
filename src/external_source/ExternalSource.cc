@@ -13,7 +13,7 @@ namespace detran_external_source
 {
 
 //----------------------------------------------------------------------------//
-ExternalSource::ExternalSource(size_t        number_groups,
+ExternalSource::ExternalSource(const size_t  number_groups,
                                SP_mesh       mesh,
                                SP_quadrature quadrature,
                                bool          discrete)

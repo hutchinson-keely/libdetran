@@ -12,8 +12,8 @@
 
 #include "TestDriver.hh"
 #include "IsotropicSource.hh"
-#include "Mesh2D.hh"
-#include "QuadratureFactory.hh"
+#include "angle/QuadratureFactory.hh"
+#include "geometry/CartesianMesh.hh"
 
 using namespace detran_external_source;
 using namespace detran_geometry;
@@ -39,7 +39,7 @@ int test_IsotropicSource(int argc, char *argv[])
   cm[1] = 1.0;
   vec_int fm(1, 2);
   vec_int mt(1, 0);
-  Mesh::SP_mesh mesh(new Mesh2D(fm, fm, cm, cm, mt));
+  CartesianMesh::SP_mesh mesh = Mesh2D::Create(fm, fm, cm, cm, mt);
   TEST(mesh);
 
   // Create quadrature.
