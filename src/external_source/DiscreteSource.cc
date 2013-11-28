@@ -12,11 +12,11 @@ namespace detran_external_source
 {
 
 //----------------------------------------------------------------------------//
-DiscreteSource::DiscreteSource(size_t         number_groups,
-                               SP_mesh        mesh,
-                               vec3_dbl       spectra,
-                               vec_int        map,
-                               SP_quadrature  quadrature)
+DiscreteSource::DiscreteSource(const size_t    number_groups,
+                               SP_mesh         mesh,
+                               const vec3_dbl &spectra,
+                               const vec_int  &map,
+                               SP_quadrature   quadrature)
   : ExternalSource(number_groups, mesh, quadrature, true)
   , d_source_spectra(spectra)
   , d_source_map(map)
@@ -25,7 +25,6 @@ DiscreteSource::DiscreteSource(size_t         number_groups,
   Require(d_source_spectra[0].size()    == d_number_groups);
   Require(d_source_spectra[0][0].size() == d_number_angles);
   Require(d_source_map.size()           == d_mesh->number_cells());
-
   d_mesh->add_mesh_map("DISCRETESOURCE", d_source_map);
 }
 

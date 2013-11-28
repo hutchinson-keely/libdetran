@@ -12,11 +12,11 @@ namespace detran_external_source
 {
 
 //----------------------------------------------------------------------------//
-IsotropicSource::IsotropicSource(size_t number_groups,
-                                 SP_mesh mesh,
-                                 spectra_type &spectra,
-                                 vec_int &map,
-                                 SP_quadrature quadrature)
+IsotropicSource::IsotropicSource(const size_t        number_groups,
+                                 SP_mesh             mesh,
+                                 const spectra_type &spectra,
+                                 const vec_int      &map,
+                                 SP_quadrature       quadrature)
   : ExternalSource(number_groups, mesh, quadrature)
   , d_source_spectra(spectra)
   , d_source_map(map)
@@ -25,7 +25,6 @@ IsotropicSource::IsotropicSource(size_t number_groups,
   Require(d_source_spectra.size()    > 0);
   Require(d_source_spectra[0].size() == d_number_groups);
   Require(d_source_map.size()        == d_mesh->number_cells());
-
   d_mesh->add_mesh_map("ISOTROPICSOURCE", d_source_map);
 }
 

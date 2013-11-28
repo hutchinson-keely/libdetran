@@ -34,20 +34,19 @@ public:
    *  @brief Constructor
    *  @param number_groups  Number of energy groups
    *  @param mesh           Pointer to mesh
-   *  @param strength       Source strength in all groups and all space;
-   *                        the unit is n/cc-sec
+   *  @param strength       Source strength in all groups and space (n/cc-sec)
    *  @param quadrature     Pointer to quadrature (optional)
    */
-  ConstantSource(size_t number_groups,
-                 SP_mesh mesh,
-                 double strength,
+  ConstantSource(const size_t  number_groups,
+                 SP_mesh       mesh,
+                 const double  strength,
                  SP_quadrature quadrature = SP_quadrature(0));
 
   /// SP constructor
   static SP_externalsource
-  Create(size_t number_groups,
-         SP_mesh mesh,
-         double source,
+  Create(const size_t  number_groups,
+         SP_mesh       mesh,
+         const double  source,
          SP_quadrature quadrature = SP_quadrature(0));
 
   //--------------------------------------------------------------------------//
