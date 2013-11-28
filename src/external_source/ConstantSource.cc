@@ -12,23 +12,23 @@ namespace detran_external_source
 {
 
 //---------------------------------------------------------------------------//
-ConstantSource::ConstantSource(size_t number_groups,
-                               SP_mesh mesh,
-                               double source,
+ConstantSource::ConstantSource(const size_t  number_groups,
+                               SP_mesh       mesh,
+                               const double  source,
                                SP_quadrature quadrature)
   : ExternalSource(number_groups, mesh, quadrature)
   , d_source(source)
   , d_discrete_source(source *
-      detran_angle::Quadrature::angular_norm(mesh->dimension()))
+                      detran_angle::Quadrature::angular_norm(mesh->dimension()))
 {
   /* ... */
 }
 
 //---------------------------------------------------------------------------//
 ConstantSource::SP_externalsource
-ConstantSource::Create(size_t         number_groups,
+ConstantSource::Create(const size_t   number_groups,
                        SP_mesh        mesh,
-                       double         source,
+                       const double   source,
                        SP_quadrature  quadrature)
 {
   SP_externalsource

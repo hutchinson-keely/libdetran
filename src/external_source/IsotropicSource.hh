@@ -31,6 +31,7 @@ public:
   //--------------------------------------------------------------------------//
 
   typedef detran_utilities::vec2_dbl             spectra_type;
+  typedef detran_utilities::vec_dbl              vec_dbl;
   typedef detran_utilities::vec_int              vec_int;
 
   //--------------------------------------------------------------------------//
@@ -46,19 +47,19 @@ public:
    *  @param map            Map of where spectra are located, size = [#cells]
    *  @param quadrature     Pointer to quadrature (optional)
    */
-  IsotropicSource(size_t number_groups,
-                  SP_mesh mesh,
-                  spectra_type &spectra,
-                  vec_int &map,
-                  SP_quadrature quadrature = SP_quadrature(0));
+  IsotropicSource(const size_t        number_groups,
+                  SP_mesh             mesh,
+                  const spectra_type &spectra,
+                  const vec_int      &map,
+                  SP_quadrature       quadrature = SP_quadrature(0));
 
   /// SP constructor
   static SP_externalsource
-  Create(detran_utilities::size_t          number_groups,
-         detran_geometry::CartesianMesh::SP_mesh    mesh,
-         std::vector<std::vector<double> > &spectra,
-         std::vector<int>                  &map,
-         SP_quadrature quadrature = SP_quadrature(0))
+  Create(const size_t          number_groups,
+         SP_mesh               mesh,
+         const spectra_type   &spectra,
+         const vec_int        &map,
+         SP_quadrature         quadrature = SP_quadrature(0))
   {
     SP_externalsource
       p(new IsotropicSource(number_groups, mesh, spectra, map, quadrature));
@@ -71,21 +72,16 @@ public:
 
   double source(const size_t cell, const size_t group)
   {
-    // Preconditions
     Require(cell < d_mesh->number_cells());
     Require(group < d_number_groups);
-
     return d_source_spectra[d_source_map[cell]][group];
   }
 
-  double source(const size_t cell,
-                const size_t group,
-                const size_t angle)
+  double source(const size_t cell, const size_t group, const size_t angle)
   {
     Require(cell < d_mesh->number_cells());
     Require(group < d_number_groups);
     Require(angle < d_number_angles); // note, #angle = -1 if no quad set
-
     return d_source_spectra[d_source_map[cell]][group] * d_norm;
   }
 
@@ -97,8 +93,10 @@ private:
 
   /// Source spectra
   spectra_type d_source_spectra;
+
   /// Fine mesh source map
   vec_int d_source_map;
+
   /// Angular norm
   double d_norm;
 
