@@ -3,7 +3,6 @@
  *  @file  MatrixShell.cc
  *  @brief MatrixShell member definitions
  *  @note  Copyright (C) 2013 Jeremy Roberts
-
  */
 //----------------------------------------------------------------------------//
 
@@ -63,7 +62,6 @@ void MatrixShell::display(bool forceprint) const
 }
 
 } // end namespace callow
-
 
 //----------------------------------------------------------------------------//
 //              end of MatrixShell.cc

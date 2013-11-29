@@ -11,7 +11,6 @@
 #include <stddef.h>
 #include "callow/callow_config.hh"
 #include "callow/utils/Initialization.hh"
-#include "callow/utils/Typedefs.hh"
 #include "callow/vector/Vector.hh"
 #include "callow/matrix/MatrixBase.hh"
 #include "callow/matrix/Matrix.hh"
@@ -37,8 +36,9 @@
 // initialization
 //---------------------------------------------------------------------------//
 
-void callow_initialize(int argc, char *argv[]);
-void callow_finalize();
+//void callow_initialize(int argc, char *argv[]);
+//void callow_finalize();
+
 
 //---------------------------------------------------------------------------//
 // setup for numerical arrays
@@ -70,6 +70,8 @@ void callow_finalize();
 //---------------------------------------------------------------------------//
 
 //%include "utils/CallowDefinitions.hh"
+
+%include "utils/Initialization.hh"
 
 //---------------------------------------------------------------------------//
 // vector
