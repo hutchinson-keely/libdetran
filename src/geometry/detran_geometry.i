@@ -13,9 +13,7 @@
 #include "geometry/Assembly.hh"
 #include "geometry/Core.hh"
 #include "geometry/Mesh.hh"
-#include "geometry/Mesh1D.hh" 
-#include "geometry/Mesh2D.hh" 
-#include "geometry/Mesh3D.hh"   
+#include "geometry/CartesianMesh.hh"    
 #include "geometry/PinCell.hh"
 #include "geometry/Segment.hh"
 #include "geometry/Track.hh"
@@ -65,8 +63,7 @@
 %include "QuadraticSurfaceFactory.hh"
 %include "CSG.hh"
 %include "Region.hh"
-
-
+//
 %include "Geometry.hh"
 //
 %include "Segment.hh"
@@ -79,9 +76,6 @@
 
 %template(MeshSP)     detran_utilities::SP<detran_geometry::Mesh>;
 %template(CMeshSP)    detran_utilities::SP<detran_geometry::CartesianMesh>;
-//%template(Mesh1DSP)   detran_utilities::SP<detran_geometry::Mesh1D>;
-//%template(Mesh2DSP)   detran_utilities::SP<detran_geometry::Mesh2D>;
-//%template(Mesh3DSP)   detran_utilities::SP<detran_geometry::Mesh3D>;
 
 %template(PinCellSP)  detran_utilities::SP<detran_geometry::PinCell>;
 %template(AssemblySP) detran_utilities::SP<detran_geometry::Assembly>;
@@ -96,7 +90,6 @@
 %template(TrackDBSP)  detran_utilities::SP<detran_geometry::TrackDB>;
 %template(TrackerSP)  detran_utilities::SP<detran_geometry::Tracker>;
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 //              end of detran_geometry.i
-//---------------------------------------------------------------------------//
-
+//----------------------------------------------------------------------------//

@@ -1,6 +1,7 @@
 # Set source
 SET(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET(UTILS_SRC
+  ${SRC_DIR}/Initialization.cc
   PARENT_SCOPE
 )
 
