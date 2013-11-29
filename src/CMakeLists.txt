@@ -179,7 +179,18 @@ if(DETRAN_ENABLE_BOOST)
   endif(Boost_FOUND)
 endif()
 
+#------------------------------------------------------------------------------#
+# LIST OF LIBRARIES
+#------------------------------------------------------------------------------#
 
+#set(DETRAN_LIBS "utilities" "angle" "material" "callow" 
+#                "geometry" "orthog"
+#                "external_source" "boundary"
+#                "transport"
+#                "kinetics"
+#                "solvers" "ioutils" "postprocess"
+#                "drivers")
+set(DETRAN_LIBS "utilities" "angle" "material" "callow" "geometry" "external_source")
 #------------------------------------------------------------------------------#
 # TESTING
 #------------------------------------------------------------------------------#
@@ -190,81 +201,35 @@ if (DETRAN_ENABLE_TEST)
   set(CTEST_INITIAL_CACHE "COVERAGE_COMMAND:FILEPATH=/usr/bin/gcov")
   enable_testing()
   include(CTest)
-  # is there a better way?
-  include_directories(utilities/test)
-  include_directories(material/test)
-  include_directories(geometry/test)
-  include_directories(angle/test)
-  include_directories(callow/test)
-  include_directories(external_source/test)
-  include_directories(discretization/test)
-  include_directories(boundary/test)
-  include_directories(transport/test)
-  include_directories(solvers/test)
-  include_directories(drivers/test)
-  include_directories(postprocess/test)
-  include_directories(ioutils/test)
 endif()
 
 #------------------------------------------------------------------------------#
-# INSTALL
+# INSTALL AND SOURCE
 #------------------------------------------------------------------------------#
 
-include_directories(${DETRAN_DIR})
-#
-include_directories(python)
-# level 0
-include_directories(utilities)
-# level 1
-include_directories(angle)
-include_directories(geometry)
-include_directories(material)
-include_directories(callow)
-include_directories(external_source)
-include_directories(orthog)
-# level 2
-include_directories(boundary)
-include_directories(transport)
-include_directories(kinetics)
-# level 4
-include_directories(solvers)
-# level 5
-include_directories(drivers)
-#
-include_directories(ioutils)
-include_directories(postprocess)
+include(SetupDetranLibrary)
 
-# Set 
+include_directories(${DETRAN_DIR})
+
+foreach(LIB ${DETRAN_LIBS})
+  include_directories(${LIB})
+  if (DETRAN_ENABLE_TEST)
+    include_directories(${LIB}/test)
+  endif()
+  add_subdirectory(${LIB})
+endforeach()
+
+if(DETRAN_ENABLE_PYTHON)
+  include_directories(python)
+  add_subdirectory(python)
+endif()
+
+add_subdirectory(cmake)
+
 if(NOT CMAKE_INSTALL_PREFIX)
   set(CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR} CACHE STRING
       "Installation prefix; default is build directory."
       FORCE)
-endif()
-
-#------------------------------------------------------------------------------#
-# SOURCE
-#------------------------------------------------------------------------------#
-
-include(SetupDetranLibrary)
-add_subdirectory(utilities)
-add_subdirectory(callow)
-add_subdirectory(material)
-add_subdirectory(angle)
-add_subdirectory(geometry)
-add_subdirectory(external_source)
-add_subdirectory(orthog)
-add_subdirectory(boundary)
-add_subdirectory(transport)
-add_subdirectory(ioutils)
-add_subdirectory(kinetics)
-add_subdirectory(solvers)
-add_subdirectory(postprocess)
-add_subdirectory(drivers)
-add_subdirectory(cmake)
-
-# Python things for installation
-if(DETRAN_ENABLE_PYTHON)
-  add_subdirectory(python)
 endif()
 
 #------------------------------------------------------------------------------#

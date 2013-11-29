@@ -7,7 +7,6 @@
 //----------------------------------------------------------------------------//
 
 #include "Matrix.hh"
-#include "utils/Typedefs.hh"
 #include <iostream>
 
 namespace callow
