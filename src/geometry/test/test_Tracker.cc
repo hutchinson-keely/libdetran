@@ -31,9 +31,8 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  callow_initialize(argc, argv);
+  callow::Callow::initialize(argc, argv);
   RUN(argc, argv);
-  callow_finalize();
 }
 
 //----------------------------------------------------------------------------//
@@ -228,6 +227,7 @@ int test_Tracker_box_3d(int argc, char *argv[])
 
   Geometry::SP_geometry geo = Geometry::Create(1.0, 1.0, 1.0);
   geo->add_region(box);
+  geo->finalize();
 
   InputDB::SP_input db = InputDB::Create();
   db->put<double>("tracker_maximum_spacing", 0.1);

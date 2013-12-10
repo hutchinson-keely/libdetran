@@ -25,6 +25,7 @@ using std::endl;
 
 int main(int argc, char *argv[])
 {
+  Callow::initialize(argc, argv);
   RUN(argc, argv);
 }
 
@@ -35,8 +36,6 @@ int main(int argc, char *argv[])
 // Test of basic public interface
 int test_Matrix(int argc, char *argv[])
 {
-  callow_initialize(argc, argv);
-
   // n * n
   {
     // Create test matrix
@@ -221,7 +220,6 @@ int test_Matrix(int argc, char *argv[])
     A.display();
   }
 
-  callow_finalize();
   return 0;
 }
 

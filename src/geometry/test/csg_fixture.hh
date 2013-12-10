@@ -51,6 +51,7 @@ static Geometry::SP_geometry test_2D_pincell_simple()
   mod->append(N, false);
   geo->add_region(mod);
 
+  geo->finalize();
   return geo;
 }
 
@@ -107,6 +108,7 @@ static Geometry::SP_geometry test_2D_pincell_complex()
     geo->add_region(tmp);
   }
 
+  geo->finalize();
   return geo;
 }
 
@@ -135,7 +137,7 @@ test_2D_pincell_via_factory(const size_t div, const size_t nrad)
   {
     geo->add_region(regions[i]);
   }
-
+  geo->finalize();
   return geo;
 }
 
@@ -206,7 +208,7 @@ static Geometry::SP_geometry test_2D_assembly(int n = 3)
   {
     geo->add_region(regions[i]);
   }
-
+  geo->finalize();
   return geo;
 }
 

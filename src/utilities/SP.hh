@@ -200,7 +200,8 @@ public:
   }
 
   /// Get the base-class pointer; better know what you are doing.
-  T* bp() const { return p; }
+  T* bp()  const { return p; }
+  T* get() const { return p; }
 
   /// Boolean conversion operator.
   operator bool() const { return p != 0; }

@@ -34,6 +34,7 @@ using std::endl;
 
 int main(int argc, char *argv[])
 {
+  Callow::initialize(argc, argv);
   RUN(argc, argv);
 }
 
@@ -44,7 +45,6 @@ int main(int argc, char *argv[])
 //----------------------------------------------------------------------------//
 int test_ThreadedMatVec(int argc, char *argv[])
 {
-  callow_initialize(argc, argv);
   {
     int n = 200;
     Matrix::SP_matrix A = test_matrix_2(n);
@@ -66,14 +66,12 @@ int test_ThreadedMatVec(int argc, char *argv[])
     //COUT("ELAPSED = " << t)
   }
   COUT("done!!")
-  callow_finalize();
   return 0;
 }
 
 //----------------------------------------------------------------------------//
 int test_ThreadedJacobi(int argc, char *argv[])
 {
-  callow_initialize(argc, argv);
   {
     int n = 100;
     Matrix::SP_matrix A = test_matrix_2(n);
@@ -90,7 +88,6 @@ int test_ThreadedJacobi(int argc, char *argv[])
     //t = omp_get_wtime() - t;
     //COUT("ELAPSED = " << t)
   }
-  callow_finalize();
   return 0;
 }
 

@@ -21,6 +21,8 @@
 #include "callow/preconditioner/Preconditioner.hh"
 %}
 
+%feature("autodoc", "3");
+
 // Hide templates from SWIG
 %inline
 {

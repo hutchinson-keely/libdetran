@@ -9,6 +9,7 @@
 #ifndef detran_GEOMETRY_HH_
 #define detran_GEOMETRY_HH_
 
+#include "geometry/Mesh.hh"
 #include "geometry/Region.hh"
 
 namespace detran_geometry
@@ -18,7 +19,7 @@ namespace detran_geometry
  *  @class Geometry
  *  @brief Represents a complete geometry comprised of @ref Region objects
  */
-class GEOMETRY_EXPORT Geometry
+class GEOMETRY_EXPORT Geometry: public Mesh
 {
 
 public:
@@ -38,36 +39,38 @@ public:
   //--------------------------------------------------------------------------//
 
   /// Constructor
-  Geometry(const double x, const double y, const double z);
+  Geometry(const double x, const double y, const double z = 0.0);
+
   /// SP constructor
-  static SP_geometry Create(const double x, const double y, const double z);
+  static SP_geometry
+  Create(const double x, const double y, const double z = 0.0);
+
   /// Add a region
   void add_region(SP_region r);
+
+  /// Finalize construction, which computes counts and region maps.
+  void finalize();
+
   /// Get region
   SP_region region(const size_t r);
-  /// Find region containing cell. Returns index >= 0 or -1 if none found
-  int find(const Point &r);
-  /// Return number of regions in the system
-  size_t number_regions() const;
-  /// Return material index for a region
-  size_t material_index(const size_t r) const;
-  //@{
+
   /// Get geometry bounding box coordinates
+  //@{
   double width_x() const {return d_x;}
   double width_y() const {return d_y;}
   double width_z() const {return d_z;}
   //@}
-  size_t dimension() const {return 2;}
+
 
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL MESHES MUST IMPLEMENT THESE
   //--------------------------------------------------------------------------//
 
   /// Find the cell containing a point
- // int find_cell(const Point &p) const;
+  int find_cell(const Point &p) const;
 
   /// Display some key features
-//  void display() const;
+  void display() const;
 
 private:
 
@@ -81,10 +84,12 @@ private:
   double d_y;
   double d_z;
   //@}
+
   /// Regions
   vec_region d_regions;
-  /// Map specifying materials in each region
-  vec_size_t d_material_map;
+
+  /// Is it finalized?
+  bool d_finalized;
 
 };
 

@@ -26,9 +26,8 @@ using std::endl;
 
 int main(int argc, char *argv[])
 {
-  callow_initialize(argc, argv);
+  Callow::initialize(argc, argv);
   RUN(argc, argv);
-  callow_finalize();
 }
 
 //----------------------------------------------------------------------------//

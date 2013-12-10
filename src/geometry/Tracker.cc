@@ -209,7 +209,7 @@ Tracker::SP_geometry Tracker::mesh_to_geometry(SP_mesh mesh)
       }
     }
   }
-
+  geo->finalize();
   return geo;
 }
 
@@ -517,14 +517,12 @@ void Tracker::segmentize(SP_track track)
 
   // loop through all the regions
   bool found = false;
-  for (size_t r = 0; r < d_geometry->number_regions(); ++r)
+  for (size_t r = 0; r < d_geometry->number_cells(); ++r)
   {
     Region::SP_region region = d_geometry->region(r);
 
     if (!region->intersects_bounding_box(ray, ray_length))
     {
-      COUT("I'm a fucking piece of shit.  Fuck this box:"
-            << region->bound_min() << region->bound_max())
       continue;
     }
     COUT("In BBox so need points"

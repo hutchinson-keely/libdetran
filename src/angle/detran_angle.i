@@ -14,29 +14,27 @@
 
 %feature("autodoc", "3");
 
-// Hide templates from SWIG
-%inline
-{
-#define ANGLE_EXPORT
-#define ANGLE_TEMPLATE_EXPORT(...)
-#define ANGLE_INSTANTIATE_EXPORT(...)
-}
+%include "angle/angle_export.hh"
+//// Hide templates from SWIG
+//%inline
+//{
+//#define ANGLE_EXPORT
+//#define ANGLE_TEMPLATE_EXPORT(...)
+//#define ANGLE_INSTANTIATE_EXPORT(...)
+//}
 
 %import "utilities/detran_utilities.i"
 
 // Base angle classes and utilities
+%shared_ptr(detran_angle::BaseQuadrature)
+%shared_ptr(detran_angle::Quadrature)
+%shared_ptr(detran_angle::ProductQuadrature)
+
+
 %include "BaseQuadrature.hh"
 %include "Quadrature.hh"
 %include "ProductQuadrature.hh"
-%include "MomentToDiscrete.hh"
 %include "QuadratureFactory.hh"
-%include "MomentIndexer.hh"
-
-%template(BaseQuadratureSP)     detran_utilities::SP<detran_angle::BaseQuadrature>;
-%template(QuadratureSP)         detran_utilities::SP<detran_angle::Quadrature>;
-%template(ProductQuadratureSP)  detran_utilities::SP<detran_angle::ProductQuadrature>;
-%template(MomentToDiscreteSP)   detran_utilities::SP<detran_angle::MomentToDiscrete>;
-%template(MomentIndexerSP)      detran_utilities::SP<detran_angle::MomentIndexer>;
 
 %inline
 {

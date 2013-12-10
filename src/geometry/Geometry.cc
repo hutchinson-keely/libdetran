@@ -13,7 +13,9 @@ namespace detran_geometry
 
 //----------------------------------------------------------------------------//
 Geometry::Geometry(const double x, const double y, const double z)
-  : d_x(x), d_y(y), d_z(z)
+  : Mesh(z == 0.0 ? 2 : 3)
+  , d_x(x), d_y(y), d_z(z)
+  , d_finalized(false)
 {
   Require(d_x > 0);
   Require(d_y > 0);
@@ -32,22 +34,50 @@ Geometry::Create(const double x, const double y, const double z)
 void Geometry::add_region(SP_region r)
 {
   Require(r);
+  d_finalized = false;
   d_regions.push_back(r);
-  //d_material_map.push_back(m);
+}
+
+//----------------------------------------------------------------------------//
+void Geometry::finalize()
+{
+  Require(d_regions.size() > 0);
+  d_number_cells = d_regions.size();
+
+  // get attributes for first region
+  const Region::attributes_t &attributes = d_regions[0]->attributes();
+
+  // loop over all attributes, ensure all regions have it, and build full map
+  for(Region::attributes_t::const_iterator iter = attributes.begin();
+      iter != attributes.end();
+      ++iter)
+  {
+    std::string key = iter->first;
+    vec_int values(d_number_cells, iter->second);
+    for (size_t r = 1; r < d_number_cells; ++r)
+    {
+      Assert(d_regions[r]->attribute_exists(key));
+      values[r] = d_regions[r]->attribute(key);
+    }
+    add_mesh_map(key, values);
+  }
+
+  d_finalized = true;
 }
 
 //----------------------------------------------------------------------------//
 Geometry::SP_region Geometry::region(const size_t r)
 {
-  Require(r < d_regions.size());
+  Require(d_finalized);
+  Require(r < number_cells());
   return d_regions[r];
 }
 
 //----------------------------------------------------------------------------//
-int Geometry::find(const Point &r)
+int Geometry::find_cell(const Point &r) const
 {
   int region = -1;
-  for (size_t i = 0; i < number_regions(); i++)
+  for (size_t i = 0; i < number_cells(); i++)
   {
     if (d_regions[i]->contains(r))
     {
@@ -59,16 +89,9 @@ int Geometry::find(const Point &r)
 }
 
 //----------------------------------------------------------------------------//
-Geometry::size_t Geometry::number_regions() const
+void Geometry::display() const
 {
-  return d_regions.size();
-}
-
-//----------------------------------------------------------------------------//
-Geometry::size_t Geometry::material_index(const size_t r) const
-{
-  Require(r < number_regions());
-  return d_material_map[r];
+  /* ... */
 }
 
 } // namespace detran_geometry

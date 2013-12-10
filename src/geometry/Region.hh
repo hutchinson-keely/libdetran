@@ -79,6 +79,8 @@ public:
   int attribute(const std::string &key) const;
   /// Check for an attribute
   bool attribute_exists(const std::string &key) const;
+  /// Return the attributes
+  const attributes_t& attributes() const {return d_attributes;}
   /// Return lower bound
   Point bound_min() const;
   /// Return lower bound

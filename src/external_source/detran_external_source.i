@@ -13,6 +13,7 @@
 #include "external_source/ConstantSource.hh"
 #include "external_source/DiscreteSource.hh"
 #include "external_source/IsotropicSource.hh"
+#include "geometry/detran_geometry.hh"
 %}
 
 %feature("autodoc", "3");
@@ -27,18 +28,23 @@
 
 %include <pycontainer.swg>
 %import "detran_utilities.i"
-%import "detran_geometry.i"
 %import "detran_angle.i"
+%import "detran_geometry.i"
+
+%shared_ptr(detran_external_source::ExternalSource)
+%shared_ptr(detran_external_source::ConstantSource)
+%shared_ptr(detran_external_source::DiscreteSource)
+%shared_ptr(detran_external_source::IsotropicSource)
 
 %include "ExternalSource.hh"
 %include "ConstantSource.hh"
 %include "DiscreteSource.hh"
 %include "IsotropicSource.hh"
 
-%template(ExternalSourceSP)  detran_utilities::SP<detran_external_source::ExternalSource>;
-%template(ConstantSourceSP)  detran_utilities::SP<detran_external_source::ConstantSource>;
-%template(DiscreteSourceSP)  detran_utilities::SP<detran_external_source::DiscreteSource>;
-%template(IsotropicSourceSP) detran_utilities::SP<detran_external_source::IsotropicSource>;
+//%template(ExternalSourceSP)  detran_utilities::SP<detran_external_source::ExternalSource>;
+//%template(ConstantSourceSP)  detran_utilities::SP<detran_external_source::ConstantSource>;
+//%template(DiscreteSourceSP)  detran_utilities::SP<detran_external_source::DiscreteSource>;
+//%template(IsotropicSourceSP) detran_utilities::SP<detran_external_source::IsotropicSource>;
 
 %template(vec_source) std::vector<detran_utilities::SP<detran_external_source::ExternalSource> >;
 
