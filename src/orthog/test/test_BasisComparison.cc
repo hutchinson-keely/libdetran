@@ -27,9 +27,8 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  callow_initialize(argc, argv);
+  callow::Callow::initialize(argc, argv);
   RUN(argc, argv);
-  callow_finalize();
 }
 
 //----------------------------------------------------------------------------//
