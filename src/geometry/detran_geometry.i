@@ -88,21 +88,7 @@
 %include "TrackDB.hh"
 %include "Tracker.hh"
 
-//%template(MeshSP)     detran_utilities::SP<detran_geometry::Mesh>;
-//%template(CMeshSP)    detran_utilities::SP<detran_geometry::CartesianMesh>;
-//
-//%template(PinCellSP)  detran_utilities::SP<detran_geometry::PinCell>;
-//%template(AssemblySP) detran_utilities::SP<detran_geometry::Assembly>;
-//%template(CoreSP)     detran_utilities::SP<detran_geometry::Core>;
-//
-//%template(SurfaceSP)  detran_utilities::SP<detran_geometry::Surface>;
-//%template(RegionSP)   detran_utilities::SP<detran_geometry::Region>;
 %template(vec_region) std::vector<detran_utilities::SP<detran_geometry::Region> >;
-//%template(GeometrySP) detran_utilities::SP<detran_geometry::Geometry>;
-//
-//%template(TrackSP)    detran_utilities::SP<detran_geometry::Track>;
-//%template(TrackDBSP)  detran_utilities::SP<detran_geometry::TrackDB>;
-//%template(TrackerSP)  detran_utilities::SP<detran_geometry::Tracker>;
 
 //----------------------------------------------------------------------------//
 //              end of detran_geometry.i

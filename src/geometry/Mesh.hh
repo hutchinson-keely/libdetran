@@ -22,6 +22,7 @@ namespace detran_geometry
  *  @class Mesh
  *  @brief Abstract mesh class for structured and unstructured meshes
  */
+
 class GEOMETRY_EXPORT Mesh
 {
 
@@ -117,8 +118,6 @@ protected:
   void set_number_cells(const size_t);
 
 };
-
-GEOMETRY_TEMPLATE_EXPORT(detran_utilities::SP<Mesh>)
 
 } // end namespace detran_geometry
 
