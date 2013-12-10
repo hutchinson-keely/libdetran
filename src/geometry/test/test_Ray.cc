@@ -37,7 +37,9 @@ int test_Ray(int argc, char *argv[])
   Point p =  r.origin + tt*r.direction;
   cout << origin << endl;
   cout << p      << endl;
-
+  TEST(soft_equiv(p.x(), 0.0));
+  TEST(soft_equiv(p.y(), 0.5));
+  TEST(soft_equiv(p.z(), 0.5));
   return 0;
 }
 

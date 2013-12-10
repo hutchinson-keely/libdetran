@@ -6,10 +6,11 @@
  */
 //---------------------------------------------------------------------------//
 
-%include "detran_utilities.i"
+%import  "detran_utilities.i"
 
 %ignore *::operator[];
 
+%shared_ptr(callow::Vector)
 %include "Vector.hh"
 
 %extend callow::Vector
@@ -23,6 +24,3 @@
      (*self)[i] = v; 
    }
 }
-
-%template(VectorSP) detran_utilities::SP<callow::Vector>;
-

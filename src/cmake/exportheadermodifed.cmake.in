@@ -2,12 +2,12 @@
 #ifndef @INCLUDE_GUARD_NAME@
 #define @INCLUDE_GUARD_NAME@
 
-
+#ifndef SWIG
 #ifdef @STATIC_DEFINE@
 #  define @EXPORT_MACRO_NAME@
 #  define @NO_EXPORT_MACRO_NAME@
 #  define @TEMPLATE_EXPORT_MACRO_NAME@(...)
-#  define @TEMPLATE_INSTANTIATE_MACRO_NAME@(...) @DEFINE_INSTANTIATE_EXPORT@
+#  define @TEMPLATE_INSTANTIATE_MACRO_NAME@(...) @DEFINE_INSTANTIATE_EXPORT@  
 #else
 #  ifndef @EXPORT_MACRO_NAME@
 #    ifdef @EXPORT_IMPORT_CONDITION@
@@ -22,10 +22,15 @@
 #      define @TEMPLATE_INSTANTIATE_MACRO_NAME@(...) @DEFINE_INSTANTIATE_IMPORT@
 #    endif
 #  endif
-
 #  ifndef @NO_EXPORT_MACRO_NAME@
 #    define @NO_EXPORT_MACRO_NAME@ @DEFINE_NO_EXPORT@
 #  endif
+#endif
+#else
+#   define @EXPORT_MACRO_NAME@ 
+#   define @NO_EXPORT_MACRO_NAME@
+#   define @TEMPLATE_EXPORT_MACRO_NAME@(...)  
+#   define @TEMPLATE_INSTANTIATE_MACRO_NAME@(...) 
 #endif
 
 #ifndef @DEPRECATED_MACRO_NAME@

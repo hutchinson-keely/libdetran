@@ -1,10 +1,10 @@
-//----------------------------------*-C++-*----------------------------------//
+//----------------------------------*-C++-*-----------------------------------//
 /**
  *  @file   detran_utilities.i
  *  @author Jeremy Roberts
  *  @brief  Python interface for detran utilities.
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 %module(package="detran") utilities
 %{
@@ -17,12 +17,7 @@
 #include "utilities/SP.hh"
 %}
 
-// STL
-%include std_container.i
-%include std_map.i
-%include std_string.i
-%include std_vector.i
-
+// Somewhat nicely-formatted documentation from C++ source
 %feature("autodoc", "3");
 
 // Hide templates from SWIG
@@ -33,35 +28,23 @@
 #define UTILITIES_INSTANTIATE_EXPORT(...)
 }
 
-// Dummy SP interface to stop some annoying warnings from SWIG
-namespace detran_utilities
-{
+// STL
+%include std_container.i
+%include std_map.i
+%include std_string.i
+%include std_vector.i
 
-template<class T>
-class SP 
-{
-public:
-  SP();
-  inline explicit SP(T *p_in);
-  template<class X>
-  inline explicit SP(X *px_in);
-  inline SP(const SP<T> &sp_in);
-  template<class X>
-  inline SP(const SP<X> &spx_in);
-  ~SP();
-  T* operator->() const;
-  T& operator*() const;
-  T* bp() const;
-  operator bool() const;
-  bool operator==(const T *p_in) const;
-  bool operator!=(const T *p_in) const;
-  bool operator==(const SP<T> &sp_in) const;
-  bool operator!=(const SP<T> &sp_in) const;
-};
+// Smart pointers can be included as follows:
+//   %shared_ptr(Base)
+//   %shared_ptr(Derived<int>)
+//   %shared_ptr(Derived<double>)
+// Any shared_ptr(Foo) declaration *must* come before inclusion of Foo.hh.  
+// In addition, any Base class must be declared before its derivative classes.
+#define SWIG_SHARED_PTR_NAMESPACE detran_utilities
+#define shared_ptr SP
+%include <boost_shared_ptr.i>
 
-} // end namespace detran_utilities
-
-// Vectors
+// STD Vectors
 %include "Definitions.hh"
 namespace std
 {
@@ -76,20 +59,24 @@ namespace std
   %template(vec3_size_t)  vector<vector<vector<unsigned int> > >;
 }
 
+// Parameter database
+%shared_ptr(detran_utilities::InputDB)
 %include "InputDB.hh"
-%template(InputDBSP)    detran_utilities::SP<detran_utilities::InputDB>;
-%template(get_int)      detran_utilities::InputDB::get<int>;
-%template(get_dbl)      detran_utilities::InputDB::get<double>;
-%template(get_vec_int)  detran_utilities::InputDB::get<detran_utilities::vec_int>;
-%template(get_vec_dbl)  detran_utilities::InputDB::get<detran_utilities::vec_dbl>;
-%template(get_str)      detran_utilities::InputDB::get<std::string>;
-%template(get_spdb)     detran_utilities::InputDB::get<detran_utilities::InputDB::SP_input>;
-%template(put_int)      detran_utilities::InputDB::put<int>;
-%template(put_dbl)      detran_utilities::InputDB::put<double>;
-%template(put_vec_int)  detran_utilities::InputDB::put<detran_utilities::vec_int>;
-%template(put_vec_dbl)  detran_utilities::InputDB::put<detran_utilities::vec_dbl>;
-%template(put_str)      detran_utilities::InputDB::put<std::string>;
-%template(put_spdb)     detran_utilities::InputDB::put<detran_utilities::InputDB::SP_input>;
+namespace detran_utilities
+{
+%template(get_int)      InputDB::get<int>;
+%template(get_dbl)      InputDB::get<double>;
+%template(get_vec_int)  InputDB::get<vec_int>;
+%template(get_vec_dbl)  InputDB::get<vec_dbl>;
+%template(get_str)      InputDB::get<std::string>;
+%template(get_spdb)     InputDB::get<InputDB::SP_input>;
+%template(put_int)      InputDB::put<int>;
+%template(put_dbl)      InputDB::put<double>;
+%template(put_vec_int)  InputDB::put<vec_int>;
+%template(put_vec_dbl)  InputDB::put<vec_dbl>;
+%template(put_str)      InputDB::put<std::string>;
+%template(put_spdb)     InputDB::put<InputDB::SP_input>;
+}
 
 %include "MathUtilities.hh"
 
@@ -98,41 +85,6 @@ namespace std
 %apply (int ARGC, char **ARGV) { (int argc, char *argv[]) } 
 %apply (int ARGC, char **ARGV) { (int argc, char **argv) } 
 
-//// Anyhere in C/C++ that we need (argc, argv)
-//%typemap(in) (int argc, char *argv[]) 
-//{
-//  // Check if is a list
-//  if (PyList_Check($input)) 
-//  {
-//    int i;
-//    $1 = PyList_Size($input);
-//    $2 = (char **) malloc(($1+1)*sizeof(char *));
-//    for (i = 0; i < $1; i++) 
-//    {
-//      PyObject *o = PyList_GetItem($input,i);
-//      if (PyString_Check(o))
-//        $2[i] = PyString_AsString(PyList_GetItem($input,i));
-//      else 
-//      {
-//        PyErr_SetString(PyExc_TypeError,"list must contain strings");
-//        free($2);
-//        return NULL;
-//      }
-//    }
-//    $2[i] = 0;
-//  } 
-//  else 
-//  {
-//    PyErr_SetString(PyExc_TypeError,"not a list");
-//    return NULL;
-//  }
-//}
-//%typemap(freearg) (int argc, char *argv[]) {
-//  free((char *) $2);
-//}
-
-// see http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/pyTypemapFAQ.html#32
-
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 //              end of detran_utilities.i
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//

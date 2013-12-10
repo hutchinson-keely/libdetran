@@ -190,7 +190,7 @@ endif()
 #                "kinetics"
 #                "solvers" "ioutils" "postprocess"
 #                "drivers")
-set(DETRAN_LIBS "utilities" "angle" "material" "callow" "geometry" "external_source")
+set(DETRAN_LIBS "utilities" "angle" "material" "callow"  "geometry" "external_source")
 #------------------------------------------------------------------------------#
 # TESTING
 #------------------------------------------------------------------------------#

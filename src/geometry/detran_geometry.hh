@@ -10,17 +10,25 @@
 #ifndef DETRAN_GEOMETRY_HH_
 #define DETRAN_GEOMETRY_HH_
 
-#include "Mesh1D.hh"
-#include "Mesh2D.hh"
-#include "Mesh3D.hh"
-#include "PinCell.hh"
-#include "Assembly.hh"
-#include "Core.hh"
-#include "Segment.hh"
-#include "Track.hh"
-#include "TrackDB.hh"
-#include "Tracker.hh"
-#include "Point.hh"
+#include "geometry/Mesh.hh"
+#include "geometry/CartesianMesh.hh"
+
+#include "geometry/PinCell.hh"
+#include "geometry/Assembly.hh"
+#include "geometry/Core.hh"
+
+#include "geometry/Geometry.hh"
+#include "geometry/Region.hh"
+#include "geometry/CSG.hh"
+#include "geometry/Point.hh"
+#include "geometry/Ray.hh"
+#include "geometry/QuadraticSurfaceFactory.hh"
+#include "geometry/RegionFactory.hh"
+
+#include "geometry/Segment.hh"
+#include "geometry/Track.hh"
+#include "geometry/TrackDB.hh"
+#include "geometry/Tracker.hh"
 
 #endif // DETRAN_GEOMETRY_HH_ 
 

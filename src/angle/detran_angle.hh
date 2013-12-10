@@ -9,6 +9,7 @@
 #ifndef DETRAN_ANGLE_HH_
 #define DETRAN_ANGLE_HH_
 
+#include "angle/angle_export.hh"
 #include "angle/Quadrature.hh"
 #include "angle/ProductQuadrature.hh"
 #include "angle/QuadratureFactory.hh"
