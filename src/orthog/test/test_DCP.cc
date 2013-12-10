@@ -23,10 +23,8 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  std::cout << "HI" << std::endl;
-  callow_initialize(argc, argv);
+  callow::Callow::initialize(argc, argv);
   RUN(argc, argv);
-  callow_finalize();
 }
 
 //----------------------------------------------------------------------------//

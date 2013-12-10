@@ -183,14 +183,17 @@ endif()
 # LIST OF LIBRARIES
 #------------------------------------------------------------------------------#
 
-#set(DETRAN_LIBS "utilities" "angle" "material" "callow" 
-#                "geometry" "orthog"
-#                "external_source" "boundary"
+set(DETRAN_LIBS "utilities" "angle" "material" "callow" 
+                "geometry" "orthog"
+                "external_source")# "boundary")
 #                "transport"
 #                "kinetics"
 #                "solvers" "ioutils" "postprocess"
 #                "drivers")
-set(DETRAN_LIBS "utilities" "angle" "material" "callow"  "geometry" "external_source")
+
+#set(DETRAN_LIBS "utilities" "angle" "material" "callow"  "geometry" 
+#                "external_source" "orthog")
+
 #------------------------------------------------------------------------------#
 # TESTING
 #------------------------------------------------------------------------------#

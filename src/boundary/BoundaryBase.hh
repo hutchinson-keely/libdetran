@@ -2,7 +2,7 @@
 /**
  *  @file   BoundaryBase.hh
  *  @brief  BoundaryBase class definition
- *  @author Copyright (C) 2013 Jeremy Roberts
+ *  @note   Copyright (C) 2013 Jeremy Roberts
  */
 //---------------------------------------------------------------------------//
 
@@ -56,8 +56,8 @@ public:
 
   typedef detran_utilities::SP<BoundaryBase>        SP_boundary;
   typedef detran_utilities::InputDB::SP_input       SP_input;
-  typedef detran_geometry::CartesianMesh                     Mesh;
-  typedef detran_geometry::CartesianMesh::SP_mesh            SP_mesh;
+  typedef detran_geometry::Mesh                     Mesh;
+  typedef detran_geometry::Mesh::SP_mesh            SP_mesh;
   typedef detran_utilities::size_t                  size_t;
   typedef D                                         D_T;
 
@@ -70,8 +70,7 @@ public:
    *  @param input
    *  @param mesh
    */
-  BoundaryBase(SP_input        input,
-               SP_mesh         mesh)
+  BoundaryBase(SP_input input,  SP_mesh mesh)
     : d_input(input)
     , d_mesh(mesh)
     , d_has_reflective(false)

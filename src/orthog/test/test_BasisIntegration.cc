@@ -25,8 +25,8 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+  callow::Callow::initialize(argc, argv);
   RUN(argc, argv);
-  callow_finalize();
 }
 
 //----------------------------------------------------------------------------//
@@ -35,8 +35,6 @@ int main(int argc, char *argv[])
 
 int test_BasisIntegration(int argc, char *argv[])
 {
-  callow_initialize(argc, argv);
-
   // 1-D integration of Jacobi moments.
   //
   // We expand psi(mu) in the Jacobi polynomials for mu in [0, 1].  Internally,
@@ -298,7 +296,6 @@ int test_BasisIntegration(int argc, char *argv[])
     }
   }
 
-  callow_finalize();
   return 0;
 }
 

@@ -23,6 +23,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+  callow::Callow::initialize(argc, argv);
   RUN(argc, argv);
 }
 
@@ -32,8 +33,6 @@ int main(int argc, char *argv[])
 
 int test_TransformedBasis(int argc, char *argv[])
 {
-  callow_initialize(argc, argv);
-
   {
     TransformedBasis::Parameters p;
     p.size = 10;
@@ -87,8 +86,6 @@ int test_TransformedBasis(int argc, char *argv[])
       TEST(soft_equiv(fa[i], ref_appx[i]));
     }
   }
-
-  callow_finalize();
 
   return 0;
 }
