@@ -7,9 +7,6 @@
 //----------------------------------------------------------------------------//
 
 #include "transport/CoarseMesh.hh"
-#include "geometry/Mesh1D.hh"
-#include "geometry/Mesh2D.hh"
-#include "geometry/Mesh3D.hh"
 #include "utilities/SoftEquivalence.hh"
 
 namespace detran
@@ -35,7 +32,7 @@ CoarseMesh::CoarseMesh(SP_mesh fine_mesh, const size_t level)
   vec_int remainder(dim);
   vec_int number_coarse(dim);
   vec2_int number_fine_coarse(dim);
-  vec2_dbl coarse_edges(dim);
+  vec2_dbl coarse_edges(3);
 
   d_coarse_edge_flag[0].resize(d_fine_mesh->number_cells_x() + 1, -1);
   d_coarse_edge_flag[1].resize(d_fine_mesh->number_cells_y() + 1, -1);
@@ -45,7 +42,7 @@ CoarseMesh::CoarseMesh(SP_mesh fine_mesh, const size_t level)
   d_fine_to_coarse[1].resize(1, 0);
   d_fine_to_coarse[2].resize(1, 0);
 
-  for (int d = 0; d < dim; d++)
+  for (int d = 0; d < dim; ++d)
   {
 
     // Try dividing the mesh by the level, recording any remainder.
@@ -110,23 +107,12 @@ CoarseMesh::CoarseMesh(SP_mesh fine_mesh, const size_t level)
     coarse_material_map[c] = c;
 
   // Create the coarse mesh.
-  if (dim == 1)
-  {
-    d_coarse_mesh =
-      new detran_geometry::Mesh1D(coarse_edges[0], coarse_material_map);
-  }
-  else if (dim == 2)
-  {
-    d_coarse_mesh =
-      new detran_geometry::Mesh2D(coarse_edges[0], coarse_edges[1],
-                                  coarse_material_map);
-  }
-  else
-  {
-    d_coarse_mesh =
-      new detran_geometry::Mesh3D(coarse_edges[0], coarse_edges[1],
-                                  coarse_edges[2], coarse_material_map);
-  }
+  d_coarse_mesh =
+    new detran_geometry::CartesianMesh(dim,
+                                       coarse_edges[0],
+                                       coarse_edges[1],
+                                       coarse_edges[3],
+                                       coarse_material_map);
 
   // Create fine mesh to coarse mesh map
   vec_int f2c_mesh_map(d_fine_mesh->number_cells(), 0);

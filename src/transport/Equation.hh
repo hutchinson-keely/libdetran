@@ -13,7 +13,7 @@
 #include "transport/transport_export.hh"
 #include "DimensionTraits.hh"
 #include "material/Material.hh"
-#include "geometry/Mesh.hh"
+#include "geometry/CartesianMesh.hh"
 #include "angle/Quadrature.hh"
 #include "utilities/Definitions.hh"
 #include "utilities/SP.hh"
@@ -62,14 +62,14 @@ public:
   // TYPEDEFS
   //-------------------------------------------------------------------------//
 
-  typedef detran_utilities::SP<Equation>                  SP_equation;
-  typedef detran_material::Material::SP_material          SP_material;
-  typedef detran_geometry::CartesianMesh::SP_mesh                  SP_mesh;
-  typedef detran_angle::Quadrature::SP_quadrature         SP_quadrature;
-  typedef detran_utilities::vec_dbl                       moments_type;
-  typedef detran_utilities::vec_dbl                       angular_flux_type;
-  typedef typename EquationTraits<D>::face_flux_type      face_flux_type;
-  typedef detran_utilities::size_t                        size_t;
+  typedef detran_utilities::SP<Equation>                    SP_equation;
+  typedef detran_material::Material::SP_material            SP_material;
+  typedef detran_geometry::CartesianMesh::SP_cartesianmesh  SP_mesh;
+  typedef detran_angle::Quadrature::SP_quadrature           SP_quadrature;
+  typedef detran_utilities::vec_dbl                         moments_type;
+  typedef detran_utilities::vec_dbl                         angular_flux_type;
+  typedef typename EquationTraits<D>::face_flux_type        face_flux_type;
+  typedef detran_utilities::size_t                          size_t;
 
   //-------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
@@ -82,10 +82,10 @@ public:
    *  @param quadrature     Angular mesh
    *  @param update_psi     Flag for keeping the angular flux
    */
-  Equation(SP_mesh mesh,
-           SP_material material,
-           SP_quadrature quadrature,
-           const bool update_psi)
+  Equation(SP_mesh        mesh,
+           SP_material    material,
+           SP_quadrature  quadrature,
+           const bool     update_psi)
     :  d_mesh(mesh)
     ,  d_material(material)
     ,  d_quadrature(quadrature)
@@ -94,13 +94,12 @@ public:
     ,  d_octant(0)
     ,  d_angle(0)
   {
-    // Preconditions
     Require(mesh);
     Require(material);
     Require(quadrature);
 
     // Get the material map.
-    d_mat_map =  mesh->mesh_map("MATERIAL");
+    d_mat_map = mesh->mesh_map("MATERIAL");
   }
 
   // Virtual destructor
@@ -122,13 +121,13 @@ public:
    *   @param   phi         Reference to flux moments for this group
    *   @param   psi         Reference to angular flux for this group
    */
-  virtual void solve(const size_t i,
-                     const size_t j,
-                     const size_t k,
-                     moments_type &source,
-                     face_flux_type &psi_in,
-                     face_flux_type &psi_out,
-                     moments_type &phi,
+  virtual void solve(const size_t       i,
+                     const size_t       j,
+                     const size_t       k,
+                     moments_type      &source,
+                     face_flux_type    &psi_in,
+                     face_flux_type    &psi_out,
+                     moments_type      &phi,
                      angular_flux_type &psi) = 0;
 
   /**

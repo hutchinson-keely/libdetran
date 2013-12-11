@@ -67,8 +67,8 @@ public:
   typedef State::SP_state                           SP_state;
   typedef detran_utilities::InputDB::SP_input       SP_input;
   typedef detran_material::Material::SP_material    SP_material;
-  typedef detran_geometry::CartesianMesh                     Mesh;
-  typedef detran_geometry::CartesianMesh::SP_mesh            SP_mesh;
+  typedef detran_geometry::CartesianMesh                   Mesh;
+  typedef detran_geometry::CartesianMesh::SP_cartesianmesh            SP_mesh;
   typedef detran_angle::Quadrature::SP_quadrature   SP_quadrature;
   typedef BoundaryBase<D>                           Boundary_T;
   typedef typename Boundary_T::SP_boundary          SP_boundary;
@@ -90,8 +90,7 @@ public:
   //-------------------------------------------------------------------------//
 
   /**
-   *  \brief Constructor.
-   *
+   *  @brief Constructor
    *  @param    input       User input database.
    *  @param    mesh        Cartesian mesh.
    *  @param    material    Material database.

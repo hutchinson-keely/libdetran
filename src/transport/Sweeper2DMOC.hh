@@ -13,7 +13,7 @@
 #include "transport/Sweeper.hh"
 #include "angle/ProductQuadrature.hh"
 #include "boundary/BoundaryMOC.hh"
-#include "geometry/Mesh.hh"
+#include "geometry/CartesianMesh.hh"
 #include "geometry/TrackDB.hh"
 #include "geometry/Track.hh"
 
