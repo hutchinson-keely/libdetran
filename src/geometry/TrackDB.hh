@@ -69,10 +69,7 @@ public:
   typedef const size_t                                        c_size_t;
   typedef detran_utilities::vec_int                           vec_int;
   typedef detran_utilities::vec_dbl                           vec_dbl;
-
   typedef vec_track::iterator                                 iterator_angle;
-  //typedef detran_utilities::Reversible<vec_track>         iterator;
-
 
   //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
@@ -96,16 +93,7 @@ public:
    */
   SP_track track(c_size_t a, c_size_t p, c_size_t t);
 
-  struct iterator_anglea
-  {
-
-  };
-
-
   //@{
-  /// Iterators to all tracks
-//  iterator begin(bool forward = true);
-//  iterator end(bool forward = true);
   /// Iterators to tracks for a given angle
   iterator_angle begin(c_size_t a, c_size_t p);
   iterator_angle end(c_size_t a, c_size_t p);

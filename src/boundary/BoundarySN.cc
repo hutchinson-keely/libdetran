@@ -21,13 +21,16 @@ namespace detran
 template<class D>
 BoundarySN<D>::BoundarySN(SP_input        input,
                           SP_mesh         mesh,
-                          SP_quadrature   quadrature)
-  : Base(input, mesh)
+                          SP_quadrature   quadrature,
+                          const size_t    number_groups)
+  : Base(input, number_groups)
+  , d_mesh(mesh)
   , d_quadrature(quadrature)
   , d_boundary_flux(2*D::dimension, // number of sides
                     vec2_boundary_flux(d_number_groups))
   , d_bc(2*D::dimension)
 {
+  Require(d_mesh);
   Require(d_quadrature);
 
   // Allocate the boundary flux container.

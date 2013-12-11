@@ -1,17 +1,16 @@
-//----------------------------------*-C++-*----------------------------------//
+//----------------------------------*-C++-*-----------------------------------//
 /**
  *  @file   BoundaryBase.hh
  *  @brief  BoundaryBase class definition
  *  @note   Copyright (C) 2013 Jeremy Roberts
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #ifndef detran_BOUNDARYBASE_HH_
 #define detran_BOUNDARYBASE_HH_
 
 #include "boundary/boundary_export.hh"
 #include "transport/DimensionTraits.hh"
-#include "geometry/Mesh.hh"
 #include "utilities/DBC.hh"
 #include "utilities/Definitions.hh"
 #include "utilities/InputDB.hh"
@@ -19,12 +18,12 @@
 namespace detran
 {
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 /**
  *  @class BoundaryBase
  *  @brief Base class for boundary flux containers.
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 template <class D>
 class BoundaryBase
@@ -32,9 +31,9 @@ class BoundaryBase
 
 public:
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // ENUMERATIONS
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   /// Incident or outgoing flux
   enum inout
@@ -50,9 +49,9 @@ public:
       SET
   };
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // TYPEDEFS
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   typedef detran_utilities::SP<BoundaryBase>        SP_boundary;
   typedef detran_utilities::InputDB::SP_input       SP_input;
@@ -61,18 +60,18 @@ public:
   typedef detran_utilities::size_t                  size_t;
   typedef D                                         D_T;
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // CONSTRUCTORS & DESTRUCTORS
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   /**
    *  @brief Constructor
    *  @param input
    *  @param mesh
    */
-  BoundaryBase(SP_input input,  SP_mesh mesh)
+  BoundaryBase(SP_input input, const size_t number_groups)
     : d_input(input)
-    , d_mesh(mesh)
+    , d_number_groups(number_groups)
     , d_has_reflective(false)
     , d_is_reflective(2*D::dimension, false)
     , d_has_vacuum(true)
@@ -80,17 +79,15 @@ public:
     , d_g(0)
   {
     Require(d_input);
-    Require(d_input->check("number_groups"));
-    d_number_groups = input->get<int>("number_groups");
     Require(d_number_groups > 0);
   }
 
   /// Virtual destructor
   virtual ~BoundaryBase(){}
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL BOUNDARY TYPES MUST IMPLEMENT THESE
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   /**
    *  @brief Set the boundaries for a within-group solve.
@@ -141,7 +138,6 @@ public:
    */
   virtual void clear(const size_t g) = 0;
 
-
   /**
    *  @brief Set the entire group boundary flux for reflecting sides.
    *
@@ -156,9 +152,15 @@ public:
                    const int  gs,
                    bool       onlyref = true) = 0;
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // PUBLIC FUNCTIONS
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
+
+  /// Return the input.
+  SP_input get_input() const
+  {
+    return d_input;
+  }
 
   /// Clear all groups.
   void clear()
@@ -200,7 +202,7 @@ public:
     return d_boundary_flux_size[side];
   }
 
-  /// Display boundray information and contents
+  /// Display boundary information and contents
   virtual void display(bool inout) const
   {
     /* ... */
@@ -208,14 +210,12 @@ public:
 
 protected:
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // DATA
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   /// Input
   SP_input d_input;
-  /// Mesh
-  SP_mesh d_mesh;
   /// Do I have any reflective conditions?  (Krylov support)
   bool d_has_reflective;
   /// Vector of is it reflective? (Krylov support)
@@ -235,6 +235,6 @@ protected:
 
 #endif // detran_BOUNDARYBASE_HH_
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 //              end of file BoundaryBase.hh
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//

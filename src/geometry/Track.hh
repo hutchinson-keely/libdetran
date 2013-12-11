@@ -75,9 +75,9 @@ public:
   /// Const reference to segment
   const Segment& segment(const size_t i) const;
   /// Return my entrance point
-  Point enter() const;
+  Point enter(bool forward = true) const;
   /// Return my exit point
-  Point exit() const;
+  Point exit(bool forward = true) const;
   /// Iterator to the beginning of the track
   iterator begin(bool forward = true);
   /// Iterator to the end of the track

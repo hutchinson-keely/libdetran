@@ -1,11 +1,11 @@
-//----------------------------------*-C++-*----------------------------------//
+//----------------------------------*-C++-*-----------------------------------//
 /**
  *  @file   BoundaryFactory.hh
  *  @author robertsj
  *  @date   Jan 30, 2013
  *  @brief  BoundaryFactory class definition.
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #ifndef detran_BOUNDARYFACTORY_HH_
 #define detran_BOUNDARYFACTORY_HH_
@@ -24,20 +24,23 @@ class BoundaryFactory
     
 public:
     
-  //---------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // TYPEDEFS
-  //---------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   typedef typename B<D>::SP_boundary                    SP_boundary;
   typedef detran_utilities::InputDB::SP_input           SP_input;
-  typedef detran_geometry::CartesianMesh::SP_mesh                SP_mesh;
+  typedef detran_geometry::Mesh::SP_mesh                SP_mesh;
   typedef detran_angle::Quadrature::SP_quadrature       SP_quadrature;
     
-  //---------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // PUBLIC FUNCTIONS
-  //---------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
-  static SP_boundary build(SP_input input, SP_mesh mesh, SP_quadrature quad)
+  static SP_boundary build(SP_input       input,
+                           SP_mesh        mesh,
+                           SP_quadrature  quad,
+                           const size_t   ng)
   {
     THROW("NOT IMPLEMENTED");
     return SP_boundary();
@@ -47,3 +50,7 @@ public:
 } // end namespace detran
 
 #endif /* detran_BOUNDARYFACTORY_HH_ */
+
+//----------------------------------------------------------------------------//
+//              end of file BoundaryFactory.hh
+//----------------------------------------------------------------------------//

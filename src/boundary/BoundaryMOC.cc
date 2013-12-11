@@ -19,8 +19,9 @@ namespace detran
 template <class D>
 BoundaryMOC<D>::BoundaryMOC(SP_input        input,
                             SP_mesh         mesh,
-                            SP_quadrature   quadrature)
-  : Base(input, mesh)
+                            SP_quadrature   quadrature,
+                            const size_t    number_groups)
+  : Base(input, number_groups)
   , d_quadrature(quadrature)
   , d_boundary_flux(d_number_groups,
                     vec3_dbl(quadrature->number_angles(),
@@ -75,18 +76,6 @@ BoundaryMOC<D>::BoundaryMOC(SP_input        input,
   }
 
 }
-
-//---------------------------------------------------------------------------//
-template <class D>
-typename BoundaryMOC<D>::SP_base
-BoundaryMOC<D>::Create(SP_input       input,
-                       SP_mesh        mesh,
-                       SP_quadrature  quadrature)
-{
-  SP_boundary p(new BoundaryMOC(input, mesh, quadrature));
-  return p;
-}
-
 
 //---------------------------------------------------------------------------//
 // IMPLEMENTATION
