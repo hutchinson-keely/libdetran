@@ -14,7 +14,7 @@
 #include "DimensionTraits.hh"
 #include "angle/ProductQuadrature.hh"
 #include "material/Material.hh"
-#include "geometry/Mesh.hh"
+#include "geometry/CartesianMesh.hh"
 #include "geometry/TrackDB.hh"
 #include "geometry/Track.hh"
 #include "utilities/Definitions.hh"

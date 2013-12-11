@@ -49,7 +49,7 @@ public:
 
   typedef detran_utilities::SP<State>                   SP_state;
   typedef detran_utilities::InputDB::SP_input           SP_input;
-  typedef detran_geometry::CartesianMesh::SP_mesh                SP_mesh;
+  typedef detran_geometry::Mesh::SP_mesh                SP_mesh;
   typedef detran_angle::Quadrature::SP_quadrature       SP_quadrature;
   typedef detran_angle::MomentIndexer::SP_momentindexer SP_momentindexer;
   typedef detran_utilities::vec_dbl                     moments_type;

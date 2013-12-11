@@ -5,6 +5,7 @@
  *  @note  Copyright (C) 2012-2013 Jeremy Roberts
  *
  *  \todo Rename to CoarseMesher
+ *  \todo Update for use with MOC in some way (cell centers, but what of levels?)
  */
 //----------------------------------------------------------------------------//
 
@@ -12,7 +13,7 @@
 #define detran_COARSEMESH_HH_
 
 #include "transport/transport_export.hh"
-#include "geometry/Mesh.hh"
+#include "geometry/CartesianMesh.hh"
 #include "utilities/DBC.hh"
 #include "utilities/SP.hh"
 #include <iostream>
@@ -46,13 +47,13 @@ public:
   // TYPEDEFS
   //--------------------------------------------------------------------------//
 
-  typedef detran_utilities::SP<CoarseMesh>  SP_coarsemesh;
-  typedef detran_geometry::CartesianMesh::SP_mesh    SP_mesh;
-  typedef detran_utilities::size_t          size_t;
-  typedef detran_utilities::vec_int         vec_int;
-  typedef detran_utilities::vec2_int        vec2_int;
-  typedef detran_utilities::vec_dbl         vec_dbl;
-  typedef detran_utilities::vec2_dbl        vec2_dbl;
+  typedef detran_utilities::SP<CoarseMesh>                    SP_coarsemesh;
+  typedef detran_geometry::CartesianMesh::SP_cartesianmesh    SP_mesh;
+  typedef detran_utilities::size_t                            size_t;
+  typedef detran_utilities::vec_int                           vec_int;
+  typedef detran_utilities::vec2_int                          vec2_int;
+  typedef detran_utilities::vec_dbl                           vec_dbl;
+  typedef detran_utilities::vec2_dbl                          vec2_dbl;
 
   //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR

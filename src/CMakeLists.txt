@@ -185,8 +185,8 @@ endif()
 
 set(DETRAN_LIBS "utilities" "angle" "material" "callow" 
                 "geometry" "orthog"
-                "external_source"  "boundary")
-#"transport")
+                "external_source"  "boundary"
+                "transport")
 #                "kinetics"
 #                "solvers" "ioutils" "postprocess"
 #                "drivers")

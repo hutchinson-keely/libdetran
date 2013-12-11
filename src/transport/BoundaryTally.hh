@@ -54,9 +54,9 @@ public:
   //--------------------------------------------------------------------------//
 
   typedef detran_utilities::SP<BoundaryTally>           SP_tally;
+  typedef CoarseMesh::SP_mesh                           SP_mesh;
   typedef CoarseMesh::SP_coarsemesh                     SP_coarsemesh;
   typedef detran_angle::Quadrature::SP_quadrature       SP_quadrature;
-  typedef CoarseMesh::SP_mesh                           SP_mesh;
   typedef typename EquationTraits<D>::face_flux_type    face_flux_type;
   typedef detran_utilities::size_t                      size_t;
   typedef detran_utilities::vec_int                     vec_int;
@@ -87,7 +87,7 @@ public:
   //--------------------------------------------------------------------------//
 
   /**
-   *  \brief Add angular flux to the current tally
+   *  @brief Add angular flux to the current tally
    *
    *  @param  i           x mesh index
    *  @param  j           y mesh index
