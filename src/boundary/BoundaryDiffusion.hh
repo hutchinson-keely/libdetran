@@ -11,6 +11,7 @@
 
 #include "BoundaryBase.hh"
 #include "BoundaryTraits.hh"
+#include "geometry/CartesianMesh.hh"
 
 namespace detran
 {
@@ -37,12 +38,12 @@ public:
   typedef typename Base::SP_boundary                    SP_base;
   typedef detran_utilities::SP<BoundaryDiffusion<D> >   SP_boundary;
   typedef typename Base::SP_input                       SP_input;
-  typedef typename Base::SP_mesh                        SP_mesh;
+  typedef detran_geometry::CartesianMesh                Mesh;
+  typedef Mesh::SP_cartesianmesh                        SP_mesh;
   typedef typename BoundaryTraits<D>::value_type        bf_type;
   typedef typename std::vector<bf_type>                 vec_boundary_flux;
   typedef typename std::vector<vec_boundary_flux>       vec2_boundary_flux;
   typedef typename std::vector<vec2_boundary_flux>      vec3_boundary_flux;
-  typedef detran_geometry::CartesianMesh                         Mesh;
   typedef detran_utilities::vec_dbl                     vec_dbl;
   typedef detran_utilities::size_t                      size_t;
   typedef D                                             D_T;
@@ -56,17 +57,11 @@ public:
 
   /**
    *  @brief Constructor.
-   *
-   *  @param    input       User input database.
-   *  @param    mesh        Cartesian mesh.
+   *  @param    input           User input database
+   *  @param    mesh            Cartesian mesh
+   *  @param    number_groups   Number of energy groups
    */
-  BoundaryDiffusion(SP_input        input,
-                    SP_mesh         mesh);
-
-  /// SP Constructor
-  static SP_base
-  Create(SP_input         input,
-         SP_mesh          mesh);
+  BoundaryDiffusion(SP_input input, SP_mesh mesh, const size_t number_groups);
 
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL BOUNDARY TYPES MUST IMPLEMENT THESE
@@ -165,12 +160,6 @@ public:
   // GETTERS
   //--------------------------------------------------------------------------//
 
-  /// Return the input.
-  SP_input get_input() const
-  {
-    return d_input;
-  }
-
   /// Return the mesh.
   SP_mesh get_mesh() const
   {
@@ -185,11 +174,13 @@ private:
 
   // Expose base class members.
   using Base::d_input;
-  using Base::d_mesh;
   using Base::d_number_groups;
   using Base::d_has_reflective;
   using Base::d_is_reflective;
   using Base::d_boundary_flux_size;
+
+  /// Cartesian mesh
+  SP_mesh d_mesh;
 
   /// Boundary flux (inout, side, energy).(space^D)
   vec3_boundary_flux d_boundary_flux;

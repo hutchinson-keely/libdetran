@@ -72,7 +72,7 @@
 %shared_ptr(detran_geometry::Region)
 %shared_ptr(detran_geometry::Geometry)
 %include "Surface.hh"
-%include "QuadraticSurface.hh"
+//%include "QuadraticSurface.hh"
 %include "QuadraticSurfaceFactory.hh"
 %include "CSG.hh"
 %include "Region.hh"

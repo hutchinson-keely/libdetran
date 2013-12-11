@@ -14,22 +14,15 @@ namespace detran
 
 //---------------------------------------------------------------------------/
 template <class D>
-BoundaryDiffusion<D>::BoundaryDiffusion(SP_input        input,
-                                        SP_mesh         mesh)
-  : Base(input, mesh)
+BoundaryDiffusion<D>::BoundaryDiffusion(SP_input     input,
+                                        SP_mesh      mesh,
+                                        const size_t number_groups)
+  : Base(input, number_groups)
+  , d_mesh(mesh)
   , d_boundary_flux(2, vec2_boundary_flux(2*D::dimension))
 {
+  Require(mesh);
   initialize();
-}
-
-//---------------------------------------------------------------------------/
-template <class D>
-typename BoundaryDiffusion<D>::SP_base
-BoundaryDiffusion<D>::Create(SP_input         input,
-                             SP_mesh          mesh)
-{
-  SP_boundary p(new BoundaryDiffusion(input, mesh));
-  return p;
 }
 
 //---------------------------------------------------------------------------//
@@ -126,5 +119,3 @@ BOUNDARY_TEMPLATE_EXPORT(detran_utilities::SP<BoundaryDiffusion<_2D> >)
 BOUNDARY_TEMPLATE_EXPORT(detran_utilities::SP<BoundaryDiffusion<_3D> >)
 
 } // end namespace detran
-
-

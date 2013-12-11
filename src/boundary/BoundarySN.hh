@@ -13,6 +13,7 @@
 #include "BoundaryTraits.hh"
 #include "BoundaryCondition.hh"
 #include "angle/Quadrature.hh"
+#include "geometry/CartesianMesh.hh"
 
 namespace detran
 {
@@ -40,14 +41,14 @@ public:
   typedef typename Base::SP_boundary                SP_base;
   typedef detran_utilities::SP<BoundarySN<D> >      SP_boundary;
   typedef typename Base::SP_input                   SP_input;
-  typedef typename Base::SP_mesh                    SP_mesh;
+  typedef detran_geometry::CartesianMesh            Mesh;
+  typedef Mesh::SP_cartesianmesh                    SP_mesh;
   typedef detran_angle::Quadrature::SP_quadrature   SP_quadrature;
   typedef typename BoundaryTraits<D>::value_type    bf_type;
   typedef typename std::vector<bf_type>             vec_boundary_flux;
   typedef typename std::vector<vec_boundary_flux>   vec2_boundary_flux;
   typedef typename std::vector<vec2_boundary_flux>  vec3_boundary_flux;
   typedef typename BoundaryCondition<D>::SP_bc      SP_bc;
-  typedef detran_geometry::CartesianMesh                     Mesh;
   typedef detran_utilities::vec_dbl                 vec_dbl;
   typedef detran_utilities::size_t                  size_t;
   typedef D                                         D_T;
@@ -60,15 +61,16 @@ public:
   //--------------------------------------------------------------------------//
 
   /**
-   *  @brief Constructor.
-   *
-   *  @param    input       User input database.
-   *  @param    mesh        Cartesian mesh.
-   *  @param    quadrature  Angular quadrature.
+   *  @brief Constructor
+   *  @param    input           User input database
+   *  @param    mesh            Cartesian mesh
+   *  @param    quadrature      Angular quadrature
+   *  @param    number_groups   Number of energy groups
    */
   BoundarySN(SP_input        input,
              SP_mesh         mesh,
-             SP_quadrature   quadrature);
+             SP_quadrature   quadrature,
+             const size_t    number_groups);
 
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL BOUNDARY TYPES MUST IMPLEMENT THESE
@@ -91,7 +93,7 @@ public:
            bool onlyref = true);
 
   //--------------------------------------------------------------------------//
-  // BOUNDARY FLUX ACCESS
+  // PUBLIC FUNCTIONS
   //--------------------------------------------------------------------------//
 
   /**
@@ -119,16 +121,6 @@ public:
              const size_t a,
              const size_t g);
 
-  //--------------------------------------------------------------------------//
-  // GETTERS
-  //--------------------------------------------------------------------------//
-
-  /// Return the input.
-  SP_input get_input() const
-  {
-    return d_input;
-  }
-
   /// Return the mesh.
   SP_mesh get_mesh() const
   {
@@ -140,10 +132,6 @@ public:
   {
     return d_quadrature;
   }
-
-  //--------------------------------------------------------------------------//
-  // PUBLIC FUNCTIONS
-  //--------------------------------------------------------------------------//
 
   /// Clear any fixed boundary conditions.
   void clear_bc()
@@ -180,17 +168,21 @@ private:
 
   // Expose base class members.
   using Base::d_input;
-  using Base::d_mesh;
   using Base::d_number_groups;
   using Base::d_has_reflective;
   using Base::d_is_reflective;
   using Base::d_has_vacuum;
   using Base::d_boundary_flux_size;
 
+  /// Cartesian mesh
+  SP_mesh d_mesh;
+
   /// Quadrature
   SP_quadrature d_quadrature;
+
   /// Boundary flux (side, energy, angle).(space^D)
   vec3_boundary_flux d_boundary_flux;
+
   /// Vector of boundary conditions.
   std::vector<SP_bc> d_bc;
 

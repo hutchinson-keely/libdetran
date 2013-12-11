@@ -13,15 +13,17 @@ namespace detran_geometry
 {
 
 //----------------------------------------------------------------------------//
-inline Point Track::enter() const
+inline Point Track::enter(bool forward) const
 {
-  return d_enter;
+  if (forward) return d_enter;
+  return d_exit;
 }
 
 //----------------------------------------------------------------------------//
-inline Point Track::exit() const
+inline Point Track::exit(bool forward) const
 {
-  return d_exit;
+  if (forward) return d_exit;
+  return d_enter;
 }
 
 //----------------------------------------------------------------------------//

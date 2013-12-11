@@ -11,7 +11,7 @@
 
 #include "boundary/BoundaryBase.hh"
 #include "boundary/BoundaryConditionMOC.hh"
-#include "geometry/Mesh.hh"
+#include "geometry/Geometry.hh"
 #include "angle/ProductQuadrature.hh"
 
 namespace detran
@@ -41,8 +41,8 @@ public:
   typedef typename Base::SP_boundary            SP_base;
   typedef detran_utilities::SP<BoundaryMOC<D> > SP_boundary;
   typedef typename Base::SP_input               SP_input;
-  typedef detran_geometry::CartesianMesh                 Mesh;
-  typedef Mesh::SP_mesh                         SP_mesh;
+  typedef detran_geometry::Geometry             Mesh;
+  typedef Mesh::SP_geometry                     SP_mesh;
   typedef detran_angle::ProductQuadrature       QuadratureMOC;
   typedef detran_utilities::SP<QuadratureMOC>   SP_quadrature;
   typedef BoundaryConditionMOC<D>               BC_T;
@@ -71,13 +71,8 @@ public:
    */
   BoundaryMOC(SP_input        input,
               SP_mesh         mesh,
-              SP_quadrature   quadrature);
-
-  /// SP Constructor.
-  static SP_base
-  Create(SP_input       input,
-         SP_mesh        mesh,
-         SP_quadrature  quadrature);
+              SP_quadrature   quadrature,
+              const size_t    number_groups);
 
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL BOUNDARY TYPES MUST IMPLEMENT THESE
@@ -103,7 +98,7 @@ public:
   }
 
   //--------------------------------------------------------------------------//
-  // BOUNDARY FLUX ACCESS
+  // PUBLIC FUNCTIONS
   //--------------------------------------------------------------------------//
 
   /**
@@ -172,23 +167,30 @@ private:
 
   // Expose base class members.
   using Base::d_input;
-  using Base::d_mesh;
   using Base::d_number_groups;
   using Base::d_has_reflective;
   using Base::d_is_reflective;
   using Base::d_has_vacuum;
   using Base::d_boundary_flux_size;
 
+  /// CSG mesh
+  SP_mesh d_mesh;
+
   /// MOC Quadrature
   SP_quadrature d_quadrature;
+
   /// Boundary flux [energy, angle, inout, track]
   bf_type d_boundary_flux;
+
   /// Vector of boundary conditions.
   std::vector<SP_bc> d_bc;
+
   /// d_feed_into[o0][a0][t0][o1 a1 t1] says track a0, t0 feeds into track a1, t1
   std::vector<vec3_int> d_feed_into;
+
   /// d_feed_from[a0][t0][a1 t1] says track a0, t0 feeds from track a1, t1
   std::vector<vec3_int> d_feed_from;
+
   /// d_side_index[side][o a t]
   vec3_int d_side_index;
 
