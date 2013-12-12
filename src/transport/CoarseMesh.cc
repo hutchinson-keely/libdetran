@@ -32,7 +32,9 @@ CoarseMesh::CoarseMesh(SP_mesh fine_mesh, const size_t level)
   vec_int remainder(dim);
   vec_int number_coarse(dim);
   vec2_int number_fine_coarse(dim);
-  vec2_dbl coarse_edges(3);
+  vec_dbl zero_one(2, 0.0);
+  zero_one[1] = 1.0;
+  vec2_dbl coarse_edges(3, zero_one);
 
   d_coarse_edge_flag[0].resize(d_fine_mesh->number_cells_x() + 1, -1);
   d_coarse_edge_flag[1].resize(d_fine_mesh->number_cells_y() + 1, -1);
@@ -98,7 +100,7 @@ CoarseMesh::CoarseMesh(SP_mesh fine_mesh, const size_t level)
 
   // Create the mesh.
   int number_coarse_mesh = 1;
-  for (int d = 0; d < dim; d++)
+  for (int d = 0; d < dim; ++d)
     number_coarse_mesh *= number_coarse[d];
 
   // Each coarse mesh material is unique.
@@ -111,7 +113,7 @@ CoarseMesh::CoarseMesh(SP_mesh fine_mesh, const size_t level)
     new detran_geometry::CartesianMesh(dim,
                                        coarse_edges[0],
                                        coarse_edges[1],
-                                       coarse_edges[3],
+                                       coarse_edges[2],
                                        coarse_material_map);
 
   // Create fine mesh to coarse mesh map

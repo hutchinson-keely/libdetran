@@ -16,7 +16,7 @@
 #include "Equation_DD_3D.hh"
 #include "angle/LevelSymmetric.hh"
 #include "external_source/ConstantSource.hh"
-#include "geometry/Mesh3D.hh"
+#include "geometry/CartesianMesh.hh"
 #include "geometry/test/mesh_fixture.hh"
 #include "material/test/material_fixture.hh"
 
@@ -62,7 +62,7 @@ int test_Sweeper3D_basic(int argc, char *argv[])
 
   // Boundary
   Sweeper_T::SP_boundary
-    bound(new Sweeper_T::Boundary_T(input, mesh, quad));
+    bound(new Sweeper_T::Boundary_T(input, mesh, quad, 1));
 
   // Moment to Discrete
   MomentIndexer::SP_momentindexer indexer = MomentIndexer::Create(3, 0);

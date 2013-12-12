@@ -12,9 +12,7 @@
 
 #include "utilities/TestDriver.hh"
 #include "CoarseMesh.hh"
-#include "geometry/Mesh1D.hh"
-#include "geometry/Mesh2D.hh"
-#include "geometry/Mesh3D.hh"
+#include "geometry/CartesianMesh.hh"
 
 #include "coarsemesh_fixture.hh"
 
@@ -24,7 +22,7 @@ using namespace detran_utilities;
 using namespace detran_test;
 using std::cout;
 using std::endl;
-
+#define COUT(c) std::cout << c << std::endl;
 int main(int argc, char *argv[])
 {
   RUN(argc, argv);
@@ -36,7 +34,6 @@ int main(int argc, char *argv[])
 
 int test_CoarseMesh(int argc, char *argv[])
 {
-
   //--------------------------------------------------------------------------//
   // SHARED DATA
   //--------------------------------------------------------------------------//
@@ -52,7 +49,7 @@ int test_CoarseMesh(int argc, char *argv[])
   CoarseMesh::SP_coarsemesh coarsemesh1 = coarsemesh_1d();
 
   // Get the underlying coarse mesh.
-  Mesh::SP_mesh cmesh1 = coarsemesh1->get_coarse_mesh();
+  CartesianMesh::SP_cartesianmesh cmesh1 = coarsemesh1->get_coarse_mesh();
 
   TEST(cmesh1->number_cells()   == 7);
   TEST(cmesh1->number_cells_x() == 7);
@@ -77,7 +74,7 @@ int test_CoarseMesh(int argc, char *argv[])
     vec_int fm(1, 5);
     vec_dbl cm(2, 0.0); cm[1] = 1.0;
     vec_int mt(1, 0);
-    Mesh::SP_mesh mesh = Mesh1D::Create(fm, cm, mt);
+    CartesianMesh::SP_cartesianmesh mesh = Mesh1D::Create(fm, cm, mt);
     CoarseMesh::SP_coarsemesh mesher(new CoarseMesh(mesh, 3));
     TEST(mesher->get_coarse_mesh()->number_cells() == 1);
   }
@@ -90,7 +87,7 @@ int test_CoarseMesh(int argc, char *argv[])
   CoarseMesh::SP_coarsemesh coarsemesh2 = coarsemesh_2d();
 
   // Get the underlying coarse mesh.
-  Mesh::SP_mesh cmesh2 = coarsemesh2->get_coarse_mesh();
+  CartesianMesh::SP_cartesianmesh cmesh2 = coarsemesh2->get_coarse_mesh();
 
   TEST(cmesh2->number_cells()   == 49);
   TEST(cmesh2->number_cells_x() == 7);
@@ -111,7 +108,7 @@ int test_CoarseMesh(int argc, char *argv[])
   CoarseMesh::SP_coarsemesh coarsemesh3 = coarsemesh_3d();
 
   // Get the underlying coarse mesh.
-  Mesh::SP_mesh cmesh3 = coarsemesh3->get_coarse_mesh();
+  CartesianMesh::SP_cartesianmesh cmesh3 = coarsemesh3->get_coarse_mesh();
 
   TEST(cmesh3->number_cells()   == 343);
   TEST(cmesh3->number_cells_x() == 7);

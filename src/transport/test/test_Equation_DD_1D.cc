@@ -45,7 +45,7 @@ int test_Equation_DD_1D(int argc, char *argv[])
   vec_int fm(1, 10);
   vec_dbl cm(2, 0.0); cm[1] = 10.0;
   vec_int mt(1, 0);
-  SP_mesh mesh(new Mesh1D(fm, cm, mt));
+  Equation_DD_1D::SP_mesh mesh = Mesh1D::Create(fm, cm, mt);
   // Quad
   PolarGL::SP_quadrature q(new PolarGL(2));
   q->display();
