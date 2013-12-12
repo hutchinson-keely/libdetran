@@ -38,7 +38,7 @@ int test_Equation_DD_2D_basic(int argc, char *argv[])
 {
   // Get mesh, material, and quadrature
 
-  SP_mesh mesh      = mesh_2d_fixture();
+  Equation_DD_2D::SP_mesh mesh = mesh_2d_fixture();
   SP_material mat   = material_fixture_1g();
   LevelSymmetric::SP_quadrature q(new detran_angle::LevelSymmetric(2, 2));
 

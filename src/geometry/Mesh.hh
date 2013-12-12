@@ -130,8 +130,10 @@ protected:
   mesh_map_type d_mesh_map;
 
   //--------------------------------------------------------------------------//
-  // DATA
+  // IMPLEMENTATION
   //--------------------------------------------------------------------------//
+
+  Mesh() : d_dimension(0), d_number_cells(0) {}
 
   void set_number_cells(const size_t);
 

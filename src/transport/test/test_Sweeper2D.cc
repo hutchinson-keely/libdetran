@@ -39,7 +39,7 @@ int test_Sweeper2D_basic(int argc, char *argv[])
   typedef Sweeper2D<Equation_DD_2D> Sweeper_T;
 
   // Test fixtures
-  SP_mesh mesh          = mesh_2d_fixture();
+  State::SP_mesh mesh   = mesh_2d_fixture();
   SP_material mat       = material_fixture_1g();
 
   // Input
@@ -56,7 +56,7 @@ int test_Sweeper2D_basic(int argc, char *argv[])
 
   // Boundary
   Sweeper_T::SP_boundary bound;
-  bound = new Sweeper_T::Boundary_T(input, mesh, quad);
+  bound = new Sweeper_T::Boundary_T(input, mesh, quad, 2);
 
   // Sweeper
 //  Sweeper2D sweeper(input, mesh, mat,

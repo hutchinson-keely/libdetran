@@ -10,17 +10,15 @@
 #define COARSEMESH_FIXTURE_HH_
 
 #include "CoarseMesh.hh"
-#include "geometry/Mesh1D.hh"
-#include "geometry/Mesh2D.hh"
-#include "geometry/Mesh3D.hh"
+#include "geometry/CartesianMesh.hh"
 
 namespace detran_test
 {
 
 detran::CoarseMesh::SP_coarsemesh coarsemesh_1d()
 {
+  using namespace detran_geometry;
   using detran::CoarseMesh;
-  using detran_geometry::Mesh1D;
   using detran_utilities::vec_dbl;
   using detran_utilities::vec_int;
 
@@ -37,7 +35,8 @@ detran::CoarseMesh::SP_coarsemesh coarsemesh_1d()
   vec_int mt(2, 0);
 
   // Create the fine mesh
-  Mesh1D::SP_mesh mesh(new Mesh1D(fm, cm, mt));
+  CartesianMesh::SP_mesh mesh = Mesh1D::Create(fm, cm, mt);
+  mesh->display();
 
   // Create the coarse mesh and return
   CoarseMesh::SP_coarsemesh coarse(new CoarseMesh(mesh, 2));
@@ -47,8 +46,8 @@ detran::CoarseMesh::SP_coarsemesh coarsemesh_1d()
 
 detran::CoarseMesh::SP_coarsemesh coarsemesh_2d()
 {
+  using namespace detran_geometry;
   using detran::CoarseMesh;
-  using detran_geometry::Mesh2D;
   using detran_utilities::vec_dbl;
   using detran_utilities::vec_int;
 
@@ -66,7 +65,7 @@ detran::CoarseMesh::SP_coarsemesh coarsemesh_2d()
   vec_int mt(4, 0);
 
   // Create the fine mesh
-  Mesh2D::SP_mesh mesh(new Mesh2D(fm, fm, cm, cm, mt));
+  CartesianMesh::SP_mesh mesh = Mesh2D::Create(fm, fm, cm, cm, mt);
 
   // Create the coarse mesh and return
   CoarseMesh::SP_coarsemesh coarse(new CoarseMesh(mesh, 2));
@@ -77,8 +76,8 @@ detran::CoarseMesh::SP_coarsemesh coarsemesh_2d()
 
 detran::CoarseMesh::SP_coarsemesh coarsemesh_2d_b()
 {
+  using namespace detran_geometry;
   using detran::CoarseMesh;
-  using detran_geometry::Mesh2D;
   using detran_utilities::vec_dbl;
   using detran_utilities::vec_int;
 
@@ -94,7 +93,7 @@ detran::CoarseMesh::SP_coarsemesh coarsemesh_2d_b()
   vec_int mt(4, 0);
 
   // Create the fine mesh
-  Mesh2D::SP_mesh mesh(new Mesh2D(fm, fm, cm, cm, mt));
+  CartesianMesh::SP_mesh mesh = Mesh2D::Create(fm, fm, cm, cm, mt);
 
   // Create the coarse mesh and return
   CoarseMesh::SP_coarsemesh coarse(new CoarseMesh(mesh, 2));
@@ -104,8 +103,8 @@ detran::CoarseMesh::SP_coarsemesh coarsemesh_2d_b()
 
 detran::CoarseMesh::SP_coarsemesh coarsemesh_3d()
 {
+  using namespace detran_geometry;
   using detran::CoarseMesh;
-  using detran_geometry::Mesh3D;
   using detran_utilities::vec_dbl;
   using detran_utilities::vec_int;
 
@@ -122,7 +121,7 @@ detran::CoarseMesh::SP_coarsemesh coarsemesh_3d()
   vec_int mt(8, 0);
 
   // Create the fine mesh
-  Mesh3D::SP_mesh mesh(new Mesh3D(fm, fm, fm, cm, cm, cm, mt));
+  CartesianMesh::SP_mesh mesh = Mesh3D::Create(fm, fm, fm, cm, cm, cm, mt);
 
   // Create the coarse mesh and return
   CoarseMesh::SP_coarsemesh coarse(new CoarseMesh(mesh, 2));
@@ -132,8 +131,8 @@ detran::CoarseMesh::SP_coarsemesh coarsemesh_3d()
 
 detran::CoarseMesh::SP_coarsemesh coarsemesh_3d_b()
 {
+  using namespace detran_geometry;
   using detran::CoarseMesh;
-  using detran_geometry::Mesh3D;
   using detran_utilities::vec_dbl;
   using detran_utilities::vec_int;
 
@@ -150,7 +149,7 @@ detran::CoarseMesh::SP_coarsemesh coarsemesh_3d_b()
   vec_int mt(8, 0);
 
   // Create the fine mesh
-  Mesh3D::SP_mesh mesh(new Mesh3D(fm, fm, fm, cm, cm, cm, mt));
+  CartesianMesh::SP_mesh mesh = Mesh3D::Create(fm, fm, fm, cm, cm, cm, mt);
 
   // Create the coarse mesh and return
   CoarseMesh::SP_coarsemesh coarse(new CoarseMesh(mesh, 2));

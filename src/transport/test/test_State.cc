@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 int test_State_basic(int argc, char *argv[])
 {
 
-  SP_mesh mesh          = mesh_2d_fixture();
+  State::SP_mesh mesh          = mesh_2d_fixture();
 
   // Input
   State::SP_input input;

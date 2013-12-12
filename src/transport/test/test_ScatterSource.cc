@@ -13,7 +13,7 @@
 
 #include "utilities/TestDriver.hh"
 #include "transport/ScatterSource.hh"
-#include "geometry/Mesh1D.hh"
+#include "geometry/CartesianMesh.hh"
 
 using namespace detran;
 using namespace detran_geometry;

@@ -53,12 +53,8 @@ static CartesianMesh::SP_cartesianmesh mesh_2d_fixture(int id = 0)
     // etc.  Hence, all entries are 1 but the first.
     CartesianMesh::vec_int mat_map(4, 1);
     mat_map[0] = 0;
-
     // Construct the mesh.
     mesh = Mesh2D::Create(fm, fm, cm, cm, mat_map);
-
-    // Return the fixture.
-    return mesh;
   }
   else if (id == 1)
   {
@@ -70,6 +66,7 @@ static CartesianMesh::SP_cartesianmesh mesh_2d_fixture(int id = 0)
     mesh = Mesh2D::Create(fm, fm, cm, cm, mat_map);
 
   }
+
   return mesh;
 }
 

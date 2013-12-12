@@ -45,13 +45,17 @@ CartesianMesh::CartesianMesh(size_t  dim,
                              vec_dbl zfme,
                              vec_int mat_map)
   : Mesh(dim)
-  , d_xfm(vec_int(xfme.size()-1, 1))
-  , d_yfm(vec_int(yfme.size()-1, 1))
-  , d_zfm(vec_int(zfme.size()-1, 1))
   , d_xcme(xfme)
   , d_ycme(yfme)
   , d_zcme(zfme)
 {
+  Require(d_xcme.size() > 1);
+  Require(d_ycme.size() > 1);
+  Require(d_zcme.size() > 1);
+  d_xfm.resize(d_xcme.size()-1, 1);
+  d_yfm.resize(d_ycme.size()-1, 1);
+  d_zfm.resize(d_zcme.size()-1, 1);
+
   // Setup discretizations, etc.
   setup();
   // Add the fine mesh material map.
