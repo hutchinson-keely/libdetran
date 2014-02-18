@@ -1,16 +1,14 @@
-//----------------------------------*-C++-*----------------------------------//
-/*!
- * \file   Constants.hh
- * \author Jeremy Roberts
- * \date   Mar 23, 2012
- * \brief  Useful constants.
- * \note   Copyright (C) 2012 Jeremy Roberts. 
+//----------------------------------*-C++-*-----------------------------------//
+/**
+ *  @file   Constants.hh
+ *  @brief  Useful constants.
+ *  @note   Copyright (C) 2012 Jeremy Roberts.
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 
-#ifndef CONSTANTS_HH_
-#define CONSTANTS_HH_
+#ifndef detran_utilities_CONSTANTS_HH_
+#define detran_utilities_CONSTANTS_HH_
 
 namespace detran_utilities
 {
@@ -23,8 +21,8 @@ const double inv_four_pi    = 0.0795774715459476678;
 
 } // end namespace detran_utilities
 
-#endif /* CONSTANTS_HH_ */
+#endif /* detran_utilities_CONSTANTS_HH_ */
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 //              end of Constants.hh
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//

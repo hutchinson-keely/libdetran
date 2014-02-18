@@ -1,11 +1,11 @@
 //----------------------------------*-C++-*----------------------------------//
-/*!
- * \file   utilities/SP.hh
- * \author Jeremy Roberts
- * \brief  Smart-Pointer (SP) class definition.
- * \note   Modified version of Tom Evan's SP class from Denovo.
+/**
+ *  @file   SP.hh
+ *  @author Jeremy Roberts
+ *  @brief  Smart-Pointer (SP) class definition.
+ *  @note   Modified version of Tom Evan's SP class from Denovo.
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #ifndef SP_HH_
 #define SP_HH_
@@ -26,15 +26,15 @@
 namespace detran_utilities
 {
  
-//---------------------------------------------------------------------------//
-/*!
- *  \class SPref
- *  \brief Reference counter for SP class.
+//----------------------------------------------------------------------------//
+/**
+ *  @class SPref
+ *  @brief Reference counter for SP class.
  *
  *  This reference counter is thread safe, and allows SP's to be used
  *  as pointers to <i>unmutable</i> objects.
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 class SPref
 {
@@ -87,11 +87,11 @@ private:
 
 };
 
-//---------------------------------------------------------------------------//
-/*!
- * \class SP
+//----------------------------------------------------------------------------//
+/**
+ * @class SP
  * 
- * \brief Smart pointer implementation that does reference counting.
+ * @brief Smart pointer implementation that does reference counting.
  *
  * The smart pointer provides a "safe" encapsulation for a standard C++
  * pointer.  Consider: A function new's an object and return the pointer to
@@ -138,12 +138,12 @@ private:
  * few, if any, cases where that behavior would be required.
  *
  */
-/*!
- *  \example utilities/test/test_SP.cc
+/**
+ *  @example utilities/test/test_SP.cc
  *
  *  Test of class SP.
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 template<class T>
 class SP 
@@ -260,15 +260,15 @@ private:
 
 } // end namespace detran_utilities
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 // INLINE AND TEMPLATE MEMBERS
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #include "SP.i.hh"
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 // SP CONSTRUCTOR MACRO
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #define SPCREATE(class_name, return_type, types, vals)  \
 static return_type CREATE types                         \
@@ -279,6 +279,6 @@ static return_type CREATE types                         \
 
 #endif // SP_HH_
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 //              end of SP.hh
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//

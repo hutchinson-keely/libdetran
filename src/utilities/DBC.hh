@@ -4,6 +4,7 @@
  *  @brief  Design-by-Contract macros and abstract Object class.
  *  @author Jeremy Roberts
  */
+//----------------------------------------------------------------------------//
 
 #ifndef detran_utilities_DBC_HH
 #define detran_utilities_DBC_HH
@@ -19,7 +20,7 @@
 namespace detran_utilities
 {
 
-//===========================================================================//
+//----------------------------------------------------------------------------//
 /**
  *  @page  DBC
  *  @brief Design-By-Contract
@@ -39,7 +40,7 @@ namespace detran_utilities
  *  http://eventhelix.com/realtimemantra/object_oriented/design_by_contract.htm
  *
  */
-//===========================================================================//
+//----------------------------------------------------------------------------//
 
 /// Compile time boolean (straight from Alexandrescu's Modern C++ Design
 template <bool> struct StaticChecker {StaticChecker(...);};

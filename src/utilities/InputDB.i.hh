@@ -17,15 +17,24 @@ namespace detran_utilities
 {
 
 //---------------------------------------------------------------------------//
-inline bool InputDB::check(const std::string &key) const
+inline bool InputDB::check(const std::string &key, const int type) const
 {
   using std::cout;
   using std::endl;
   using std::string;
 
+  int flag[END_INPUT_TYPES];
+  for (int i = 0; i < END_INPUT_TYPES; ++i)
+  {
+    if (type == i || type == -1)
+      flag[i] = 1;
+    else
+      flag[i] = 0;
+  }
+
   // Check integers
   std::map<std::string, int>::const_iterator it1;
-  if (d_data_int.size() > 0)
+  if (d_data_int.size() > 0 or flag[INT])
   {
     it1 = d_data_int.find(key);
     if (it1 != d_data_int.end())
@@ -34,7 +43,7 @@ inline bool InputDB::check(const std::string &key) const
 
   // Check doubles
   std::map<std::string, double>::const_iterator it2;
-  if (d_data_dbl.size() > 0)
+  if (d_data_dbl.size() > 0 or flag[DBL])
   {
     it2 = d_data_dbl.find(key);
     if (it2 != d_data_dbl.end())
@@ -43,7 +52,7 @@ inline bool InputDB::check(const std::string &key) const
 
   // Check integer vectors
   std::map<std::string, vec_int>::const_iterator it3;
-  if (d_data_vec_int.size() > 0)
+  if (d_data_vec_int.size() > 0 or flag[VEC_INT])
   {
     it3 = d_data_vec_int.find(key);
     if (it3 != d_data_vec_int.end())
@@ -52,7 +61,7 @@ inline bool InputDB::check(const std::string &key) const
 
   // Check double vectors
   std::map<std::string, vec_dbl>::const_iterator it4;
-  if (d_data_vec_dbl.size() > 0)
+  if (d_data_vec_dbl.size() > 0 or flag[VEC_DBL])
   {
     it4 = d_data_vec_dbl.find(key);
     if (it4 != d_data_vec_dbl.end())
@@ -61,7 +70,7 @@ inline bool InputDB::check(const std::string &key) const
 
   // Check strings
   std::map<std::string, std::string>::const_iterator it5;
-  if (d_data_str.size() > 0)
+  if (d_data_str.size() > 0 or flag[STR])
   {
     it5 = d_data_str.find(key);
     if (it5 != d_data_str.end())
@@ -70,7 +79,7 @@ inline bool InputDB::check(const std::string &key) const
 
   // Check db
   std::map<std::string, SP_input>::const_iterator it6;
-  if (d_data_db.size() > 0)
+  if (d_data_db.size() > 0 or flag[SPINPUT])
   {
     it6 = d_data_db.find(key);
     if (it6 != d_data_db.end())

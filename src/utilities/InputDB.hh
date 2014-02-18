@@ -57,7 +57,8 @@ public:
     STR,
     VEC_INT,
     VEC_DBL,
-    SPINPUT
+    SPINPUT,
+    END_INPUT_TYPES
   };
 
   typedef SP<InputDB> SP_input;
@@ -103,7 +104,7 @@ public:
    *  @param    key     Name of the parameter.
    *  @return           True if exists; false otherwise.
    */
-  inline bool check(const std::string &key) const;
+  inline bool check(const std::string &key, const int type = -1) const;
 
   /**
    *  @brief Put a key and value in the database.

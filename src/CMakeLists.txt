@@ -183,10 +183,11 @@ endif()
 # LIST OF LIBRARIES
 #------------------------------------------------------------------------------#
 
-set(DETRAN_LIBS "utilities" "angle" "material" "callow" 
-                "geometry" "orthog"
-                "external_source"  "boundary"
-                "transport")
+set(DETRAN_LIBS "utilities" "angle" "material")
+#                "callow" 
+#                "geometry" "orthog"
+#                "external_source"  "boundary"
+#                "transport")
 #                "kinetics"
 #                "solvers" "ioutils" "postprocess"
 #                "drivers")
