@@ -9,6 +9,9 @@
 ADD_EXECUTABLE(test_MomentToDiscrete        test_MomentToDiscrete.cc)
 TARGET_LINK_LIBRARIES(test_MomentToDiscrete angle)
 
+ADD_EXECUTABLE(test_DiscreteToMoment        test_DiscreteToMoment.cc)
+TARGET_LINK_LIBRARIES(test_DiscreteToMoment angle)
+
 ADD_EXECUTABLE(test_MomentIndexer           test_MomentIndexer.cc)
 TARGET_LINK_LIBRARIES(test_MomentIndexer    angle)
 ADD_TEST(test_MomentIndexer_1D              test_MomentIndexer      0)

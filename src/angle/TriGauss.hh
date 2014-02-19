@@ -3,6 +3,8 @@
  *  @file  TriGauss.hh
  *  @brief TriGauss class definition
  *  @note  Copyright (C) 2013 Jeremy Roberts
+ *
+ *  See J. Roberts' PhD dissertation for more details and references.
  */
 //----------------------------------------------------------------------------//
 

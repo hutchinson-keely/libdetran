@@ -1,11 +1,10 @@
-//----------------------------------*-C++-*----------------------------------//
+//----------------------------------*-C++-*-----------------------------------//
 /**
  *  @file   MomentToDiscrete.hh
- *  @author Jeremy Roberts
- *  @date   Jul 1, 2011
  *  @brief  MomentToDiscrete class definition.
+ *  @note   Copyright (c) 2014 Jeremy Roberts
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #ifndef detran_angle_MOMENT_TO_DISCRETE_HH_
 #define detran_angle_MOMENT_TO_DISCRETE_HH_
@@ -19,7 +18,7 @@
 namespace detran_angle
 {
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 /**
  *  @class MomentToDiscrete
  *  @brief Converts moment-valued unknowns to discrete angle values
@@ -97,15 +96,15 @@ namespace detran_angle
  *
  * Test of MomentToDiscrete.
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 class ANGLE_EXPORT MomentToDiscrete
 {
 
 public:
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // TYPEDEFS
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   typedef detran_utilities::SP<MomentToDiscrete>  SP_MtoD;
   typedef MomentIndexer::SP_momentindexer         SP_momentindexer;
@@ -114,9 +113,9 @@ public:
   typedef detran_utilities::vec_dbl               M_Row;
   typedef std::vector<M_Row>                      Operator_M;
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   /**
    *  @brief Constructor.
@@ -132,12 +131,12 @@ public:
     return m;
   }
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // PUBLIC INTERFACE
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   /**
-   *  \brief Build the moments-to-discrete operator.
+   *  @brief Build the moments-to-discrete operator.
    *
    *  Keeping the actual construction outside the constructor allows
    *  us to rebuild the operator for different angular solves using
@@ -145,7 +144,7 @@ public:
    *  adjoint solves, compact testing of quadrature sets, and potential
    *  angular multigrid schemes.
    *
-   *  \param     q     Pointer to quadrature
+   *  @param     q     Pointer to quadrature
    */
   void build(SP_quadrature q);
 
@@ -212,16 +211,15 @@ public:
     return d_legendre_order;
   }
 
-
 private:
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // DATA
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   /// Moment indexer
   SP_momentindexer d_indexer;
-  /// Legendre order of anisotropic scattering.
+  /// Legendre order of angular flux expansion.  Must be >= scattering order.
   size_t d_legendre_order;
   /// Number of angular moments.
   size_t d_number_moments;
@@ -232,9 +230,9 @@ private:
   /// Moments-to-discrete operator \f$\mathbf{M}\f$.
   Operator_M d_M;
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // IMPLEMENTATION
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
   /**
    *  @brief Calculate one row of \f$\mathbf{M}\f$.
@@ -252,14 +250,14 @@ ANGLE_TEMPLATE_EXPORT(detran_utilities::SP<MomentToDiscrete>)
 
 } // end namespace detran_angle
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 // INLINE FUNCTIONS
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #include "MomentToDiscrete.i.hh"
 
 #endif /* detran_angle_MOMENT_TO_DISCRETE_HH_ */
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 //              end of MomentToDiscrete.hh
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
