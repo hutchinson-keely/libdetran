@@ -23,19 +23,25 @@ namespace detran_material
  */
 Material::Material(const size_t number_materials,
                    const size_t number_groups,
+                   const size_t legendre_order,
                    std::string  name)
  : d_name(name)
  , d_number_groups(number_groups)
  , d_number_materials(number_materials)
+ , d_legendre_order(legendre_order)
  , d_sigma_t(number_groups, vec_dbl(number_materials, 0.0))
  , d_sigma_a(number_groups, vec_dbl(number_materials, 0.0))
  , d_nu_sigma_f(number_groups, vec_dbl(number_materials, 0.0))
  , d_sigma_f(number_groups, vec_dbl(number_materials, 0.0))
  , d_nu(number_groups, vec_dbl(number_materials, 1.0))
  , d_chi(number_groups, vec_dbl(number_materials, 0.0))
+// put switch to test scatter matrix organization.  generally, if there are
+// many groups, having materials/order be inner loop is best, because the
+// sources are constructed by cell first.
  , d_sigma_s(number_groups,
-		         vec2_dbl(number_groups,
-		    		          vec_dbl(number_materials, 0.0)))
+		         vec3_dbl(number_groups,
+		    		          vec2_dbl(number_materials,
+		    		                   vec_dbl(legendre_order + 1, 0.0))))
  , d_diff_coef(number_groups, vec_dbl(number_materials, 0.0))
  , d_scatter_bounds(number_groups, vec_size_t(4, 0))
  , d_finalized(false)
@@ -52,9 +58,11 @@ Material::Material(const size_t number_materials,
 Material::SP_material
 Material::Create(const size_t number_materials,
                  const size_t number_groups,
+                 const size_t legendre_order,
                  std::string  name)
 {
-  SP_material p(new Material(number_materials, number_groups, name));
+  SP_material p(new Material(number_materials, number_groups,
+                             legendre_order, name));
   return p;
 }
 
@@ -65,7 +73,7 @@ Material::Create(const size_t number_materials,
 // Single Values
 
 //---------------------------------------------------------------------------//
-void Material::set_sigma_t(size_t m, size_t g, double v)
+void Material::set_sigma_t(const size_t m, const size_t g, const double v)
 {
   Require(m < d_number_materials);
   Require(g < d_number_groups);
@@ -74,7 +82,7 @@ void Material::set_sigma_t(size_t m, size_t g, double v)
 }
 
 //---------------------------------------------------------------------------//
-void Material::set_sigma_a(size_t m, size_t g, double v)
+void Material::set_sigma_a(const size_t m, const size_t g, const double v)
 {
   Require(m < d_number_materials);
   Require(g < d_number_groups);
@@ -83,7 +91,7 @@ void Material::set_sigma_a(size_t m, size_t g, double v)
 }
 
 //---------------------------------------------------------------------------//
-void Material::set_nu_sigma_f(size_t m, size_t g, double v)
+void Material::set_nu_sigma_f(const size_t m, const size_t g, const double v)
 {
   Require(m < d_number_materials);
   Require(g < d_number_groups);
@@ -92,7 +100,7 @@ void Material::set_nu_sigma_f(size_t m, size_t g, double v)
 }
 
 //---------------------------------------------------------------------------//
-void Material::set_sigma_f(size_t m, size_t g, double v)
+void Material::set_sigma_f(const size_t m, const size_t g, const double v)
 {
   Require(m < d_number_materials);
   Require(g < d_number_groups);
@@ -101,7 +109,7 @@ void Material::set_sigma_f(size_t m, size_t g, double v)
 }
 
 //---------------------------------------------------------------------------//
-void Material::set_nu(size_t m, size_t g, double v)
+void Material::set_nu(const size_t m, const size_t g, const double v)
 {
   Require(m < d_number_materials);
   Require(g < d_number_groups);
@@ -110,7 +118,7 @@ void Material::set_nu(size_t m, size_t g, double v)
 }
 
 //---------------------------------------------------------------------------//
-void Material::set_chi(size_t m, size_t g, double v)
+void Material::set_chi(const size_t m, const size_t g, const double v)
 {
   Require(m < d_number_materials);
   Require(g < d_number_groups);
@@ -119,98 +127,36 @@ void Material::set_chi(size_t m, size_t g, double v)
 }
 
 //---------------------------------------------------------------------------//
-// Note, not including anisotropic for now...
-void Material::set_sigma_s(size_t m, size_t g, size_t gp, double v)
+void Material::set_sigma_s(const size_t m, const size_t g, const size_t gp,
+                           const double v)
 {
   Require(m < d_number_materials);
   Require(g < d_number_groups);
   Require(gp < d_number_groups);
   Require(v >= 0.0);
-  d_sigma_s[g][gp][m] = v;
+  d_sigma_s[g][gp][m][0] = v;
 }
 
 //---------------------------------------------------------------------------//
-void Material::set_diff_coef(size_t m, size_t g, double v)
+void Material::set_sigma_s(const size_t m, const size_t g, const size_t gp,
+                           const size_t l, const double v)
+{
+  Require(m < d_number_materials);
+  Require(g < d_number_groups);
+  Require(gp < d_number_groups);
+  Require(l <= d_legendre_order);
+  Require(v >= 0.0);
+  d_sigma_s[g][gp][m][l] = v;
+}
+
+
+//---------------------------------------------------------------------------//
+void Material::set_diff_coef(const size_t m, const size_t g, const double v)
 {
   Require(m < d_number_materials);
   Require(g < d_number_groups);
   Require(v >= 0.0);
   d_diff_coef[g][m] = v;
-}
-
-// Vectorized
-
-//---------------------------------------------------------------------------//
-void Material::set_sigma_t(size_t m, vec_dbl &v)
-{
-  Require(m < d_number_materials);
-  Require(v.size() == d_number_groups);
-  for (size_t g = 0; g < d_number_groups; g++)
-    d_sigma_t[g][m] = v[g];
-}
-
-//---------------------------------------------------------------------------//
-void Material::set_sigma_a(size_t m, vec_dbl &v)
-{
-  Require(m < d_number_materials);
-  Require(v.size() == d_number_groups);
-  for (size_t g = 0; g < d_number_groups; g++)
-    d_sigma_a[g][m] = v[g];
-}
-
-//---------------------------------------------------------------------------//
-void Material::set_nu_sigma_f(size_t m, vec_dbl &v)
-{
-  Require(m < d_number_materials);
-  Require(v.size() == d_number_groups);
-  for (size_t g = 0; g < d_number_groups; g++)
-    d_nu_sigma_f[g][m] = v[g];
-}
-
-//---------------------------------------------------------------------------//
-void Material::set_sigma_f(size_t m, vec_dbl &v)
-{
-  Require(m < d_number_materials);
-  Require(v.size() == d_number_groups);
-  for (size_t g = 0; g < d_number_groups; g++)
-    d_sigma_f[g][m] = v[g];
-}
-
-//---------------------------------------------------------------------------//
-void Material::set_nu(size_t m, vec_dbl &v)
-{
-  Require(m < d_number_materials);
-  Require(v.size() == d_number_groups);
-  for (size_t g = 0; g < d_number_groups; g++)
-    d_nu[g][m] = v[g];
-}
-
-//---------------------------------------------------------------------------//
-void Material::set_chi(size_t m, vec_dbl &v)
-{
-  Require(m < d_number_materials);
-  Require(v.size() == d_number_groups);
-  for (size_t g = 0; g < d_number_groups; g++)
-    d_chi[g][m] = v[g];
-}
-
-//---------------------------------------------------------------------------//
-void Material::set_sigma_s(size_t m, size_t g, vec_dbl &v)
-{
-  Require(m < d_number_materials);
-  Require(g < d_number_groups);
-  Require(v.size() == d_number_groups);
-  for (size_t gp = 0; gp < d_number_groups; gp++)
-    d_sigma_s[g][gp][m] = v[gp];
-}
-
-//---------------------------------------------------------------------------//
-void Material::set_diff_coef(size_t m, vec_dbl &v)
-{
-  Require(m < d_number_materials);
-  Require(v.size() == d_number_groups);
-  for (size_t g = 0; g < d_number_groups; g++)
-    d_diff_coef[g][m] = v[g];
 }
 
 //----------------------------------------------------------------------------//
@@ -258,7 +204,7 @@ void Material::compute_sigma_a()
     {
       double sa = d_sigma_t[g][m];
       for (size_t gp = 0; gp < d_number_groups; gp++)
-        sa -= d_sigma_s[gp][g][m];
+        sa -= d_sigma_s[gp][g][m][0];
       d_sigma_a[g][m] = sa;
     }
   }
@@ -297,10 +243,10 @@ void Material::finalize()
     {
       // Downscatter from gp to g
       for (size_t gp = 0; gp < g; gp++)
-        if (d_sigma_s[g][gp][m] > 0.0) lower = std::min(gp, lower);
+        if (d_sigma_s[g][gp][m][0] > 0.0) lower = std::min(gp, lower);
       // Upscatter from gp to g
       for (size_t gp = 0; gp < d_number_groups; gp++)
-        if (d_sigma_s[g][gp][m] > 0.0) upper = std::max(gp, upper);
+        if (d_sigma_s[g][gp][m][0] > 0.0) upper = std::max(gp, upper);
     }
     d_scatter_bounds[g][0] = lower;           // lowest gp into a row g
     d_scatter_bounds[g][1] = upper;           // highest gp into a row g
@@ -314,10 +260,10 @@ void Material::finalize()
     {
       // Downscatter from g to gp
       for (size_t g = 0; g < gp; g++)
-        if (d_sigma_s[g][gp][m] > 0.0) lower = std::min(g, lower);
+        if (d_sigma_s[g][gp][m][0] > 0.0) lower = std::min(g, lower);
       // Upscatter from gp to g
       for (size_t g = 0; g < d_number_groups; g++)
-        if (d_sigma_s[g][gp][m] > 0.0) upper = std::max(g, upper);
+        if (d_sigma_s[g][gp][m][0] > 0.0) upper = std::max(g, upper);
     }
     d_scatter_bounds[gp][2] = upper; // Numerically, the bounds are
     d_scatter_bounds[gp][3] = lower; // in reverse order for adjoint.
@@ -375,7 +321,6 @@ void Material::display()
 //----------------------------------------------------------------------------//
 void Material::material_display()
 {
-
   using std::cout;
   using std::endl;
   using std::printf;
@@ -434,15 +379,19 @@ void Material::material_display()
       printf("%13.6e ", diff_coef(m, g));
 
     printf("\n");
-    for (size_t gp = 0; gp < d_number_groups; gp++)
+    for (size_t l = 0; l <= d_legendre_order; ++l)
     {
-      printf("%3i<-gp  ", gp);
-      for (size_t g = 0; g < d_number_groups; g++)
-        printf("%13.6e ", sigma_s(m, gp, g));
+      printf("l = %3i  \n", l);
+      for (size_t gp = 0; gp < d_number_groups; gp++)
+      {
+        printf("%3i<-gp  ", gp);
+        for (size_t g = 0; g < d_number_groups; g++)
+          printf("%13.6e ", sigma_s(m, gp, g));
+        printf("\n");
+      }
       printf("\n");
     }
     printf("\n");
-
   } // end material loop
 
   // Other info
@@ -460,3 +409,7 @@ void Material::material_display()
 }
 
 } // end namespace detran_material
+
+//----------------------------------------------------------------------------//
+//              end of file Material.cc
+//----------------------------------------------------------------------------//

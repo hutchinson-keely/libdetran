@@ -1,10 +1,10 @@
-//----------------------------------*-C++-*----------------------------------//
+//----------------------------------*-C++-*-----------------------------------//
 /**
  *  @file  material_fixture.hh
  *  @brief Materials for testing
  *  @note
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #ifndef MATERIAL_FIXTURE_HH_
 #define MATERIAL_FIXTURE_HH_
@@ -27,7 +27,7 @@ static SP_material material_fixture_1g()
   // Create the new database.
   SP_material mat;
   // 1 group, 3 materials.
-  mat = new detran_material::Material(3, 1, "fixture_1g");
+  mat = new detran_material::Material(3, 1, 0, "fixture_1g");
 
   // ---------------------------
   // Material 0: strong scatter
@@ -80,7 +80,7 @@ static SP_material material_fixture_2g()
   SP_material mat;
   // 2 groups, 4 materials, and we don't turn off upscatter explicitly
   // (though there happens to be no upscatter in this data)
-  mat = new detran_material::Material(4, 2, "fixture_2g");
+  mat = new detran_material::Material(4, 2, 0, "fixture_2g");
 
   // ---------------------------
   // Material 0: Water
@@ -189,7 +189,7 @@ static SP_material material_fixture_7g()
   // Create the new database.
   SP_material mat;
   // 7 groups, 7 materials
-  mat = new detran_material::Material(7, 7, "fixture_7g");
+  mat = new detran_material::Material(7, 7, 0, "fixture_7g");
 
   // --------------------------------------------
   // Material 0: UO2 fuel-clad
@@ -653,6 +653,6 @@ static SP_material material_fixture_7g()
 
 #endif /* MATERIAL_FIXTURE_HH_ */
 
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 //              end of material_fixture.hh
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//

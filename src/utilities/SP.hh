@@ -7,8 +7,8 @@
  */
 //----------------------------------------------------------------------------//
 
-#ifndef SP_HH_
-#define SP_HH_
+#ifndef detran_utilities_SP_HH_
+#define detran_utilities_SP_HH_
 
 #include "DBC.hh"
 
@@ -266,18 +266,7 @@ private:
 
 #include "SP.i.hh"
 
-//----------------------------------------------------------------------------//
-// SP CONSTRUCTOR MACRO
-//----------------------------------------------------------------------------//
-
-#define SPCREATE(class_name, return_type, types, vals)  \
-static return_type CREATE types                         \
-{                                                       \
-  return_type p(new class_name vals) ;                  \
-  return p;                                             \
-};
-
-#endif // SP_HH_
+#endif // detran_utilities_SP_HH_
 
 //----------------------------------------------------------------------------//
 //              end of SP.hh
