@@ -2,13 +2,22 @@
 #
 # Copyright (C) 2013 Jeremy Roberts <j.alyn.roberts@gmail.com>
 
-from utilities import *
-from angle import *
-from callow import *
+import sys
+try :
+  import numpy as np
+except ImportError :
+  print "ERROR: Could not import Numpy, which is needed for pydetran."
+  raise
+  
+import utilities
+import callow
+
+#from angle import *
+ 
 #from orthog import *
-from geometry import *
-from material import *
-from external_source import *
+#from geometry import *
+#from material import *
+#from external_source import *
 # from boundary import *
 # from transport import *
 # from kinetics import *
@@ -16,35 +25,7 @@ from external_source import *
 # from solvers import *
 # from postprocess import *
 
-has_numpy = False
-try :
-  import numpy as np
-  has_numpy = True
-except ImportError :
-  print "Warning: Could not import Numpy.  Numpy is highly recommended."
-  print "         Detran utilities are unavailable without Numpy."
-  
-if has_numpy :
-  try :
-    from pydetranutils import *
-  except ImportError :
-    print "Warning: Could not import Detran utilities."
+#from pydetranutils import *
+ 
 
-import sys
-Callow.initialize(sys.argv)
-
-# global __detran_python_manager__
-# 
-# # Instantiate this class to ensure it outlives Detran objects.  Then, its
-# # destructor can safely finalize PETsc and such.
-# class PyManager :
-#   def __init__(self, argv) :
-#     self.M = Manager()
-#     self.M.initialize(argv)
-# 
-# __detran_python_manager__ = Callow.initialize(sys.argv)
-# 
-# import atexit
-# def pyfinalize():
-#   __detran_python_manager__.M.finalize()
-# atexit.register(pyfinalize)
+callow.Callow.initialize(sys.argv)

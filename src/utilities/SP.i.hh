@@ -320,17 +320,10 @@ SP<T>& SP<T>::operator=(const SP<X> spx_in)
 template<class T>
 void SP<T>::free()
 {
-
   Require (r);
 
-  // if 0 refs, we haven't used the sp
-//  if (r->refs() == 0)
-//  {
-//    Assert(not p);
-//    delete r;
-//  }
-
   r->decrement();
+
   // if the count goes to zero then we free the data
   if (r->refs() == 0)
   {

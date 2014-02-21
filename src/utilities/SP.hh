@@ -13,6 +13,7 @@
 #include "DBC.hh"
 
 #ifdef DETRAN_ENABLE_BOOST
+#include <boost/serialization/split_member.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -152,7 +153,13 @@ class SP
 public:
 
   /// Default constructor.
-  SP() : p(0), r(new SPref) { Ensure (r); Ensure (r->refs() == 1); }
+  SP()
+    : p(0)
+    , r(new SPref)
+  {
+    Ensure (r);
+    Ensure (r->refs() == 1);
+  }
 
   /// Explicit constructor for type T *.
   inline explicit SP(T *p_in);
@@ -246,13 +253,23 @@ private:
 #ifdef DETRAN_ENABLE_BOOST
 
   friend class boost::serialization::access;
-  template<class Archive>
 
-  void serialize(Archive & ar, const unsigned int version)
+  template<class Archive>
+  void save(Archive & ar, const unsigned int version) const
   {
-    ar & p;
-    ar & r;
+    ar << p;
+    ar << r;
   }
+
+  template<class Archive>
+  void load(Archive & ar, const unsigned int version)
+  {
+    free();
+    ar >> p;
+    ar >> r;
+  }
+
+  BOOST_SERIALIZATION_SPLIT_MEMBER()
 
 #endif
 

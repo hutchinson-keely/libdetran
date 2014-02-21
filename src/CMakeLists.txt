@@ -183,7 +183,11 @@ endif()
 # LIST OF LIBRARIES
 #------------------------------------------------------------------------------#
 
-set(DETRAN_LIBS "utilities" "angle" "material")
+# utilities
+# angle callow material
+# geometry orthog
+
+set(DETRAN_LIBS "utilities" "callow")
 #                "callow" 
 #                "geometry" "orthog"
 #                "external_source"  "boundary"

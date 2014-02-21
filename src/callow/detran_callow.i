@@ -79,7 +79,7 @@
 // vector
 //---------------------------------------------------------------------------//
 
-//%include "vector/Vector.i"
+%include "vector/Vector.i"
 
 //---------------------------------------------------------------------------//
 // matrix
@@ -97,8 +97,9 @@
 
 %inline
 {
-  // Vectors to arrays (and then to Numpy). Careful, or you'll end up
+  // std::vectors to arrays (and then to Numpy). Careful, or you'll end up
   // in memory management pergatory.  These are used for plotting, etc.
+  //
   // Usage:
   //   v = vec_dbl(10, 1.23)
   //   a = vec_asarray(v)
