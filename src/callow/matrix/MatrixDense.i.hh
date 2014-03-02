@@ -133,6 +133,25 @@ inline bool MatrixDense::insert(int i, int j, double v, const int type)
 }
 
 //----------------------------------------------------------------------------//
+inline bool MatrixDense::insert(double *v, const int type)
+{
+  Require(d_is_ready);
+
+  for (int i = 0; i < d_m; ++i)
+  {
+    for (int j = 0; j < d_n; ++j)
+    {
+      int k = MDIDX(i, j);
+      if (type == ADD)
+        d_values[k] += v[k];
+      else
+        d_values[k] = v[k];
+    }
+  }
+  return true;
+}
+
+//----------------------------------------------------------------------------//
 inline bool MatrixDense::insert_row(int i, double *v, const int type)
 {
   Require(d_is_ready);

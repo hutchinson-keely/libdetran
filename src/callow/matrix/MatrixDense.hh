@@ -66,10 +66,13 @@ public:
 
   /// add one value (return false if can't add)
   bool insert(int  i, int  j, double  v, const int type = INSERT);
+  /// insert all values
+  bool insert(double *v, const int type = INSERT);
   /// add a row  (return false if can't add)
   bool insert_row(int  i, double *v, const int type = INSERT);
   /// add a column  (return false if can't add)
   bool insert_col(int  j, double *v, const int type = INSERT);
+
 
   /// value at a cardinal index
   const double& operator[](const int p) const;

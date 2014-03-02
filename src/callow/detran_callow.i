@@ -59,6 +59,8 @@
        {(int *j, double *v, int n)}
 %apply (int* IN_ARRAY1, int* IN_ARRAY2, double* IN_ARRAY3, int DIM1) 
        {(int *i, int *j, double* v, int n)}
+ 
+
 // Vector views.  These give us direct access to C arrays of 
 // basic types via Numpy arrays.  We'll apply these below to 
 // expose C++ std::vectors of those types.
@@ -66,6 +68,8 @@
        {(double** a, int *n)}
 %apply (int** ARGOUTVIEW_ARRAY1, int *DIM1) 
        {(int** a, int *n)}
+%apply (double** ARGOUTVIEW_ARRAY2, int *DIM1,  int *DIM2) 
+       {(double** a, int *m, int *n)}
 
 //---------------------------------------------------------------------------//
 // definitions
@@ -85,7 +89,7 @@
 // matrix
 //---------------------------------------------------------------------------//
 
-//%include "matrix/Matrix.i"
+%include "matrix/Matrix.i"
 
 //---------------------------------------------------------------------------//
 // linear solver

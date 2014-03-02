@@ -6,8 +6,6 @@
  */
 //---------------------------------------------------------------------------//
 
-%import  "detran_utilities.i"
-
 %ignore *::operator[];
 
 %shared_ptr(callow::Vector)
