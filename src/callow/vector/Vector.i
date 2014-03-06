@@ -8,6 +8,14 @@
 
 %ignore *::operator[];
 
+//
+//%apply (double** ARGOUTVIEW_ARRAY1, int *DIM1) 
+//       {(double** a, int *n)}
+//%apply (int** ARGOUTVIEW_ARRAY1, int *DIM1) 
+//       {(int** a, int *n)}
+//%apply (double** ARGOUTVIEW_ARRAY2, int *DIM1,  int *DIM2) 
+//       {(double** a, int *m, int *n)}
+
 %shared_ptr(callow::Vector)
 %include "Vector.hh"
 
@@ -36,6 +44,13 @@
         return
   %}
 }
+
+// Vector views.  These give us direct access to C arrays of 
+// basic types via Numpy arrays.  We'll apply these below to 
+// expose C++ std::vectors of those types.
+
+%apply (double** ARGOUTVIEW_ARRAY1, int *DIM1) 
+       {(double** a, int *n)}
 
 %inline
 {

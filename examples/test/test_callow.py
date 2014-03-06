@@ -1,7 +1,15 @@
 import unittest
 import sys
 import numpy as np
+from detran.utilities import *
 from detran.callow import *
+
+print dir(detran.callow)
+
+def soft_equiv(a, b, tol = 1.0e-12) :
+    if np.abs(a-b) < tol :
+        return True
+    return False
 
 class TestCallow(unittest.TestCase) :
 
@@ -45,5 +53,27 @@ class TestCallow(unittest.TestCase) :
         A.insert(v)
         A.display()
         
+    def test_solver(self) : 
+        A = Matrix(5, 5, 3)
+        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
+        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
+        v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
+        A.insert(i, j, v)
+        A.assemble()
+        b = Vector(5, 1.0)
+        x = Vector(5, 0.0)
+        y = Vector(5, 0.0)      
+        db = InputDB.Create()
+        db.put_str("linear_solver_type", "gmres")
+        solver = LinearSolverCreator.Create(db)
+        solver.set_operators(A)
+        solver.solve(b, x)
+        A.multiply(x, y)
+        for i in range(0, y.size()) :
+           self.assertTrue(soft_equiv(y[i], 1.0))
+           
+    def test_preconditioner(self) :
+        pass 
+    
 if __name__ == '__main__':
     unittest.main()

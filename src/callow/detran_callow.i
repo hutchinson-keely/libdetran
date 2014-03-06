@@ -32,16 +32,7 @@
 }
 
 %import "detran_utilities.i"
-//%include "callow_config.hh"
-
-//---------------------------------------------------------------------------//
-// initialization
-//---------------------------------------------------------------------------//
-
-//void callow_initialize(int argc, char *argv[]);
-//void callow_finalize();
-
-
+ 
 //---------------------------------------------------------------------------//
 // setup for numerical arrays
 //---------------------------------------------------------------------------//
@@ -54,49 +45,17 @@
   import_array();
 %}
 %numpy_typemaps(double, NPY_DOUBLE, int)
-%numpy_typemaps(in,     NPY_INT, int)
-%apply (int* IN_ARRAY1, double* IN_ARRAY2, int DIM1) 
-       {(int *j, double *v, int n)}
-%apply (int* IN_ARRAY1, int* IN_ARRAY2, double* IN_ARRAY3, int DIM1) 
-       {(int *i, int *j, double* v, int n)}
+%numpy_typemaps(in,     NPY_INT,    int)
  
-
-// Vector views.  These give us direct access to C arrays of 
-// basic types via Numpy arrays.  We'll apply these below to 
-// expose C++ std::vectors of those types.
-%apply (double** ARGOUTVIEW_ARRAY1, int *DIM1) 
-       {(double** a, int *n)}
-%apply (int** ARGOUTVIEW_ARRAY1, int *DIM1) 
-       {(int** a, int *n)}
-%apply (double** ARGOUTVIEW_ARRAY2, int *DIM1,  int *DIM2) 
-       {(double** a, int *m, int *n)}
-
 //---------------------------------------------------------------------------//
-// definitions
+// callow types
 //---------------------------------------------------------------------------//
-
-//%include "utils/CallowDefinitions.hh"
 
 %include "utils/Initialization.hh"
-
-//---------------------------------------------------------------------------//
-// vector
-//---------------------------------------------------------------------------//
-
 %include "vector/Vector.i"
-
-//---------------------------------------------------------------------------//
-// matrix
-//---------------------------------------------------------------------------//
-
 %include "matrix/Matrix.i"
-
-//---------------------------------------------------------------------------//
-// linear solver
-//---------------------------------------------------------------------------//
-
-//%include "preconditioner/Preconditioner.i"
-//%include "solver/Solver.i"
+%include "preconditioner/Preconditioner.i"
+%include "solver/Solver.i"
 
 
 %inline
