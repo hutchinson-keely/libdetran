@@ -61,6 +61,21 @@ void MatrixShell::display(bool forceprint) const
             << std::endl;
 }
 
+//----------------------------------------------------------------------------//
+PyMatrixShell::PyMatrixShell(const int m, const int n)
+  : MatrixShell(NULL, m, n)
+  , d_multiply(NULL)
+{
+  /* ... */
+}
+
+PyMatrixShell::SP_pymatrix
+PyMatrixShell::Create(const int m, const int n)
+{
+  detran_utilities::SP<PyMatrixShell> p(new PyMatrixShell(m, n));
+  return p;
+}
+
 } // end namespace callow
 
 //----------------------------------------------------------------------------//

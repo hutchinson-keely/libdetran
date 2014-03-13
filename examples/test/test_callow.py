@@ -3,8 +3,7 @@ import sys
 import numpy as np
 from detran.utilities import *
 from detran.callow import *
-
-print dir(detran.callow)
+import detran
 
 def soft_equiv(a, b, tol = 1.0e-12) :
     if np.abs(a-b) < tol :
@@ -46,12 +45,42 @@ class TestCallow(unittest.TestCase) :
             I.insert(i, i, 1.0)
         I.assemble()
         self.assertTrue(I(0, 0) == 1.0)
-        
+ 
     def test_matrixdense(self) :    
         A = MatrixDense(5, 5)
         v = np.array(range(0, 25), 'f')
         A.insert(v)
-        A.display()
+        AA=mat_asarray(A) # note, stored as col-major in detran; row major in np
+        for i in range(0, 5) :
+            for j in range(0, 5) :
+                k = i + 5*j
+                self.assertTrue(soft_equiv(AA[j][i], v[k]))
+        
+    def test_matrixshell(self) :
+        x = Vector(5, 1.0)
+        y = Vector(5, 0.0)
+        z = Vector(5, 0.0)
+        
+        A = Matrix(5, 5, 3)
+        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
+        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
+        v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
+        A.insert(i, j, v)
+        A.assemble()
+
+        class MyShell(PyMatrixShell) :
+            def __init__(self, n, m, A) :
+                PyMatrixShell.__init__(self, n, m)
+                self.A = A
+                self.set_multiply(self.do_multiply)
+            def do_multiply(self, xx, yy) :
+                self.A.multiply(xx, yy) 
+                
+        B = MyShell(5, 5, A)
+        A.multiply(x, y)
+        B.multiply(x, z)
+        for i in range(0, y.size()) :
+           self.assertTrue(soft_equiv(y[i], z[i]))
         
     def test_solver(self) : 
         A = Matrix(5, 5, 3)

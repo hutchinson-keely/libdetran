@@ -90,9 +90,48 @@ inline PetscErrorCode shell_multiply_wrapper(Mat A, Vec x, Vec y);
 
 CALLOW_TEMPLATE_EXPORT(detran_utilities::SP<MatrixShell>)
 
+/**
+ *  @class PyMatrixShell
+ *  @brief Expose the matrix shell to Python for user-defined action functions
+ */
+class PyMatrixShell: public callow::MatrixShell
+{
+public:
+
+  typedef detran_utilities::SP<PyMatrixShell> SP_pymatrix;
+  typedef void (*callback_ptr)(void *, Vector::SP_vector, Vector::SP_vector);
+
+  PyMatrixShell(const int m, const int n);
+
+  SP_pymatrix Create(const int m, const int n);
+
+  void set_multiply(callback_ptr f, void* data)
+  {
+    d_multiply = f;
+    d_context  = data;
+  }
+  // the client must implement the action y <-- A * x
+  void multiply(const Vector &x, Vector &y)
+  {
+    SP_vector X(new Vector(x.size(), const_cast<double*>(&x[0])));
+    SP_vector Y(new Vector(y.size(), &y[0]));
+    d_multiply(d_context, X, Y);
+  }
+  // the client must implement the action y <-- A' * x
+  void multiply_transpose(const Vector &x, Vector &y)
+  {
+    THROW("NOT IMPLEMENTED");
+  }
+private:
+  callback_ptr d_multiply;
+};
+
+
 } // end namespace callow
 
 #include "MatrixShell.i.hh"
+
+
 
 #endif /* callow_MATRIXSHELL_HH_ */
 

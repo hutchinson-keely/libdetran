@@ -6,6 +6,9 @@
  */
 //----------------------------------------------------------------------------//
 
+%import "vector/Vector.i"
+
+
 %ignore *::operator[];
 
 //----------------------------------------------------------------------------//
@@ -145,13 +148,29 @@
 // INCLUDES
 //----------------------------------------------------------------------------//
 
+%include callback.i 
+
+// Set the callback setter for python-based time-dependent materials
+setCallbackMethod(1, // this is a *unique* identifier
+                  callow::PyMatrixShell, 
+                  set_multiply, 
+                  (void* data, callow::Vector::SP_vector x, callow::Vector::SP_vector y), 
+                  (callow::Vector::SP_vector x, callow::Vector::SP_vector y), 
+                  (x, y), 1)
+
 %shared_ptr(callow::MatrixBase)
 %shared_ptr(callow::Matrix)
 %shared_ptr(callow::MatrixDense)
+%shared_ptr(callow::MatrixShell)
+%shared_ptr(callow::PyMatrixShell)
 %include "MatrixBase.hh"
 %include "Matrix.hh"
 %include "MatrixDense.hh"
- 
+%include "MatrixShell.hh"
+
+%apply (double** ARGOUTVIEW_ARRAY2, int* DIM1, int* DIM2)
+       {(double** a, int* m, int* n)}
+
 %inline
 {
   // View dense matrix as numpy matrix
@@ -162,3 +181,4 @@
     *a = &M[0];
   }
 }
+
