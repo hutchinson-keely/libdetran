@@ -19,6 +19,7 @@
 #include "callow/solver/LinearSolverCreator.hh"
 #include "callow/solver/EigenSolverCreator.hh"
 #include "callow/preconditioner/Preconditioner.hh"
+#include "callow/preconditioner/PCMatrix.hh"
 %}
 
 %feature("autodoc", "3");

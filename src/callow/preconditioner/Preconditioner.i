@@ -7,6 +7,7 @@
 //----------------------------------------------------------------------------//
 
 %shared_ptr(callow::Preconditioner)
+%shared_ptr(callow::PCMatrix)
  
 %include "Preconditioner.hh"
- 
+%include "PCMatrix.hh"

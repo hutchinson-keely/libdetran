@@ -9,11 +9,13 @@
 // LIST OF TEST FUNCTIONS
 #define TEST_LIST            \
         FUNC(test_PCJacobi)  \
-        FUNC(test_PCILU0)
+        FUNC(test_PCILU0)    \
+        FUNC(test_PCMatrix)
 
 #include "TestDriver.hh"
 #include "preconditioner/PCJacobi.hh"
 #include "preconditioner/PCILU0.hh"
+#include "preconditioner/PCMatrix.hh"
 
 #include "matrix_fixture.hh"
 #include "matrix/Matrix.hh"
@@ -54,6 +56,17 @@ int test_PCILU0(int argc, char *argv[])
 
   PCILU0 P(A);
   P.display("pc_ilu0.out");
+
+  return 0;
+}
+
+//----------------------------------------------------------------------------//
+int test_PCMatrix(int argc, char *argv[])
+{
+  Matrix::SP_matrix A = test_matrix_1(5);
+
+  PCMatrix P(A);
+  P.display("pc_matrix.out");
 
   return 0;
 }

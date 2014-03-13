@@ -101,8 +101,33 @@ class TestCallow(unittest.TestCase) :
         for i in range(0, y.size()) :
            self.assertTrue(soft_equiv(y[i], 1.0))
            
-    def test_preconditioner(self) :
-        pass 
+    def test_pcmatrix(self) :
+        
+        x = Vector(5, 1.0)
+        y = Vector(5, 0.0)
+        z = Vector(5, 0.0)
+        A = Matrix(5, 5, 3)
+        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
+        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
+        v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
+        A.insert(i, j, v)
+        A.assemble()      
+        
+        class MyShell(PyMatrixShell) :
+            def __init__(self, n, m, A) :
+                PyMatrixShell.__init__(self, n, m)
+                self.A = A
+                self.set_multiply(self.do_multiply)
+            def do_multiply(self, xx, yy) :
+                self.A.multiply(xx, yy) 
+        B = MyShell(5, 5, A)
+        
+        # we can use a python class in detran...neat.
+        P = PCMatrix(B)
+        P.apply(x, y)
+        A.multiply(x, z)
+        for i in range(0, y.size()) :
+           self.assertTrue(soft_equiv(y[i], z[i]))  
     
 if __name__ == '__main__':
     unittest.main()

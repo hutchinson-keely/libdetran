@@ -5,6 +5,7 @@ SET(PRECONDITIONER_SRC
   ${SRC_DIR}/PCJacobi.cc
   ${SRC_DIR}/PCILU0.cc
   ${SRC_DIR}/PCShell.cc
+  ${SRC_DIR}/PCMatrix.cc
   PARENT_SCOPE
 )
 

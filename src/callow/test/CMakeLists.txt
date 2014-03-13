@@ -48,6 +48,7 @@ ADD_EXECUTABLE(test_Preconditioners         test_Preconditioners.cc)
 TARGET_LINK_LIBRARIES(test_Preconditioners  callow )
 ADD_TEST(test_PCJacobi                      test_Preconditioners  0)
 ADD_TEST(test_PCILU0                        test_Preconditioners  1)
+ADD_TEST(test_PCMatrix                      test_Preconditioners  2)
 
 # Performance, etc.
 #ADD_EXECUTABLE(test_Threading               test_Threading.cc)
