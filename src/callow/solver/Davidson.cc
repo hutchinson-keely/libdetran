@@ -10,34 +10,30 @@
 #include "callow/matrix/Matrix.hh"
 #include "callow/matrix/MatrixDense.hh"
 #include "callow/solver/Eispack.hh"
-#include "EigenSolverCreator.hh"
+#include "callow/preconditioner/PCMatrix.hh"
 
 namespace callow
 {
 
 //----------------------------------------------------------------------------//
-Davidson::Davidson(const double    tol,
-                   const int       maxit,
-                   const int       subspace_size)
-  : Base(tol, maxit, "davidson")
-  , d_subspace_size(subspace_size)
+Davidson::Davidson(SP_db db)
+  : EigenSolver("davidson", db)
 {
   // create projected system solver
-  SP_db db = detran_utilities::InputDB::Create();
-  db->put<std::string>("eigen_solver_type",   "eispack");
-  db->put<double>("eigen_solver_tol",         d_tolerance);
-  db->put<int>("eigen_solver_maxit",          10000);
-  db->put<double>("linear_solver_atol",       d_tolerance);
-  db->put<double>("linear_solver_rtol",       d_tolerance);
-  db->put<int>("linear_solver_monitor_level", 0);
-  db->put<int>("eigen_solver_monitor_level",  0);
-  d_projected_solver = EigenSolverCreator::Create(db);
+  SP_db psdb = detran_utilities::InputDB::Create();
+  psdb->put<std::string>("eigen_solver_type",   "eispack");
+  psdb->put<double>("eigen_solver_tol",         d_tolerance/2.0);
+  psdb->put<int>("eigen_solver_maxit",          10000);
+  psdb->put<double>("linear_solver_atol",       d_tolerance/2.0);
+  psdb->put<double>("linear_solver_rtol",       d_tolerance/2.0);
+  psdb->put<int>("linear_solver_monitor_level", 0);
+  psdb->put<int>("eigen_solver_monitor_level",  0);
+  d_projected_solver = EigenSolver::Create(db);
 }
 
 //----------------------------------------------------------------------------//
 void Davidson::set_operators(SP_matrix A,
-                             SP_matrix B,
-                             SP_db     db)
+                             SP_matrix B)
 {
   Insist(A, "The operator A cannot be null");
   Require(A->number_rows() == A->number_columns());
@@ -63,15 +59,31 @@ void Davidson::set_operators(SP_matrix A,
   // Create the residual function
   d_A_minus_ritz_times_B = new DavidsonResidual(d_A, d_B, this);
 
+  SP_db pcdb;
+  if (d_db->check("eigen_solver_pc_db"))
+    pcdb = d_db->get<SP_db>("eigen_solver_pc_db");
+
   // Create the default preconditioner
-  d_P = new DavidsonDefaultP(d_A_minus_ritz_times_B, NULL, db);
+  d_P = new DavidsonDefaultP(d_A_minus_ritz_times_B, NULL, pcdb);
 }
 
 //----------------------------------------------------------------------------//
-void Davidson::set_preconditioner(SP_pc P, const int side)
+void Davidson::set_preconditioner(SP_preconditioner P)
 {
   Require(P);
   d_P = P;
+}
+
+//----------------------------------------------------------------------------//
+void Davidson::set_preconditioner_matrix(SP_matrix P)
+{
+  Require(P);
+
+  SP_db pcdb;
+  if (d_db->check("eigen_solver_pc_db"))
+    pcdb = d_db->get<SP_db>("eigen_solver_pc_db");
+
+  d_P = new PCMatrix(P, pcdb);
 }
 
 //----------------------------------------------------------------------------//
@@ -87,10 +99,17 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
   Vector r(m, 0.0);
   Vector t(m, 0.0);
 
+  int subspace_size = 20;
+  if (d_db->check("eigen_solver_subspace_size"))
+  {
+    subspace_size = d_db->get<int>("eigen_solver_subspace_size");
+  }
+  Assert(subspace_size > 0);
+
   // initialize the orthogonal basis
-  std::vector<Vector> V(d_subspace_size,   Vector(m, 0.0));
-  std::vector<Vector> V_a(d_subspace_size, Vector(m, 0.0));
-  std::vector<Vector> V_b(d_subspace_size, Vector(m, 0.0));
+  std::vector<Vector> V(subspace_size,   Vector(m, 0.0));
+  std::vector<Vector> V_a(subspace_size, Vector(m, 0.0));
+  std::vector<Vector> V_b(subspace_size, Vector(m, 0.0));
   V[0].copy(x0);
   V[0].scale(1.0/V[0].norm());
   d_A->multiply(V[0], V_a[0]); // aka  Dinv(L)MF
@@ -102,10 +121,10 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
 
   // perform outer iterations
   size_t it = 1;
-  size_t outers = d_maximum_iterations / d_subspace_size + 1;
+  size_t outers = d_maximum_iterations / subspace_size + 1;
   for (size_t o = 0; o < outers; ++o)
   {
-    for (size_t i = 0; i < d_subspace_size; ++i, ++it)
+    for (size_t i = 0; i < subspace_size; ++i, ++it)
     {
       std::cout << "it=" << it << " o=" << o << " i=" << i << std::endl;
       // construct the projected problem, Ax=eBx
@@ -155,7 +174,7 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
       }
       // restart if necessary (saving u as is)
       t.copy(u);
-      if (i == d_subspace_size - 1) break;
+      if (i == subspace_size - 1) break;
       // update the subspace
       d_P->apply(r, u);
       //u.display(" V = P\R");

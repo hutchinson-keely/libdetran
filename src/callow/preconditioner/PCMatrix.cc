@@ -12,19 +12,19 @@ namespace callow
 {
 
 //----------------------------------------------------------------------------//
-PCMatrix::PCMatrix(SP_matrix P_Inv, std::string name)
-  : Preconditioner(name)
-  , d_P_inv(P_Inv)
+PCMatrix::PCMatrix(SP_matrix A, SP_db db)
+  : Preconditioner("PCMatrix", db)
+  , d_P_inv(A)
 {
   if (d_P_inv) d_size = d_P_inv->number_columns();
 }
 
 //----------------------------------------------------------------------------//
-void PCMatrix::set_matrix(SP_matrix P_inv)
+void PCMatrix::set_matrix(SP_matrix A)
 {
-  Require(P_inv);
-  d_P_inv = P_inv;
-  d_size = d_P_inv->number_columns();
+  Require(A);
+  d_P_inv = A;
+  d_size  = d_P_inv->number_columns();
 }
 
 //----------------------------------------------------------------------------//

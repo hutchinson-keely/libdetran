@@ -15,13 +15,13 @@ namespace callow
 #ifdef CALLOW_ENABLE_SLEPC
 
 //----------------------------------------------------------------------------//
-SlepcSolver::SlepcSolver(const std::string &eps_type,
-                         const double       tol,
-                         const int          maxit,
-                         const int          number_values)
-  : EigenSolver(tol, maxit, "solver_slepc")
-  , d_eps_type(eps_type)
+SlepcSolver::SlepcSolver(SP_db db)
+  : EigenSolver("solver_slepc", db)
 {
+  d_eps_type = "krylovschur";
+  if (d_db->check("eigenvalue_solver_eps_type"))
+    d_eps_type = d_db->get<std::string>("eigenvalue_solver_eps_type");
+
   PetscErrorCode ierr;
 
   // Create the context.
@@ -112,8 +112,7 @@ void SlepcSolver::set_operators(SP_matrix    A,
 }
 
 //----------------------------------------------------------------------------//
-void SlepcSolver::set_preconditioner(SP_preconditioner  P,
-                                     const int          side)
+void SlepcSolver::set_preconditioner(SP_preconditioner P)
 {
   Require(P);
   d_P = P;
@@ -126,8 +125,7 @@ void SlepcSolver::set_preconditioner(SP_preconditioner  P,
 }
 
 //----------------------------------------------------------------------------//
-void SlepcSolver::set_preconditioner_matrix(SP_matrix  P,
-                                            const int  side)
+void SlepcSolver::set_preconditioner_matrix(SP_matrix P)
 {
   Require(P);
   ST st;

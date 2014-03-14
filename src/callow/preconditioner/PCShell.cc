@@ -13,7 +13,7 @@ namespace callow
 
 //----------------------------------------------------------------------------//
 PCShell::PCShell(std::string name, void* context)
-  : Base(name)
+  : Preconditioner(name)
   , d_context(context)
 {
   /* ... */

@@ -12,14 +12,14 @@ namespace callow
 {
 
 //----------------------------------------------------------------------------//
-PCJacobi::PCJacobi(SP_matrix A)
-  : Base("PCJacobi")
+PCJacobi::PCJacobi(SP_matrix A, SP_db db)
+  : Preconditioner("PCJacobi", db)
 {
   Require(A);
   Require(A->number_rows() == A->number_columns());
   Insist(dynamic_cast<Matrix*>(A.bp()),
     "Need an explicit matrix for use with PCILU0");
-  SP_matrixfull B(A);
+  Matrix::SP_matrix B(A);
 
   // create the diagonal vector
   int n = B->number_rows();
@@ -40,10 +40,13 @@ PCJacobi::PCJacobi(SP_matrix A)
 }
 
 //----------------------------------------------------------------------------//
-PCJacobi::SP_preconditioner PCJacobi::Create(SP_matrix A)
+void PCJacobi::apply(Vector &b, Vector &x)
 {
-  SP_preconditioner p(new PCJacobi(A));
-  return p;
+  Require(x.size() == d_P->size());
+
+  // apply x = inv(P)*b
+  x.copy(b);
+  x.multiply((*d_P));
 }
 
 } // end namespace detran

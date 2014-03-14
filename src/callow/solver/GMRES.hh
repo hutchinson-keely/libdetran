@@ -14,6 +14,8 @@
 namespace callow
 {
 
+class MatrixDense;
+
 /**
  *  @class GMRES
  *  @brief Uses preconditioned GMRES(m) iteration to solve a system
@@ -54,14 +56,9 @@ public:
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
-  GMRES(const double atol, const double rtol, const int maxit,
-        const int restart = 20);
+  GMRES(SP_db db);
 
   virtual ~GMRES();
-
-  //--------------------------------------------------------------------------//
-  // PUBLIC FUNCTIONS
-  //--------------------------------------------------------------------------//
 
 private:
 
@@ -69,29 +66,11 @@ private:
   // DATA
   //--------------------------------------------------------------------------//
 
-  // expose base class members
-  using LinearSolver::d_absolute_tolerance;
-  using LinearSolver::d_relative_tolerance;
-  using LinearSolver::d_maximum_iterations;
-  using LinearSolver::d_residual;
-  using LinearSolver::d_number_iterations;
-  using LinearSolver::d_A;
-  using LinearSolver::d_P;
-  using LinearSolver::d_pc_side;
-  using LinearSolver::d_monitor_level;
-
   /// maximum size of krylov subspace
   int d_restart;
 
   /// reorthogonalize flag [0 = none, 1 = formula, 2 = always]
   int d_reorthog;
-
-  /// upper hessenberg [m+1][m], treated as dense
-  double** d_H;
-
-  /// cosine and sine term in givens rotation [k+1]
-  Vector d_c;
-  Vector d_s;
 
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL LINEAR SOLVERS MUST IMPLEMENT THIS
@@ -104,11 +83,10 @@ private:
   void solve_impl(const Vector &b, Vector &x);
 
   /// apply givens rotation to H
-  void apply_givens(const int k);
+  void apply_givens(MatrixDense &H, Vector &c, Vector &s, const int k);
 
-  void compute_y(Vector &y, const Vector &g, const int k);
+  void compute_y(MatrixDense &H, Vector &y, const Vector &g, const int k);
 
-  void initialize_H();
 };
 
 } // end namespace callow

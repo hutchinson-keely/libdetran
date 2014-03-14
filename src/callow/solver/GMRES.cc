@@ -7,41 +7,30 @@
 //----------------------------------------------------------------------------//
 
 #include "GMRES.hh"
+#include "callow/matrix/MatrixDense.hh"
 
 namespace callow
 {
 
 //----------------------------------------------------------------------------//
-GMRES::GMRES(const double  atol,
-             const double  rtol,
-             const int     maxit,
-             const int     restart)
-  : LinearSolver(atol, rtol, maxit, "solver_gmres")
-  , d_restart(restart)
+GMRES::GMRES(SP_db db)
+  : LinearSolver("gmres", db)
+  , d_restart(20)
   , d_reorthog(1)
-  , d_c(restart+1, 0.0)
-  , d_s(restart+1, 0.0)
 {
+  if (d_db->check("linear_solver_gmres_restart"))
+    d_restart = db->get<int>("linear_solver_gmres_restart");
   Insist(d_restart > 2, "Need a restart of > 2");
-  d_H = new double*[(restart + 1)];
-  for (int i = 0; i <= d_restart; i++)
-  {
-    d_H[i] = new double[restart];
-    for (int j = 0; j < d_restart; j++)
-      d_H[i][j] = 0.0;
-  }
-//  d_c.resize(restart + 1);
-//  d_s.resize(restart + 1);
 }
 
 //----------------------------------------------------------------------------//
 GMRES::~GMRES()
 {
-  for (int i = 0; i <= d_restart; i++)
-  {
-    delete [] d_H[i];
-  }
-  delete [] d_H;
+//  for (int i = 0; i <= d_restart; i++)
+//  {
+//    delete [] d_H[i];
+//  }
+//  delete [] d_H;
 }
 
 //----------------------------------------------------------------------------//
@@ -50,7 +39,14 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
   int restart = d_restart;
   if (restart >= d_A->number_rows()) restart = d_A->number_rows();
 
-  // Unknowns.  If x0 is nonzero, we need to separate it out.
+  // upper hessenberg
+  MatrixDense H(d_restart+1, d_restart);
+
+  // cosine and sine term in givens rotation [k+1]
+  Vector c(d_restart + 1, 0.0);
+  Vector s(d_restart + 1, 0.0);
+
+  // unknowns. if x0 is nonzero, we need to separate it out.
   Vector x(x0);
 
   // krylov basis
@@ -63,12 +59,9 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
   // vector such that x = V*y
   Vector y(d_restart, 0.0);
 
-  // vector such that g(1:k) = R*y --> x = V*inv(R)*g and |g(k+1)| is the residual
+  // vector such that g(1:k) = R*y --> x = V*inv(R)*g
+  // and |g(k+1)| is the residual
   Vector g(d_restart + 1, 0.0);
-
-  // initialize c and s
-  d_c.set(0.0);
-  d_s.set(0.0);
 
   //--------------------------------------------------------------------------//
   // outer iterations
@@ -161,11 +154,11 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
       double norm_Av = v[k+1].norm();
       for (int j = 0; j <= k; ++j)
       {
-        d_H[j][k] = v[k+1].dot(v[j]);
-        v[k+1].add_a_times_x(-d_H[j][k], v[j]);
+        H(j,k) = v[k+1].dot(v[j]);
+        v[k+1].add_a_times_x(-H(j,k), v[j]);
       }
-      d_H[k+1][k] = v[k+1].norm(L2);
-      double norm_Av_2 = d_H[k+1][k];
+      H(k+1,k) = v[k+1].norm(L2);
+      double norm_Av_2 = H(k+1,k);
 
       //----------------------------------------------------------------------//
       // optional reorthogonalization
@@ -179,23 +172,23 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
         //  A*v[k], then information might be lost so reorthogonalize.  the
         //  delta of 0.001 is what kelley uses in his test code.
 
-        if (d_monitor_level > 1) cout << " reorthog ... " << endl;
+        if (d_monitor_level > 1) std::cout << " reorthog ... " << std::endl;
         for (int j = 0; j < k; ++j)
         {
           double hr = v[j].dot(v[k+1]);
-          d_H[j][k] += hr;
+          H(j,k) += hr;
           v[k+1].add_a_times_x(-hr, v[j]);
         }
-        d_H[k+1][k] = v[k+1].norm();
+        H(k+1,k) = v[k+1].norm();
       }
 
       //----------------------------------------------------------------------//
       // watch for happy breakdown: if H[k+1][k] == 0, we've solved Ax=b
       //----------------------------------------------------------------------//
       bool happy = false;
-      if (d_H[k+1][k] != 0.0)
+      if (H(k+1,k) != 0.0)
       {
-        v[k+1].scale(1.0/d_H[k+1][k]);
+        v[k+1].scale(1.0/H(k+1,k));
       }
       else
       {
@@ -208,14 +201,14 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
       // apply givens rotations to triangularize H on-the-fly (it's neat!)
       //----------------------------------------------------------------------//
 
-      if (k > 0) apply_givens(k);
-      double nu = std::sqrt(d_H[k][k]*d_H[k][k] + d_H[k+1][k]*d_H[k+1][k]);
-      d_c[k] =  d_H[k  ][k] / nu;
-      d_s[k] = -d_H[k+1][k] / nu;
-      d_H[k  ][k] = d_c[k] * d_H[k][k] - d_s[k]*d_H[k+1][k];
-      d_H[k+1][k] = 0.0;
-      double g_0 = d_c[k]*g[k] - d_s[k]*g[k+1];
-      double g_1 = d_s[k]*g[k] + d_c[k]*g[k+1];
+      if (k > 0) apply_givens(H, c, s, k);
+      double nu = std::sqrt(H(k,k)*H(k,k) + H(k+1,k)*H(k+1,k));
+      c[k] =  H(k  ,k) / nu;
+      s[k] = -H(k+1,k) / nu;
+      H(k  ,k) = c[k]*H(k, k) - s[k]*H(k+1,k);
+      H(k+1,k) = 0.0;
+      double g_0 = c[k]*g[k] - s[k]*g[k+1];
+      double g_1 = s[k]*g[k] + c[k]*g[k+1];
       g[k  ] = g_0;
       g[k+1] = g_1;
 
@@ -242,7 +235,7 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
     // update the solution
     //----------------------------------------------------------------------//
 
-    compute_y(y, g, k);
+    compute_y(H, y, g, k);
 
     // reset the solution
     x.set(0.0);
@@ -268,6 +261,42 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
   x0.copy(x);
 
   return;
+}
+
+
+//----------------------------------------------------------------------------//
+void GMRES::apply_givens(MatrixDense &H, Vector &c, Vector &s, const int k)
+{
+  Require(k < d_restart);
+  for (int i = 0; i < k; ++i)
+  {
+    double g_0 = c[i]*H(i,k) - s[i]*H(i+1,k);
+    double g_1 = s[i]*H(i,k) + c[i]*H(i+1,k);
+    H(i,k)   = g_0;
+    H(i+1,k) = g_1;
+  }
+}
+
+//----------------------------------------------------------------------------//
+void GMRES::compute_y(MatrixDense &H, Vector &y, const Vector &g, const int k)
+{
+  // H is [m+1][m], though we may have only need for k*k
+  // solves H[0:k][0:k]*y[0:k] = g[0:k]
+  //  but only for H_ij for j>=i, i.e. upper triangle
+  Require(k <= d_restart);
+  Require(y.size() >= k);
+  Require(g.size() >= k);
+
+  for (int i = k - 1; i >= 0; --i)
+  {
+    y[i] = g[i];
+    for (int j = i + 1; j < k; ++j)
+    {
+      y[i] -= H(i,j) * y[j];
+    }
+    Assert(H(i,i) != 0.0);
+    y[i] /= H(i,i);
+  }
 }
 
 } // end namespace callow

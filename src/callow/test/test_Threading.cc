@@ -79,7 +79,7 @@ int test_ThreadedJacobi(int argc, char *argv[])
     Vector b(A->number_columns(), 1.0);
    // double t = omp_get_wtime();
     Jacobi solver(1.0e-8, 1.0e-8, 10000, 1.0);
-    solver.set_operators(A);
+    solver.set_operator(A);
     solver.set_monitor_level(1);
     #pragma omp parallel default(shared)
     {

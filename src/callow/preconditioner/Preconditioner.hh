@@ -13,6 +13,8 @@
 #include "callow/callow_config.hh"
 #include "callow/vector/Vector.hh"
 #include "callow/matrix/MatrixShell.hh"
+#include "utilities/Factory.hh"
+#include "utilities/InputDB.hh"
 #include <string>
 
 namespace callow
@@ -65,17 +67,26 @@ public:
   // TYPEDEFS
   //--------------------------------------------------------------------------//
 
-  typedef detran_utilities::SP<Preconditioner>  SP_preconditioner;
-  typedef detran_utilities::size_t              size_t;
+  typedef detran_utilities::SP<Preconditioner>      SP_preconditioner;
+  typedef MatrixBase::SP_matrix                     SP_matrix;
+  typedef detran_utilities::InputDB::SP_input       SP_db;
+  typedef detran_utilities::size_t                  size_t;
+
+  // REQUIRED type defining the creation function
+  typedef SP_preconditioner (*CreateFunction)(SP_matrix, SP_db);
+
+  // Factory
+  typedef detran_utilities::Factory<Preconditioner>   Factory_T;
 
   //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
-  /// Constructor
-  Preconditioner(const std::string &name);
   /// Virtual destructor
   virtual ~Preconditioner(){};
+
+  static SP_preconditioner Create(SP_matrix A = SP_matrix(0),
+                                  SP_db db    = SP_db(0));
 
   //--------------------------------------------------------------------------//
   // PUBLIC FUNCTIONS
@@ -107,12 +118,17 @@ protected:
 
   /// pc name
   std::string d_name;
+  /// Parameter database
+  SP_db d_db;
   /// PETSc preconditioner
   PC d_petsc_pc;
   /// SLEPc spectral transformation
   ST d_slepc_st;
   /// System size
   size_t d_size;
+
+  /// Constructor
+  Preconditioner(const std::string &name, SP_db db = SP_db(0));
 
 private:
 
@@ -146,9 +162,16 @@ PetscErrorCode st_apply_wrapper(ST st, Vec b, Vec x);
 
 CALLOW_TEMPLATE_EXPORT(detran_utilities::SP<Preconditioner>)
 
-} // end namespace callow
+/// Creation function template
+template <typename D>
+Preconditioner::SP_preconditioner
+Create(Preconditioner::SP_matrix A       = Preconditioner::SP_matrix(0),
+       Preconditioner::SP_db     db      = Preconditioner::SP_db(0))
+{
+  return Preconditioner::SP_preconditioner(new D(A, db));
+}
 
-#include "Preconditioner.i.hh"
+} // end namespace callow
 
 #endif // callow_PRECONDITIONER_HH_
 

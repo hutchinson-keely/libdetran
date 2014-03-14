@@ -11,6 +11,4 @@
  
 %include "LinearSolver.hh"
 %include "EigenSolver.hh"
-%include "LinearSolverCreator.hh"
-%include "EigenSolverCreator.hh"
  

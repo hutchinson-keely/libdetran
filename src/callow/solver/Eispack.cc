@@ -14,19 +14,16 @@ namespace callow
 {
 
 //----------------------------------------------------------------------------//
-Eispack::Eispack(const double tol,
-                 const int    maxit,
-                 int          which)
-  : EigenSolver(tol, maxit, "eispack")
-  , d_which_value(which)
+Eispack::Eispack(SP_db db)
+  : EigenSolver("eispack", db)
+  , d_which_value(1)
 {
   /* ... */
 }
 
 //----------------------------------------------------------------------------//
 void Eispack::set_operators(SP_matrix  A,
-                            SP_matrix  B,
-                            SP_db      db)
+                            SP_matrix  B)
 {
   Require(A);
   Insist(dynamic_cast<MatrixDense*>(A.bp()),

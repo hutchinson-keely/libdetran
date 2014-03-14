@@ -1,11 +1,10 @@
-//----------------------------------*-C++-*----------------------------------//
+//----------------------------------*-C++-*-----------------------------------//
 /**
- *  @file   PCIdentity.hh
- *  @author robertsj
- *  @date   Oct 24, 2012
- *  @brief  PCIdentity class definition.
+ *  @file  PCIdentity.hh
+ *  @brief PCIdentity class definition
+ *  @note  Copyright (C) 2012-2013 Jeremy Roberts
  */
-//---------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
 
 #ifndef callow_PCIDENTITY_HH_
 #define callow_PCIDENTITY_HH_
@@ -26,51 +25,24 @@ class PCIdentity: public Preconditioner
 
 public:
 
-  //-------------------------------------------------------------------------//
-  // TYPEDEFS
-  //-------------------------------------------------------------------------//
-
-  typedef Preconditioner                    Base;
-  typedef Base::SP_preconditioner           SP_preconditioner;
-  typedef MatrixBase::SP_matrix             SP_matrix;
-  typedef Matrix::SP_matrix                 SP_matrixfull;
-  typedef Vector::SP_vector                 SP_vector;
-
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
-  /// Constructor
-  PCIdentity(double factor = 1.0)
-    : Base("PCIdentity")
-    , d_factor(factor)
+  PCIdentity(SP_matrix A, SP_db db = SP_db(0))
+    : Preconditioner("PCIdentity", db)
   {/* ... */}
 
-  /// SP constructor
-  static SP_preconditioner Create(double factor = 1.0)
-  {
-    SP_preconditioner p(new PCIdentity(factor));
-    return p;
-  }
-
-  /// Virtual destructor
   virtual ~PCIdentity(){};
 
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL PRECONDITIONERS MUST IMPLEMENT THIS
-  //-------------------------------------------------------------------------//
+  //--------------------------------------------------------------------------//
 
-  /// Solve Px = b
   void apply(Vector &b, Vector &x)
   {
     x.copy(b);
-    x.scale(d_factor);
   }
-
-private:
-
-  /// Scaling factor
-  double d_factor;
 
 };
 

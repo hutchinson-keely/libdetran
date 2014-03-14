@@ -1,7 +1,7 @@
 //----------------------------------*-C++-*-----------------------------------//
 /**
- *  @file   PetscSolver.hh
- *  @brief  PetscSolver class definition
+ *  @file  PetscSolver.hh
+ *  @brief PetscSolver class definition
  *  @note  Copyright (C) 2013 Jeremy Roberts
  */
 //----------------------------------------------------------------------------//
@@ -29,20 +29,10 @@ class PetscSolver: public LinearSolver
 public:
 
   //--------------------------------------------------------------------------//
-  // TYPEDEFS
-  //--------------------------------------------------------------------------//
-
-  typedef LinearSolver                          Base;
-  typedef Base::SP_solver                       SP_solver;
-  typedef MatrixBase ::SP_matrix                SP_matrix;
-  typedef Preconditioner::SP_preconditioner     SP_preconditioner;
-  typedef Vector::SP_vector                     SP_vector;
-
-  //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
-  PetscSolver(const double atol, const double rtol, const int maxit);
+  PetscSolver(SP_db db);
 
   virtual ~PetscSolver();
 
@@ -50,17 +40,9 @@ public:
   // PUBLIC FUNCTIONS
   //--------------------------------------------------------------------------//
 
-  /**
-   *  This overloads the default implementation so that we can extract
-   *  the PETSc PC object and set it in our PC object if present.
-   *
-   */
-  void set_operators(SP_matrix A, SP_db db = SP_db(0));
+  void set_operator(SP_matrix A, SP_preconditioner P = SP_preconditioner(0));
 
-  /**
-   *  Set the preconditioner.  This allows the client to build, change, etc.
-   */
-  void set_preconditioner(SP_preconditioner P, const int side = LEFT);
+  void set_preconditioner(SP_preconditioner P = SP_preconditioner(0));
 
   /// Get the KSP object
   KSP petsc_solver(){return d_petsc_solver;}
@@ -70,15 +52,6 @@ private:
   //--------------------------------------------------------------------------//
   // DATA
   //--------------------------------------------------------------------------//
-
-  // expose base class members
-  using LinearSolver::d_absolute_tolerance;
-  using LinearSolver::d_relative_tolerance;
-  using LinearSolver::d_maximum_iterations;
-  using LinearSolver::d_residual;
-  using LinearSolver::d_number_iterations;
-  using LinearSolver::d_A;
-  using LinearSolver::d_P;
 
   // petsc solver type
   KSP d_petsc_solver;

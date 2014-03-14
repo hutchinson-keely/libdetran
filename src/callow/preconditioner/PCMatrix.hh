@@ -37,7 +37,7 @@ public:
   //--------------------------------------------------------------------------//
 
   /// Construct a shell preconditioner
-  PCMatrix(SP_matrix P_inv = SP_matrix(0), std::string name = "PCMatrix");
+  PCMatrix(SP_matrix A, SP_db db = SP_db(0));
 
   /// Virtual destructor
   virtual ~PCMatrix(){};

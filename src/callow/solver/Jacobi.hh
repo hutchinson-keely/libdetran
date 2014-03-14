@@ -50,20 +50,10 @@ class Jacobi: public LinearSolver
 public:
 
   //--------------------------------------------------------------------------//
-  // TYPEDEFS
-  //--------------------------------------------------------------------------//
-
-  typedef LinearSolver Base;
-
-  //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
-  Jacobi(const double atol,
-         const double rtol,
-         const int    maxit,
-         const double omega = 1.0,
-         bool         successive_norm = false);
+  Jacobi(SP_db db);
 
   virtual ~Jacobi(){}
 
@@ -72,15 +62,6 @@ public:
   //--------------------------------------------------------------------------//
 
 private:
-
-  //--------------------------------------------------------------------------//
-  // DATA
-  //--------------------------------------------------------------------------//
-
-  /// Use norm of residual (false=default) or successive iterates
-  bool d_successive_norm;
-  /// Weighting factor
-  double d_omega;
 
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL LINEAR SOLVERS MUST IMPLEMENT THIS
@@ -95,9 +76,6 @@ private:
 };
 
 } // end namespace callow
-
-// Inline member definitions
-#include "Jacobi.i.hh"
 
 #endif // callow_JACOBI_HH_
 

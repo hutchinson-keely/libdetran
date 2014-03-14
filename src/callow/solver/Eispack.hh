@@ -33,9 +33,7 @@ public:
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
-  Eispack(const double tol   = 1e-6,
-          const int    maxit = 100,
-          int          which = 1);
+  Eispack(SP_db db);
 
   virtual ~Eispack(){}
 
@@ -45,8 +43,7 @@ public:
 
   /// Sets the operators for the problem.  Eispack requires dense matrices.
   void set_operators(SP_matrix  A,
-                     SP_matrix  B  = SP_matrix(0),
-                     SP_db      db = SP_db(0));
+                     SP_matrix  B  = SP_matrix(0));
 
   /// Solve for the complete eigenspectrum
   void solve_complete(MatrixDense &V_R,

@@ -45,30 +45,20 @@ public:
   // TYPEDEFS
   //--------------------------------------------------------------------------//
 
-  typedef Preconditioner                    Base;
-  typedef Base::SP_preconditioner           SP_preconditioner;
-  typedef MatrixBase::SP_matrix             SP_matrix;
   typedef Matrix::SP_matrix                 SP_matrixfull;
-  typedef Vector::SP_vector                 SP_vector;
 
   //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
-  /// Construct an ILU0 preconditioner for the explicit matrix A
-  PCILU0(SP_matrix A);
+  PCILU0(SP_matrix A, SP_db db = SP_db(0));
 
-  /// SP constructor
-  static SP_preconditioner Create(SP_matrix A);
-
-  /// Virtual destructor
   virtual ~PCILU0(){};
 
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL PRECONDITIONERS MUST IMPLEMENT THIS
   //--------------------------------------------------------------------------//
 
-  /// Solve Px = b
   void apply(Vector &b, Vector &x);
 
 protected:
@@ -81,8 +71,6 @@ protected:
 };
 
 } // end namespace callow
-
-#include "PCILU0.i.hh"
 
 #endif // callow_PCILU0_HH_
 

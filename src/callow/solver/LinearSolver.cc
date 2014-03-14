@@ -7,6 +7,12 @@
 //----------------------------------------------------------------------------//
 
 #include "LinearSolver.hh"
+// solvers
+#include "Richardson.hh"
+#include "Jacobi.hh"
+#include "GaussSeidel.hh"
+#include "GMRES.hh"
+#include "PetscSolver.hh"
 // preconditioners
 #include "callow/preconditioner/PCILU0.hh"
 #include "callow/preconditioner/PCJacobi.hh"
@@ -14,70 +20,104 @@
 namespace callow
 {
 
+void InitLinearSolverFactory()
+{
+  REGISTER_CLASS(LinearSolver, Richardson,       "richardson")
+  REGISTER_CLASS(LinearSolver, Jacobi,           "jacobi")
+  REGISTER_CLASS(LinearSolver, GaussSeidel,      "gauss-seidel")
+  REGISTER_CLASS(LinearSolver, GMRES,            "gmres")
+#ifdef DETRAN_ENABLE_PETSC
+  REGISTER_CLASS(LinearSolver, PetscSolver,      "petsc")
+#endif
+}
+
 //----------------------------------------------------------------------------//
-LinearSolver::LinearSolver(const double atol,
-                           const double rtol,
-                           const int    maxit,
-                           std::string  name)
-  : d_name(name)
-  , d_absolute_tolerance(atol)
-  , d_relative_tolerance(rtol)
-  , d_maximum_iterations(maxit)
-  , d_residual(maxit + 1, 0)
+LinearSolver::SP_solver LinearSolver::Create(SP_db db)
+{
+  InitLinearSolverFactory();
+  // get key
+  std::string key = "gmres";
+  if (db)
+  {
+    if (db->check("linear_solver_type"))
+      key = db->get<std::string>("linear_solver_type");
+  }
+  else
+  {
+    db = new detran_utilities::InputDB();
+    db->put<std::string>("linear_solver_type", key);
+  }
+  return (Factory_T::Instance().GetCreateFunction(key))(db);
+}
+
+
+//----------------------------------------------------------------------------//
+LinearSolver::LinearSolver(std::string key, SP_db db)
+  : d_name(key)
+  , d_absolute_tolerance(1e-8)
+  , d_relative_tolerance(1e-8)
+  , d_maximum_iterations(100)
   , d_number_iterations(0)
   , d_pc_side(NONE)
   , d_monitor_level(2)
   , d_monitor_diverge(true)
   , d_norm_type(L2)
   , d_status(RUNNING)
+  , d_omega(1.0)
+  , d_successive_norm(false)
 {
-  Require(d_absolute_tolerance >= 0.0);
-  Require(d_relative_tolerance >= 0.0);
-  Require(d_maximum_iterations >  0);
+  set_parameters(db);
 }
 
 //----------------------------------------------------------------------------//
-void LinearSolver::set_operators(SP_matrix A, SP_db db)
+void LinearSolver::set_parameters(SP_db db)
+{
+  Require(db);
+  d_db = db;
+  if (d_db->check("linear_solver_atol"))
+    d_absolute_tolerance = d_db->get<double>("linear_solver_atol");
+  if (d_db->check("linear_solver_rtol"))
+    d_relative_tolerance = db->get<double>("linear_solver_rtol");
+  if (d_db->check("linear_solver_maxit"))
+    d_maximum_iterations = d_db->get<int>("linear_solver_maxit");
+  if (db->check("linear_solver_monitor_level"))
+    d_monitor_level = d_db->get<int>("linear_solver_monitor_level");
+  if (d_db->check("linear_solver_monitor_diverge"))
+    d_monitor_diverge = d_db->get<int>("linear_solver_monitor_diverge");
+  if (d_db->check("linear_solver_successive_norm"))
+    d_successive_norm = 0 != d_db->get<int>("linear_solver_successive_norm");
+  if (d_db->check("linear_solver_relaxation"))
+    d_omega = d_db->get<double>("linear_solver_relaxation");
+
+  d_number_iterations = 0;
+  d_residual.resize(d_maximum_iterations, 0.0);
+
+  Ensure(d_absolute_tolerance >= 0.0);
+  Ensure(d_relative_tolerance >= 0.0);
+  Ensure(d_maximum_iterations >  0);
+}
+
+//----------------------------------------------------------------------------//
+void LinearSolver::set_operator(SP_matrix A, SP_preconditioner P)
 {
   Require(A);
   d_A = A;
+  d_P = P;
   Ensure(d_A->number_rows() == d_A->number_columns());
-
-  // Set the db, if present.  Otherwise, d_db is unchanged, which
-  // lets us set new operators but maintain old parameters.
-  if (db) d_db = db;
-
-  std::string pc_type = "";
-  int pc_side = LEFT;
-
-  if (d_db)
+  if (d_P)
   {
-    if(d_db->check("pc_type"))
-      pc_type = d_db->get<std::string>("pc_type");
-    if (pc_type == "ilu0")
-    {
-      d_P = new PCILU0(d_A);
-    }
-    else if (pc_type == "jacobi")
-    {
-      d_P = new PCJacobi(d_A);
-    }
-    if(d_db->check("pc_side"))
-      pc_side = d_db->get<int>("pc_side");
+    Ensure(d_A->number_rows() == d_P->size());
   }
-
 }
 
 //----------------------------------------------------------------------------//
-void LinearSolver::
-set_tolerances(const double atol, const double rtol, const int maxit)
+void LinearSolver::set_preconditioner(SP_preconditioner P)
 {
-  d_absolute_tolerance = atol;
-  d_relative_tolerance = rtol;
-  d_maximum_iterations = maxit;
-  Require(d_absolute_tolerance > 0.0);
-  Require(d_relative_tolerance > 0.0);
-  Require(d_maximum_iterations >= 0);
+  Insist(d_A, "The operator must be set before the preconditioner.");
+  d_P = P;
+  if (!d_P)
+    d_P = Preconditioner::Create(d_A, d_db);
+  Ensure(d_A->number_rows() == d_P->size());
 }
 
 //----------------------------------------------------------------------------//
@@ -138,6 +178,25 @@ bool LinearSolver::monitor(int it, double r)
   return value;
 }
 
+
+//----------------------------------------------------------------------------//
+int LinearSolver::solve(const Vector &b, Vector &x)
+{
+  Require(x.size() == b.size());
+  Require(x.size() == d_A->number_rows());
+  // Resize the norm
+  d_residual.resize(d_maximum_iterations+1, 0.0);
+  d_status = RUNNING;
+  solve_impl(b, x);
+  if (d_status ==  MAXIT && d_monitor_level > 0)
+  {
+     printf("*** %s did not converge within the maximum number of iterations\n",
+            d_name.c_str());
+  }
+  // Resize the norm
+  d_residual.resize(d_number_iterations+1);
+  return d_status;
+}
 
 } // end namespace callow
 

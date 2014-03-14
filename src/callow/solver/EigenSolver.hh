@@ -15,6 +15,7 @@
 #include "callow/matrix/MatrixBase.hh"
 #include "callow/vector/Vector.hh"
 #include "utilities/SP.hh"
+#include "utilities/Factory.hh"
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -73,22 +74,28 @@ public:
   typedef detran_utilities::InputDB::SP_input     SP_db;
   typedef detran_utilities::size_t                size_t;
 
+  // REQUIRED type defining the creation function
+  typedef SP_solver (*CreateFunction)(SP_db db);
+
+  // Factory
+  typedef detran_utilities::Factory<EigenSolver>  Factory_T;
+
   //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
   /**
    *   @brief Constructor
-   *   @param     tol     tolerance
-   *   @param     maxit   maximum number of iterations
    *   @param     name    solver name
+   *   @param     db      parameter database
    */
-  EigenSolver(const double    tol   = 1e-6,
-              const int       maxit = 100,
-              std::string     name  = "solver");
+  EigenSolver(const std::string &name = "solver",
+              SP_db              db = SP_db(0));
 
   /// Destructor
   virtual ~EigenSolver(){}
+
+  static SP_solver Create(SP_db db);
 
   //--------------------------------------------------------------------------//
   // PUBLIC FUNCTIONS
@@ -103,42 +110,17 @@ public:
    *  @param db     optional database for solver and preconditioner options
    */
   virtual void set_operators(SP_matrix  A,
-                             SP_matrix  B  = SP_matrix(0),
-                             SP_db      db = SP_db(0));
+                             SP_matrix  B  = SP_matrix(0));
 
 
   /// Set the preconditioner for a generalized eigenvalue problem
-  virtual void set_preconditioner(SP_preconditioner P,
-                                  const int         side = LinearSolver::LEFT);
+  virtual void set_preconditioner(SP_preconditioner P = SP_preconditioner(0));
 
   /// Set the preconditioner matrix for a generalized eigenvalue problem
-  virtual void set_preconditioner_matrix(SP_matrix P,
-                                         const int side = LinearSolver::LEFT);
+  virtual void set_preconditioner_matrix(SP_matrix P);
 
-  /**
-   *  @brief Set the convergence criteria
-   *  @param tol  m tolerance (||r_n|| < tol)
-   *  @param maxit  maximum iterations (n < maxit)
-   */
-  void set_tolerances(const double tol, const int maxit)
-  {
-    d_tolerance = tol;
-    d_maximum_iterations = maxit;
-    Require(d_tolerance > 0.0);
-    Require(d_maximum_iterations >= 0);
-  }
-
-  /**
-   *  @brief Set the diagnostic level.
-   *
-   *  Higher levels means more output.
-   *
-   *  @param v  diagnostic level
-   */
-  void set_monitor_level(const int v)
-  {
-    d_monitor_level = v;
-  }
+  /// Reset parameter database
+  void set_parameters(SP_db db);
 
   /**
    *  @brief Solve the eigenvalue problem
@@ -152,9 +134,7 @@ public:
    */
   int solve(Vector &x, Vector &x0);
 
-  /**
-   *  @brief Solve the eigenvalue problem (SP variant)
-   */
+  /// Solve the eigenvalue problem (SP variant)
   int solve(SP_vector x, SP_vector x0)
   {
     return solve(*x, *x0);
@@ -196,12 +176,14 @@ protected:
   // DATA
   //--------------------------------------------------------------------------//
 
+  /// parameter database
+  SP_db d_db;
+  /// solver name
+  std::string d_name;
   /// convergence tolerance
   double d_tolerance;
   /// maximum iterations allowed
   int d_maximum_iterations;
-  /// solver name
-  std::string d_name;
   /// norm of successive residuals
   std::vector<double> d_residual_norm;
   /// number of iterations performed
@@ -245,9 +227,15 @@ protected:
 
 CALLOW_TEMPLATE_EXPORT(detran_utilities::SP<EigenSolver>)
 
-} // end namespace callow
+/// Creation function template
+template <typename D>
+EigenSolver::SP_solver
+Create(EigenSolver::SP_db db)
+{
+  return EigenSolver::SP_solver(new D(db));
+}
 
-#include "EigenSolver.i.hh"
+} // end namespace callow
 
 #endif // callow_EIGENSOLVER_HH_
 

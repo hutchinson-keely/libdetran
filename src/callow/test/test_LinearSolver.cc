@@ -17,7 +17,6 @@
 
 #include "utilities/TestDriver.hh"
 #include "callow/utils/Initialization.hh"
-#include "LinearSolverCreator.hh"
 // solvers
 #include "callow/solver/Richardson.hh"
 #include "callow/solver/Jacobi.hh"
@@ -53,9 +52,9 @@ int main(int argc, char *argv[])
 // system size
 int n = 20;
 // solver
-LinearSolverCreator::SP_solver solver;
+LinearSolver::SP_solver solver;
 // database
-LinearSolverCreator::SP_db db;
+LinearSolver::SP_db db;
 
 LinearSolver::SP_db get_db()
 {
@@ -84,11 +83,15 @@ int test_Richardson(int argc, char *argv[])
 {
   Vector X(n, 0.0);
   Vector B(n, 1.0);
+
+
   db = get_db();
   db->put<std::string>("linear_solver_type", "richardson");
   //db->put<int>("linear_solver_monitor_level", 1);
-  solver = LinearSolverCreator::Create(db);
-  solver->set_operators(test_matrix_1(n));
+  solver = LinearSolver::Create(db);
+
+  solver->set_operator(test_matrix_1(n));
+
   //Preconditioner::SP_preconditioner pcilu0(new PCILU0(test_matrix_1(n)));
   //solver->set_preconditioner(pcilu0, LinearSolver::LEFT);
   int status = solver->solve(B, X);
@@ -106,8 +109,8 @@ int test_Jacobi(int argc, char *argv[])
   Vector B(n, 1.0);
   db = get_db();
   db->put<std::string>("linear_solver_type", "jacobi");
-  solver = LinearSolverCreator::Create(db);
-  solver->set_operators(test_matrix_1(n));
+  solver = LinearSolver::Create(db);
+  solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);
   for (int i = 0; i < 20; ++i)
@@ -123,8 +126,8 @@ int test_GaussSeidel(int argc, char *argv[])
   Vector B(n, 1.0);
   db = get_db();
   db->put<std::string>("linear_solver_type", "gauss-seidel");
-  solver = LinearSolverCreator::Create(db);
-  solver->set_operators(test_matrix_1(n));
+  solver = LinearSolver::Create(db);
+  solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);
   for (int i = 0; i < 20; ++i)
@@ -139,10 +142,10 @@ int test_SOR(int argc, char *argv[])
   Vector X(n, 0.0);
   Vector B(n, 1.0);
   db = get_db();
-  db->put<std::string>("linear_solver_type", "sor");
-  db->put<double>("linear_solver_sor_omega", 1.3);
-  solver = LinearSolverCreator::Create(db);
-  solver->set_operators(test_matrix_1(n));
+  db->put<std::string>("linear_solver_type", "gauss-seidel");
+  db->put<double>("linear_solver_relaxation", 1.3);
+  solver = LinearSolver::Create(db);
+  solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);
   for (int i = 0; i < 20; ++i)
@@ -163,10 +166,11 @@ int test_GMRES(int argc, char *argv[])
   db->put<std::string>("linear_solver_type", "gmres");
   db->put<int>("linear_solver_maxit", 50);
   db->put<int>("linear_solver_gmres_restart", 16);
+
   // NO PC
   std::cout << "*** GMRES + NO PC ***" << std::endl;
-  solver = LinearSolverCreator::Create(db);
-  solver->set_operators(test_matrix_1(n));
+  solver = LinearSolver::Create(db);
+  solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);
   for (int i = 0; i < 20; ++i)
@@ -182,7 +186,9 @@ int test_GMRES(int argc, char *argv[])
   // PCILU0 -- LEFT
   std::cout << "*** GMRES + ILU(0) on LEFT ***" << std::endl;
   X.set(0.0);
-  solver->set_preconditioner(pcilu0, GMRES::LEFT);
+  db->put<int>("pc_side", LinearSolver::LEFT);
+  solver->set_parameters(db);
+  solver->set_preconditioner(pcilu0);
   status = solver->solve(B, X);
   TEST(status == SUCCESS);
   for (int i = 0; i < 20; ++i)
@@ -193,7 +199,9 @@ int test_GMRES(int argc, char *argv[])
   // PCILU0 -- RIGHT
   std::cout << "*** GMRES + ILU(0) on RIGHT ***" << std::endl;
   X.set(0.0);
-  solver->set_preconditioner(pcilu0, GMRES::RIGHT);
+  db->put<int>("pc_side", LinearSolver::RIGHT);
+  solver->set_parameters(db);
+  solver->set_preconditioner(pcilu0);
   status = solver->solve(B, X);
   TEST(status == SUCCESS);
   for (int i = 0; i < 20; ++i)
@@ -204,7 +212,9 @@ int test_GMRES(int argc, char *argv[])
   // PCJacobi -- LEFT
   std::cout << "*** GMRES + Jacobi on LEFT ***" << std::endl;
   X.set(0.0);
-  solver->set_preconditioner(pcjacobi, GMRES::LEFT);
+  db->put<int>("pc_side", LinearSolver::LEFT);
+  solver->set_parameters(db);
+  solver->set_preconditioner(pcjacobi);
   status = solver->solve(B, X);
   TEST(status == SUCCESS);
   for (int i = 0; i < 20; ++i)
@@ -215,7 +225,9 @@ int test_GMRES(int argc, char *argv[])
   // PCJacobi -- RIGHT
   std::cout << "*** GMRES + Jacobi on RIGHT ***" << std::endl;
   X.set(0.0);
-  solver->set_preconditioner(pcjacobi, GMRES::RIGHT);
+  db->put<int>("pc_side", LinearSolver::RIGHT);
+  solver->set_parameters(db);
+  solver->set_preconditioner(pcjacobi);
   status = solver->solve(B, X);
   TEST(status == SUCCESS);
   for (int i = 0; i < 20; ++i)
@@ -236,8 +248,8 @@ int test_PetscSolver(int argc, char *argv[])
   db->put<std::string>("pc_type", "ilu0");
 //  db->put<std::string>("pc_type", "petsc_pc");
 //  db->put<std::string>("petsc_pc_type", "ilu");
-  solver = LinearSolverCreator::Create(db);
-  solver->set_operators(test_matrix_1(n), db);
+  solver = LinearSolver::Create(db);
+  solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);
   for (int i = 0; i < 20; ++i)

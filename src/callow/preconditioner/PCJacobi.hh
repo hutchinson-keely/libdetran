@@ -37,24 +37,11 @@ class CALLOW_EXPORT PCJacobi: public Preconditioner
 public:
 
   //--------------------------------------------------------------------------//
-  // TYPEDEFS
-  //--------------------------------------------------------------------------//
-
-  typedef Preconditioner                    Base;
-  typedef Base::SP_preconditioner           SP_preconditioner;
-  typedef MatrixBase::SP_matrix             SP_matrix;
-  typedef Matrix::SP_matrix                 SP_matrixfull;
-  typedef Vector::SP_vector                 SP_vector;
-
-  //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
   /// Construct a Jacobi preconditioner for the explicit matrix A
-  PCJacobi(SP_matrix A);
-
-  /// SP constructor
-  static SP_preconditioner Create(SP_matrix A);
+  PCJacobi(SP_matrix A, SP_db db = SP_db(0));
 
   /// Virtual destructor
   virtual ~PCJacobi(){};
@@ -69,13 +56,11 @@ public:
 protected:
 
   /// Inverse diagonal of the user supplied matrix
-  SP_vector d_P;
+  Vector::SP_vector d_P;
 
 };
 
 } // end namespace callow
-
-#include "PCJacobi.i.hh"
 
 #endif // callow_PCJACOBI_HH_
 

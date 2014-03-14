@@ -64,6 +64,7 @@ PetscViewerBinaryOpen(PETSC_COMM_SELF, filename.c_str(), FILE_MODE_WRITE,
                       &viewer);
 MatView(A, viewer);
 PetscViewerDestroy(&viewer);
+MatDestroy(&A);
 #endif
 }
 

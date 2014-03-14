@@ -55,22 +55,10 @@ class Davidson: public EigenSolver
 public:
 
   //--------------------------------------------------------------------------//
-  // TYPEDEFS
-  //--------------------------------------------------------------------------//
-
-  typedef EigenSolver                       Base;
-  typedef Base::SP_matrix                   SP_matrix;
-  typedef Base::SP_solver                   SP_solver;
-  typedef Base::SP_vector                   SP_vector;
-  typedef Preconditioner::SP_preconditioner SP_pc;
-
-  //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
-  Davidson(const double  tol = 1e-6,
-           const int     maxit = 100,
-           const int     subspace_size = 20);
+  Davidson(SP_db);
 
   virtual ~Davidson(){}
 
@@ -85,16 +73,13 @@ public:
    *  @param db     optional database for solver and preconditioner options
    */
   void set_operators(SP_matrix A,
-                     SP_matrix B  = SP_matrix(0),
-                     SP_db     db = SP_db(0));
+                     SP_matrix B  = SP_matrix(0));
 
-  /**
-   *   @brief Sets the preconditioner for the problem
-   *   @param P     preconditioner operator
-   *   @param size  preconditioner side (unused for Davidson)
-   */
-  void set_preconditioner(SP_pc     P,
-                          const int side = LinearSolver::LEFT);
+  /// Set a preconditioner (i.e., P ~ inv(A-eB))
+  void set_preconditioner(SP_preconditioner P);
+
+  /// Set a preconditioning matrix
+  void set_preconditioner_matrix(SP_matrix P);
 
 private:
 
@@ -102,10 +87,8 @@ private:
   // DATA
   //--------------------------------------------------------------------------//
 
-  /// Subspace size
-  size_t d_subspace_size;
   /// Preconditioner, i.e. approximate action inv(A-theta*B) * v
-  SP_pc d_P;
+  SP_preconditioner d_P;
   /// Residual operator
   MatrixBase::SP_matrix d_A_minus_ritz_times_B;
   /// Projected system solver
@@ -170,7 +153,7 @@ private:
 
 /**
  *  @class DavidsonDefaultP
- *  @brief Provides default preconditioning process for nonlinear Arnoldi
+ *  @brief Provides default preconditioning process for Davidson
  *
  *  The correction is defined by the approximate solve
  *  @f[
@@ -191,12 +174,7 @@ public:
   typedef Davidson::SP_db        SP_db;
   typedef MatrixBase::SP_matrix  SP_matrix;
 
-  /**
-   *  @brief Constructor
-   *  @param    A         left hand operator
-   *  @param    B         right hand operator
-   *  @param    context   user context
-   */
+  /// Constructor.  The operator is the residual.
   DavidsonDefaultP(MatrixBase::SP_matrix  A_minus_ritz_times_B,
                    void*                  context,
                    SP_db                  db = SP_db(0))
@@ -212,8 +190,8 @@ public:
       db->put<int>("linear_solver_monitor_level", 0);
 
     }
-    d_solver = LinearSolverCreator::Create(db);
-    d_solver->set_operators(A_minus_ritz_times_B);
+    d_solver = LinearSolver::Create(db);
+    d_solver->set_operator(A_minus_ritz_times_B);
   }
 
   /// Apply the preconditioner

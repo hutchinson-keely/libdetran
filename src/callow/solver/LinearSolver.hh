@@ -13,6 +13,7 @@
 #include "callow/utils/CallowDefinitions.hh"
 #include "callow/matrix/MatrixBase.hh"
 #include "callow/preconditioner/Preconditioner.hh"
+#include "utilities/Factory.hh"
 #include "utilities/InputDB.hh"
 #include "utilities/SP.hh"
 #include <cstdio>
@@ -66,6 +67,10 @@ namespace callow
  *  Matrix operator or subclasses so that the elements can be accessed
  *  directly.
  *
+ *  Relevant database parameters include
+ *   @param linear_solver_atol   absolute tolerance (||r_n|| < atol)
+ *   @param linear_solver_rtol   relative tolerance (||r_n|| < rtol * ||r_0||)
+ *   @param linear_solver_maxit  maximum iterations (n < maxit)
  */
 
 class CALLOW_EXPORT LinearSolver
@@ -92,78 +97,63 @@ public:
   typedef Vector::SP_vector                         SP_vector;
   typedef detran_utilities::InputDB::SP_input       SP_db;
 
-  //--------------------------------------------------------------------------//
-  // CONSTRUCTOR & DESTRUCTOR
-  //--------------------------------------------------------------------------//
+  // REQUIRED type defining the creation function
+  typedef SP_solver (*CreateFunction)(SP_db db);
 
-  LinearSolver(const double atol,
-               const double rtol,
-               const int    maxit = 100,
-               std::string  name = "solver");
+  // Factory
+  typedef detran_utilities::Factory<LinearSolver>   Factory_T;
 
   virtual ~LinearSolver(){}
+
+  static SP_solver Create(SP_db db);
 
   //--------------------------------------------------------------------------//
   // PUBLIC FUNCTIONS
   //--------------------------------------------------------------------------//
 
-  /**
-   *  Sets the operators for the linear system to solve.
-   *
-   *  @param A      linear operator
-   *  @param P      optional preconditioning process
-   *  @param side   specifies on what side of A the preconditioner operates
-   */
-  virtual void set_operators(SP_matrix A,
-                             SP_db db = SP_db(0));
+  /// Reset the solver parameters.  This also resets residuals, counts, etc.
+  void set_parameters(SP_db db);
 
   /**
-   *  Set the preconditioner.  This allows the client to build, change, etc.
+   *  @brief Set the linear system operator.
+   *
+   *  This sets a new operator and, if given, a new preconditioner.  If a
+   *  preconditioner is not provided, the current preconditioner is
+   *  voided.
+   *
+   *  @param  A     linear system matrix
+   *  @param  P     preconditioner (optional)
    */
-  virtual void set_preconditioner(SP_preconditioner P, const int side = LEFT)
+  virtual void set_operator(SP_matrix A,
+                            SP_preconditioner P = SP_preconditioner(0));
+
+  /**
+   *  @brief Set the preconditioner.
+   *
+   *  This sets the user-provided preconditioner.  If no preconditioner is
+   *  passed, then a preconditioner based on the operator A will be
+   *  constructed based on the parameter database.
+   *
+   *  @param P      preconditioner
+   */
+  virtual void set_preconditioner(SP_preconditioner P = SP_preconditioner(0));
+
+  /// Get the operator
+  SP_matrix get_operator()
   {
-    d_P = P;
-    d_pc_side = side;
+    return d_A;
   }
 
-  /**
-   *  Get the preconditioner.  This allows the client to build,
-   *  change the curent PC.s
-   */
-  SP_preconditioner preconditioner()
+  /// Get the preconditioner
+  SP_preconditioner get_preconditioner()
   {
     return d_P;
   }
 
-  /**
-   *  @param atol   absolute tolerance (||r_n|| < atol)
-   *  @param rtol   relative tolerance (||r_n|| < rtol * ||r_0||)
-   *  @param maxit  maximum iterations (n < maxit)
-   */
-  void set_tolerances(const double atol, const double rtol, const int maxit);
-
-  /**
-   *  Print residual norms and other diagonostic information.
-   *
-   *  @param v  monitor via stdout
-   */
-  void set_monitor_level(const int v)
+  /// Get the parameters
+  SP_db get_parameters()
   {
-    d_monitor_level = v;
-  }
-
-  /**
-   *  Turn on monitoring of diverging iterations.
-   */
-  void set_monitor_diverge(const bool v)
-  {
-    d_monitor_diverge = v;
-  }
-
-  /// Set a norm type
-  void set_norm_type(const int norm_type)
-  {
-    d_norm_type = norm_type;
+    return d_db;
   }
 
   /// Set the solver status
@@ -198,6 +188,8 @@ protected:
 
   /// Solver name (e.g. richardson)
   std::string d_name;
+  /// Parameter database
+  SP_db d_db;
   /// Absolute tolerance on residual norm
   double d_absolute_tolerance;
   /// Relative tolerance on residual norm
@@ -220,8 +212,16 @@ protected:
   bool d_monitor_diverge;
   /// Which vector norm to use?
   int d_norm_type;
-  /// Parameter database
-  SP_db d_db;
+  /// Relaxation parameter
+  double d_omega;
+  /// Use norm of successive iterates
+  bool d_successive_norm;
+
+  //--------------------------------------------------------------------------//
+  // CONSTRUCTOR & DESTRUCTOR
+  //--------------------------------------------------------------------------//
+
+  LinearSolver(std::string key, SP_db db = SP_db(0));
 
   //--------------------------------------------------------------------------//
   // IMPLEMENTATION
@@ -243,13 +243,20 @@ private:
 
   int d_status;
 
+
 };
 
 CALLOW_TEMPLATE_EXPORT(detran_utilities::SP<LinearSolver>)
 
-} // end namespace callow
+/// Creation function template
+template <typename D>
+LinearSolver::SP_solver
+Create(LinearSolver::SP_db db)
+{
+  return LinearSolver::SP_solver(new D(db));
+}
 
-#include "LinearSolver.i.hh"
+} // end namespace callow
 
 #endif /* callow_LINEARSOLVER_HH_ */
 

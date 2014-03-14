@@ -28,14 +28,6 @@ class CALLOW_EXPORT PCShell: public Preconditioner
 public:
 
   //--------------------------------------------------------------------------//
-  // TYPEDEFS
-  //--------------------------------------------------------------------------//
-
-  typedef Preconditioner                Base;
-  typedef Base::SP_preconditioner       SP_preconditioner;
-  typedef Vector::SP_vector             SP_vector;
-
-  //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
   //--------------------------------------------------------------------------//
 
