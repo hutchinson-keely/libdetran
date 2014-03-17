@@ -30,7 +30,9 @@ public:
   // TYPEDEFS
   //--------------------------------------------------------------------------//
 
-  typedef detran_utilities::SP<Vector>    SP_vector;
+  typedef detran_utilities::SP<Vector>          SP_vector;
+  typedef detran_utilities::SP<const Vector>    SP_cvector;
+
 
   //--------------------------------------------------------------------------//
   // CONSTRUCTOR & DESTRUCTOR
@@ -89,7 +91,7 @@ public:
 
   /// Inner product of this vector with vector x
   double dot(const Vector& x);
-  double dot(SP_vector x);
+  double dot(SP_cvector x);
   /// Norm of this vector
   double norm(const int type = L2);
   /**
@@ -99,7 +101,7 @@ public:
    *  are not checked.
    */
   double norm_residual(const Vector& x, const int type = L2);
-  double norm_residual(SP_vector x, const int type = L2);
+  double norm_residual(SP_cvector x, const int type = L2);
 
   /// Set all elements of this vector to a value v
   void set(const double v);
@@ -107,22 +109,22 @@ public:
   void scale(const double v);
   /// Add a vector x to this vector
   void add(const Vector& x);
-  void add(SP_vector x);
+  void add(SP_cvector x);
   /// Subtract a vector x from this vector
   void subtract(const Vector& x);
-  void subtract(SP_vector x);
+  void subtract(SP_cvector x);
   /// Multiply this vector pointwise with a vector x
   void multiply(const Vector& x);
-  void multiply(SP_vector x);
+  void multiply(SP_cvector x);
   /// Multiply this vector pointwise with a vector x
   void divide(const Vector& x);
-  void divide(SP_vector x);
+  void divide(SP_cvector x);
   /// Copy a vector x to this vector
   void copy(const Vector& x);
-  void copy(SP_vector x);
+  void copy(SP_cvector x);
   /// Add a vector x times a scalar a to this vector
   void add_a_times_x(const double a, const Vector& x);
-  void add_a_times_x(const double a, SP_vector x);
+  void add_a_times_x(const double a, SP_cvector x);
 
   //--------------------------------------------------------------------------//
   // QUERY

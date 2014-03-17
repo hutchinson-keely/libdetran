@@ -28,7 +28,7 @@ void PCMatrix::set_matrix(SP_matrix A)
 }
 
 //----------------------------------------------------------------------------//
-void PCMatrix::apply(Vector &b, Vector &x)
+void PCMatrix::apply(const Vector &b, Vector &x)
 {
   Require(d_P_inv);
   d_P_inv->multiply(b, x);

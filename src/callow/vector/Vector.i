@@ -17,6 +17,7 @@
 //       {(double** a, int *m, int *n)}
 
 %shared_ptr(callow::Vector)
+%shared_ptr(callow::Vector)
 %include "Vector.hh"
 
 %extend callow::Vector

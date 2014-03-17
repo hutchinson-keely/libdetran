@@ -28,6 +28,7 @@ public:
 
   typedef detran_utilities::SP<MatrixBase >     SP_matrix;
   typedef Vector::SP_vector                     SP_vector;
+  typedef Vector::SP_cvector                    SP_cvector;
   typedef detran_utilities::size_t              size_t;
 
   //--------------------------------------------------------------------------//
@@ -58,12 +59,13 @@ public:
   Mat petsc_matrix() {return d_petsc_matrix;}
 
   // multiply with SP vectors
-  void multiply(SP_vector x,  SP_vector y)
+  virtual void multiply(SP_vector x,  SP_vector y)
   {
     multiply(*x, *y);
   }
+
   // multiply transpose with SP vectors
-  void multiply_transpose(SP_vector x, SP_vector y)
+  virtual void multiply_transpose(SP_vector x, SP_vector y)
   {
     multiply_transpose(*x, *y);
   }

@@ -48,7 +48,7 @@ public:
   //--------------------------------------------------------------------------//
 
   /// Solve Px = b
-  virtual void apply(Vector &b, Vector &x) = 0;
+  virtual void apply(const Vector &b, Vector &x) = 0;
 
 protected:
 

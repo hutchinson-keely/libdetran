@@ -168,19 +168,18 @@ class TestCallow(unittest.TestCase) :
         A.multiply(x, z)
         for i in range(0, y.size()) :
            self.assertTrue(soft_equiv(y[i], z[i]))  
-    
-        class MyShell(MatrixShell):
+     
+        class MyShell2(PyShell):
             def __init__(self, A) :
-                super(MyShell, self).__init__(None, A.number_rows(), A.number_columns())
+                super(MyShell2, self).__init__(A.number_rows(), A.number_columns())
                 self.A = A
             def multiply(self, x, y) :
-                self.A.multiply(x, y) 
-            def multiply_transpose(self, x, y) :
-                self.A.multiply_transpose(x, y)            
-        C = MyShell(A)
+                self.A.multiply(x, y)  
+        C = MyShell2(A)
         P2 = PCMatrix(C)
-        # P2.apply(x, y) THIS DOES NOT YET WORK, FIGURE IT OUT
-        
+        P2.apply(x, y) #THIS DOES NOT YET WORK, FIGURE IT OUT
+        for i in range(0, y.size()) :
+           self.assertTrue(soft_equiv(y[i], z[i]))
         
 if __name__ == '__main__':
     unittest.main()

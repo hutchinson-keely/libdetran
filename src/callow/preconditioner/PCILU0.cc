@@ -90,7 +90,7 @@ PCILU0::PCILU0(SP_matrix A, SP_db db)
 }
 
 //----------------------------------------------------------------------------//
-void PCILU0::apply(Vector &b, Vector &x)
+void PCILU0::apply(const Vector &b, Vector &x)
 {
   // solve LUx = x --> x = inv(U)*inv(L)*x
 

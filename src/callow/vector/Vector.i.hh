@@ -157,7 +157,7 @@ inline double Vector::norm_residual(const Vector& x, const int type)
   return val;
 }
 
-inline double Vector::norm_residual(SP_vector x, const int type)
+inline double Vector::norm_residual(SP_cvector x, const int type)
 {
   Require(x);
   return norm_residual(*x, type);
@@ -199,7 +199,7 @@ inline double Vector::dot(const Vector& x)
   return val;
 }
 
-inline double Vector::dot(SP_vector x)
+inline double Vector::dot(SP_cvector x)
 {
   Require(x);
   return dot(*x);
@@ -217,7 +217,7 @@ inline void Vector::add(const Vector &x)
 #endif
 }
 
-inline void Vector::add(SP_vector x)
+inline void Vector::add(SP_cvector x)
 {
   Require(x);
   add(*x);
@@ -235,7 +235,7 @@ inline void Vector::add_a_times_x(const double a, const Vector& x)
 #endif
 }
 
-inline void Vector::add_a_times_x(const double a, SP_vector x)
+inline void Vector::add_a_times_x(const double a, SP_cvector x)
 {
   Require(x);
   add_a_times_x(a, *x);
@@ -253,7 +253,7 @@ inline void Vector::subtract(const Vector &x)
 #endif
 }
 
-inline void Vector::subtract(SP_vector x)
+inline void Vector::subtract(SP_cvector x)
 {
   Require(x);
   subtract(*x);
@@ -272,7 +272,7 @@ inline void Vector::multiply(const Vector &x)
 #endif
 }
 
-inline void Vector::multiply(SP_vector x)
+inline void Vector::multiply(SP_cvector x)
 {
   Require(x);
   multiply(*x);
@@ -291,7 +291,7 @@ inline void Vector::divide(const Vector &x)
 #endif
 }
 
-inline void Vector::divide(SP_vector x)
+inline void Vector::divide(SP_cvector x)
 {
   Require(x);
   divide(*x);
@@ -309,7 +309,7 @@ inline void Vector::copy(const Vector &x)
 #endif
 }
 
-inline void Vector::copy(SP_vector x)
+inline void Vector::copy(SP_cvector x)
 {
   Require(x);
   copy(*x);

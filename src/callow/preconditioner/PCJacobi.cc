@@ -40,7 +40,7 @@ PCJacobi::PCJacobi(SP_matrix A, SP_db db)
 }
 
 //----------------------------------------------------------------------------//
-void PCJacobi::apply(Vector &b, Vector &x)
+void PCJacobi::apply(const Vector &b, Vector &x)
 {
   Require(x.size() == d_P->size());
 

@@ -6,13 +6,10 @@
  */
 //----------------------------------------------------------------------------//
 
-%import "vector/Vector.i"
-
-
 %ignore *::operator[];
 
 //----------------------------------------------------------------------------//
-// TYPEMAPS for callow::Matrix
+// Extensions for callow::Matrix
 //----------------------------------------------------------------------------//
 
 %apply (int*    IN_ARRAY1, int DIM1) {(int*    i, int dim_i)}
@@ -95,7 +92,7 @@
 
 
 //----------------------------------------------------------------------------//
-// TYPEMAPS for callow::MatrixDense
+// Extensions for callow::MatrixDense
 //----------------------------------------------------------------------------//
  
 %apply (int*    IN_ARRAY1, int DIM1) {(int*    i, int dim_i)}
@@ -166,10 +163,28 @@
 }
 
 //----------------------------------------------------------------------------//
-// INCLUDES
+// Extensions for shell matrices
 //----------------------------------------------------------------------------//
 
 %feature("director") callow::MatrixShell;
+%feature("director") callow::PyShell;
+%feature("nodirector") callow::PyShell::multiply(const callow::Vector &x, callow::Vector &y);
+
+%feature("director:except") 
+{
+    if( $error != NULL ) 
+    {
+        PyObject *ptype, *pvalue, *ptraceback;
+        PyErr_Fetch( &ptype, &pvalue, &ptraceback );
+        PyErr_Restore( ptype, pvalue, ptraceback );
+        PyErr_Print();
+        Py_Exit(1);
+    }
+} 
+%exception {
+    try { $action }
+    catch (Swig::DirectorException &e) { SWIG_fail; }
+}
 
 %include callback.i 
 
@@ -181,15 +196,21 @@ setCallbackMethod(1, // this is a *unique* identifier
                   (callow::Vector::SP_vector x, callow::Vector::SP_vector y), 
                   (x, y), 1)
 
+//----------------------------------------------------------------------------//
+// Includes
+//----------------------------------------------------------------------------//
+
 %shared_ptr(callow::MatrixBase)
 %shared_ptr(callow::Matrix)
 %shared_ptr(callow::MatrixDense)
 %shared_ptr(callow::MatrixShell)
 %shared_ptr(callow::PyMatrixShell)
+%shared_ptr(callow::PyShell)
 %include "MatrixBase.hh"
 %include "Matrix.hh"
 %include "MatrixDense.hh"
 %include "MatrixShell.hh"
+
 
 %apply (double** ARGOUTVIEW_ARRAY2, int* DIM1, int* DIM2)
        {(double** a, int* m, int* n)}

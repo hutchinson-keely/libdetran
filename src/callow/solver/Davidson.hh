@@ -195,7 +195,7 @@ public:
   }
 
   /// Apply the preconditioner
-  void apply(Vector &x,  Vector &y)
+  void apply(const Vector &x,  Vector &y)
   {
     //x.display("X solve");
     // give a 0 initial guess so that (A-e*B)x != y

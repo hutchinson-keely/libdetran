@@ -51,7 +51,7 @@ public:
   //--------------------------------------------------------------------------//
 
   /// Solve Px = y
-  void apply(Vector &b, Vector &x);
+  void apply(const Vector &b, Vector &x);
 
 protected:
 

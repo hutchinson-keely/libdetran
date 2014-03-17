@@ -95,7 +95,7 @@ CALLOW_TEMPLATE_EXPORT(detran_utilities::SP<MatrixShell>)
  *  @class PyMatrixShell
  *  @brief Expose the matrix shell to Python for user-defined action functions
  */
-class PyMatrixShell: public callow::MatrixShell
+class PyMatrixShell: public MatrixShell
 {
 public:
 
@@ -130,6 +130,43 @@ private:
   callback_ptr d_multiply;
   callback_ptr d_multiply_transpose;
 
+};
+
+/**
+ *  @class PyShell
+ *  @brief Better interface class for matrix shell
+ */
+class PyShell: public MatrixShell
+{
+
+public:
+
+  PyShell(const int m, const int n)
+    : MatrixShell(NULL, m, n) {}
+
+  virtual void multiply(Vector::SP_vector x, Vector::SP_vector y)
+  {
+    THROW("NOT IMPLEMENTED");
+  }
+
+  virtual void multiply_transpose(Vector::SP_vector x, Vector::SP_vector y)
+  {
+    THROW("NOT IMPLEMENTED");
+  }
+
+  void multiply(const Vector &x, Vector &y)
+  {
+    SP_vector  X(new Vector(x.size(), const_cast<double*>(&x[0])));
+    SP_vector  Y(new Vector(y.size(), &y[0]));
+    multiply(X, Y);
+  }
+
+  void multiply_transpose(const Vector &x, Vector &y)
+  {
+    SP_vector  X(new Vector(x.size(), const_cast<double*>(&x[0])));
+    SP_vector  Y(new Vector(y.size(), &y[0]));
+    multiply_transpose(X, Y);
+  }
 };
 
 } // end namespace callow

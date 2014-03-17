@@ -59,7 +59,7 @@ public:
   // ABSTRACT INTERFACE -- ALL PRECONDITIONERS MUST IMPLEMENT THIS
   //--------------------------------------------------------------------------//
 
-  void apply(Vector &b, Vector &x);
+  void apply(const Vector &b, Vector &x);
 
 protected:
 

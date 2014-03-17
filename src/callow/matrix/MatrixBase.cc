@@ -74,6 +74,12 @@ void MatrixBase::print_matlab(std::string filename) const
   /* ... */
 }
 
+//----------------------------------------------------------------------------//
+void MatrixBase::multiply(const Vector &x,  Vector &y)
+{
+  std::cout << "MatrixBase cannot multiply." << std::endl;
+}
+
 } // end namespace callow
 
 //----------------------------------------------------------------------------//
