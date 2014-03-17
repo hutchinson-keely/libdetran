@@ -15,6 +15,15 @@ class TestCallow(unittest.TestCase) :
     def setUp(self) :
         Callow.initialize(sys.argv)
         
+    def get_matrix(self) :
+        A = Matrix(5, 5, 3)
+        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
+        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
+        v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
+        A.insert(i, j, v)
+        A.assemble()
+        return A
+            
     def test_vector(self) :
         V1 = Vector.Create(10, 1.00)
         V2 = Vector(10, 2.00)
@@ -32,14 +41,8 @@ class TestCallow(unittest.TestCase) :
         self.assertTrue(v == 30.0)
 
     def test_matrix(self) :
-        A = Matrix(5, 5, 3)
-        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
-        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
-        v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
-        A.insert(i, j, v)
-        A.assemble()
+        A = self.get_matrix()
         self.assertTrue(A(0, 0) == 2.0)
-        
         I = Matrix(5, 5, 1)
         for i in range(0, 5) :
             I.insert(i, i, 1.0)
@@ -47,13 +50,7 @@ class TestCallow(unittest.TestCase) :
         self.assertTrue(I(0, 0) == 1.0)
  
     def test_matrix_to_scipy(self) :
-        A = Matrix(5, 5, 3)
-        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
-        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
-        v = [2, -1, -1, 2, -1, -1, 2, -1, -1, 2, -1, -1, 2]
-        A.insert(i, j, v)
-        A.assemble()
-        self.assertTrue(A(0, 0) == 2.0)
+        A = self.get_matrix()
         rows = A.get_rows()
         cols = A.get_columns()
         vals = A.get_values()
@@ -89,22 +86,12 @@ class TestCallow(unittest.TestCase) :
         w = Vector(5, 0.0)
 
         # make reference matrix and result        
-        A = Matrix(5, 5, 3)
-        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
-        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
-        v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
-        A.insert(i, j, v)
-        A.assemble()
+        A = self.get_matrix()
         A.multiply(x, y)
 
         # Shell Option 1 -- set a multiply function.  Transpose not available. 
         def multiply(x, y) :
-            A = Matrix(5, 5, 3)
-            i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
-            j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
-            v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
-            A.insert(i, j, v)
-            A.assemble()
+            A = self.get_matrix()
             A.multiply(x, y)
         B = PyMatrixShell(5, 5)
         B.set_multiply(multiply)
@@ -126,17 +113,25 @@ class TestCallow(unittest.TestCase) :
         C.multiply(x, w)
         for i in range(0, z.size()) :
            self.assertTrue(soft_equiv(z[i], w[i]))
-           
+        
     def test_solver(self) : 
-        A = Matrix(5, 5, 3)
-        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
-        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
-        v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
-        A.insert(i, j, v)
-        A.assemble()
+        
+        # test solver with regular matrix and a shell matrix
+        A = self.get_matrix()
+        
+        class MyShell(PyMatrixShell):
+            def __init__(self, A) :
+                super(MyShell, self).__init__(A.number_rows(), A.number_columns())
+                self.A = A
+                self.set_multiply(self.my_multiply)
+            def my_multiply(self, x, y) :
+                self.A.multiply(x, y) 
+        C = MyShell(A)                
+        
         b = Vector(5, 1.0)
         x = Vector(5, 0.0)
         y = Vector(5, 0.0)      
+                
         db = InputDB.Create()
         db.put_str("linear_solver_type", "gmres")
         solver = LinearSolver.Create(db)
@@ -145,27 +140,27 @@ class TestCallow(unittest.TestCase) :
         A.multiply(x, y)
         for i in range(0, y.size()) :
            self.assertTrue(soft_equiv(y[i], 1.0))
-           
+ 
+        solver.set_operator(C)
+        solver.solve(b, y)
+        for i in range(0, y.size()) :
+           self.assertTrue(soft_equiv(y[i], x[i]))        
+ 
     def test_pcmatrix(self) :
         
         x = Vector(5, 1.0)
         y = Vector(5, 0.0)
         z = Vector(5, 0.0)
-        A = Matrix(5, 5, 3)
-        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
-        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
-        v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
-        A.insert(i, j, v)
-        A.assemble()      
+        A = self.get_matrix()   
         
-        class MyShell(PyMatrixShell) :
+        class MyPyShell(PyMatrixShell) :
             def __init__(self, n, m, A) :
-                PyMatrixShell.__init__(self, n, m)
+                super(MyPyShell, self).__init__(n, m)
                 self.A = A
                 self.set_multiply(self.do_multiply)
             def do_multiply(self, xx, yy) :
                 self.A.multiply(xx, yy) 
-        B = MyShell(5, 5, A)
+        B = MyPyShell(5, 5, A)
         
         # we can use a python class in detran...neat.
         P = PCMatrix(B)
@@ -174,5 +169,18 @@ class TestCallow(unittest.TestCase) :
         for i in range(0, y.size()) :
            self.assertTrue(soft_equiv(y[i], z[i]))  
     
+        class MyShell(MatrixShell):
+            def __init__(self, A) :
+                super(MyShell, self).__init__(None, A.number_rows(), A.number_columns())
+                self.A = A
+            def multiply(self, x, y) :
+                self.A.multiply(x, y) 
+            def multiply_transpose(self, x, y) :
+                self.A.multiply_transpose(x, y)            
+        C = MyShell(A)
+        P2 = PCMatrix(C)
+        # P2.apply(x, y) THIS DOES NOT YET WORK, FIGURE IT OUT
+        
+        
 if __name__ == '__main__':
     unittest.main()

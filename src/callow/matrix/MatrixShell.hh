@@ -47,6 +47,7 @@ public:
   MatrixShell(void* context);
   /// construct with known sizes
   MatrixShell(void* context, const int m, const int n);
+  /// Virtual destructor
   virtual ~MatrixShell();
 
   //--------------------------------------------------------------------------//
@@ -65,9 +66,9 @@ public:
   // default shell display gives just the sizes
   void display(bool forceprint = false) const;
   // the client must implement the action y <-- A * x
-  void multiply(const Vector &x,  Vector &y) = 0;
+  virtual void multiply(const Vector &x,  Vector &y) = 0;
   // the client must implement the action y <-- A' * x
-  void multiply_transpose(const Vector &x, Vector &y) = 0;
+  virtual void multiply_transpose(const Vector &x, Vector &y) = 0;
 
 protected:
 
@@ -110,6 +111,7 @@ public:
     d_multiply = f;
     d_context  = data;
   }
+
   // the client must implement the action y <-- A * x
   void multiply(const Vector &x, Vector &y)
   {
@@ -117,15 +119,18 @@ public:
     SP_vector Y(new Vector(y.size(), &y[0]));
     d_multiply(d_context, X, Y);
   }
+
   // the client must implement the action y <-- A' * x
   void multiply_transpose(const Vector &x, Vector &y)
   {
     THROW("NOT IMPLEMENTED");
   }
+
 private:
   callback_ptr d_multiply;
-};
+  callback_ptr d_multiply_transpose;
 
+};
 
 } // end namespace callow
 

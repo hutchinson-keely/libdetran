@@ -170,6 +170,7 @@
 //----------------------------------------------------------------------------//
 
 %feature("director") callow::MatrixShell;
+
 %include callback.i 
 
 // Set the callback setter for python-based time-dependent materials

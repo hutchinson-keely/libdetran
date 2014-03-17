@@ -43,6 +43,7 @@ void Richardson::solve_impl(const Vector &b, Vector &x)
 
   // compute initial residual w(Ax - b) and its norm
   d_A->multiply((*x0), (*x1));
+
   x1->scale(d_omega);
   double r = x1->norm_residual(B, L2);
   if (monitor_init(r)) return;

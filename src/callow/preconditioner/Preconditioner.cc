@@ -29,7 +29,7 @@ Preconditioner::Create(SP_matrix A, SP_db db)
 {
   InitPreconditionerFactory();
   // get key
-  std::string key = "";
+  std::string key = "ilu0";
   if (db)
   {
     if (db->check("pc_type"))
