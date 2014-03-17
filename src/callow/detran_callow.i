@@ -16,8 +16,8 @@
 #include "callow/matrix/Matrix.hh"
 #include "callow/matrix/MatrixShell.hh"
 #include "callow/matrix/MatrixDense.hh"
-#include "callow/solver/LinearSolverCreator.hh"
-#include "callow/solver/EigenSolverCreator.hh"
+#include "callow/solver/LinearSolver.hh"
+#include "callow/solver/EigenSolver.hh"
 #include "callow/preconditioner/Preconditioner.hh"
 #include "callow/preconditioner/PCMatrix.hh"
 %}

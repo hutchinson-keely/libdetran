@@ -193,8 +193,11 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
       else
       {
         happy = true;
-        std::printf("happy breakdown for k = %5i (iteration = %5i) \n",
-                    k, iteration);
+        if (d_monitor_level > 0)
+        {
+          std::printf("happy breakdown for k = %5i (iteration = %5i) \n",
+                      k, iteration);
+        }
       }
 
       //----------------------------------------------------------------------//

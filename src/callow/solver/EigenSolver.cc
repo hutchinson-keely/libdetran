@@ -21,10 +21,10 @@ namespace callow
 void InitEigenSolverFactory()
 {
   REGISTER_CLASS(EigenSolver, PowerIteration, "power")
-  REGISTER_CLASS(EigenSolver, Davidson, "davidson")
-  REGISTER_CLASS(EigenSolver, Eispack, "eispack")
+  REGISTER_CLASS(EigenSolver, Davidson,       "davidson")
+  REGISTER_CLASS(EigenSolver, Eispack,        "eispack")
 #ifdef DETRAN_ENABLE_SLEPC
-  REGISTER_CLASS(EigenSolver, SlepcSolver, "slepc")
+  REGISTER_CLASS(EigenSolver, SlepcSolver,    "slepc")
 #endif
 }
 
@@ -53,7 +53,7 @@ EigenSolver::EigenSolver(const std::string &name, SP_db db)
   , d_name(name)
   , d_tolerance(1e-5)
   , d_maximum_iterations(1000)
-  , d_monitor_level(2)
+  , d_monitor_level(0)
   , d_number_iterations(0)
   , d_lambda(0.0)
   , d_status(RUNNING)

@@ -59,8 +59,6 @@ void Eispack::solve_complete(MatrixDense &V_R,
     //MatrixDense &tmp_B = B;
     Vector E_D(m, 0.0);
     matz=1;
-    tmp_A.print_matlab("A.out");
-    tmp_B.print_matlab("B.out");
     rgg_(&m, &m, &tmp_A[0], &tmp_B[0],
          &E_R[0], &E_I[0], &E_D[0], &matz, &V_R[0], &ierr);
     Assert(!ierr);
@@ -91,9 +89,12 @@ void Eispack::solve_impl(Vector &x, Vector &x0)
 
   solve_complete(V_R, V_I, E_R, E_I);
 
-  for (int i = 0; i < E_I.size(); ++i)
+  if (d_monitor_level > 1)
   {
-    printf(" %4i  %12.4e %12.4e  \n ", i, E_R[i],  E_I[i]);
+    for (int i = 0; i < E_I.size(); ++i)
+    {
+      printf(" %4i  %12.4e %12.4e  \n ", i, E_R[i],  E_I[i]);
+    }
   }
 
   // Extract the eigenvector corresponding to the max (or min) real value
@@ -116,6 +117,8 @@ void Eispack::solve_impl(Vector &x, Vector &x0)
 
   /// Store the eigenvalue
   d_lambda = wanted_E;
+
+  d_status = SUCCESS;
 }
 
 

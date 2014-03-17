@@ -13,9 +13,6 @@
 #include "GaussSeidel.hh"
 #include "GMRES.hh"
 #include "PetscSolver.hh"
-// preconditioners
-#include "callow/preconditioner/PCILU0.hh"
-#include "callow/preconditioner/PCJacobi.hh"
 
 namespace callow
 {
@@ -58,8 +55,8 @@ LinearSolver::LinearSolver(std::string key, SP_db db)
   , d_relative_tolerance(1e-8)
   , d_maximum_iterations(100)
   , d_number_iterations(0)
-  , d_pc_side(NONE)
-  , d_monitor_level(2)
+  , d_pc_side(LEFT)
+  , d_monitor_level(0)
   , d_monitor_diverge(true)
   , d_norm_type(L2)
   , d_status(RUNNING)
@@ -88,6 +85,8 @@ void LinearSolver::set_parameters(SP_db db)
     d_successive_norm = 0 != d_db->get<int>("linear_solver_successive_norm");
   if (d_db->check("linear_solver_relaxation"))
     d_omega = d_db->get<double>("linear_solver_relaxation");
+  if (d_db->check("pc_side"))
+    d_pc_side = d_db->get<int>("pc_side");
 
   d_number_iterations = 0;
   d_residual.resize(d_maximum_iterations, 0.0);

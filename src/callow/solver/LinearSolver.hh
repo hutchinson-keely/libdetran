@@ -180,6 +180,11 @@ public:
     return d_number_iterations;
   }
 
+  void display() const
+  {
+    d_db->display();
+  }
+
 protected:
 
   //--------------------------------------------------------------------------//

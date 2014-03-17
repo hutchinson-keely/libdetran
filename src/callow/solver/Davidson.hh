@@ -18,7 +18,7 @@ namespace callow
 
 /**
  *  @class Davidson
- *  @brief Solves generalized eigenproblems via generalized Davidson's method
+ *  @brief Solves eigenvalue problems via (generalized) Davidson's method
  *
  *  Consider the generalized eigenvalue problem
  *  @f[
@@ -34,14 +34,14 @@ namespace callow
  *  @f[
  *     (\mathbf{A} - \lambda \mathbf{B}) v = \mathbf{R} v \approx r \, ,
  *  @f]
- *  or alternatively,
+ *  or, alternatively,
  *  @f[
  *     \mathbf{P} v = r \, ,
  *  @f]
  *  where @f$P \approx R @f$ is called the
  *  <em> preconditioner </em>.
  *  The result @f$ v @f$ is made orthogonal to the current subspace and
- *  is then used to extend subspace.  While not discussed in depth
+ *  is then used to extend subspace.  Although not discussed in depth
  *  here, projection methods in general can be much more efficient
  *  if restarted.  We simply take the last resulting eigenpair.
  *

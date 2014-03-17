@@ -18,6 +18,9 @@
 %apply (int*    IN_ARRAY1, int DIM1) {(int*    i, int dim_i)}
 %apply (int*    IN_ARRAY1, int DIM1) {(int*    j, int dim_j)}
 %apply (double* IN_ARRAY1, int DIM1) {(double* v, int dim_v)}
+%apply (int**    ARGOUTVIEW_ARRAY1, int *DIM1){(int**    v, int *dim_v)}
+%apply (double** ARGOUTVIEW_ARRAY1, int *DIM1){(double** v, int *dim_v)}
+
 %rename (insert) callow::Matrix::py_insert;
 %extend callow::Matrix 
 {
@@ -67,13 +70,30 @@
   { 
     return (*self)(i, j);
   }
+  // get csr arrays
+  void get_values(double **v, int *dim_v)
+  {
+    *v     = self->values();
+    *dim_v = self->number_nonzeros();
+  }
+  void get_columns(int **v, int *dim_v)
+  {
+    *v     = self->columns();
+    *dim_v = self->number_nonzeros();
+  }
+  void get_rows(int **v, int *dim_v)
+  {
+    *v     = self->rows();
+    *dim_v = self->number_rows() + 1;
+  }
 };
 %exception Matrix::py_insert
 {
   $action
   if (PyErr_Occurred()) SWIG_fail;
 }
- 
+
+
 //----------------------------------------------------------------------------//
 // TYPEMAPS for callow::MatrixDense
 //----------------------------------------------------------------------------//
@@ -81,6 +101,7 @@
 %apply (int*    IN_ARRAY1, int DIM1) {(int*    i, int dim_i)}
 %apply (int*    IN_ARRAY1, int DIM1) {(int*    j, int dim_j)}
 %apply (double* IN_ARRAY1, int DIM1) {(double* v, int dim_v)}
+
 %rename (insert)     callow::MatrixDense::py_insert;
 %rename (insert_row) callow::MatrixDense::py_insert_row;
 %rename (insert_col) callow::MatrixDense::py_insert_col;
@@ -148,6 +169,7 @@
 // INCLUDES
 //----------------------------------------------------------------------------//
 
+%feature("director") callow::MatrixShell;
 %include callback.i 
 
 // Set the callback setter for python-based time-dependent materials

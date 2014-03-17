@@ -23,7 +23,7 @@ public:
   static void initialize(int argc, char *argv[]);
   static void finalize();
 
-private :
+public :
 
   Callow();
   ~Callow();

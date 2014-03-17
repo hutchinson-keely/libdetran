@@ -292,11 +292,6 @@ inline void Matrix::print_matlab(std::string filename) const
 //----------------------------------------------------------------------------//
 void Matrix::clear()
 {
-  // save the memory used and reallocate
-
-//  if (!d_allocated) return;
-//  d_allocated = false;
-
   if (!d_is_ready) return;
 
   d_allocated = false;

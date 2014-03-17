@@ -52,9 +52,9 @@ int main(int argc, char *argv[])
 // system size
 int n = 20;
 // solver
-LinearSolver::SP_solver solver;
+typedef LinearSolver::SP_solver SP_solver;
 // database
-LinearSolver::SP_db db;
+typedef LinearSolver::SP_db SP_db;
 
 LinearSolver::SP_db get_db()
 {
@@ -85,12 +85,13 @@ int test_Richardson(int argc, char *argv[])
   Vector B(n, 1.0);
 
 
-  db = get_db();
+  SP_db db = get_db();
   db->put<std::string>("linear_solver_type", "richardson");
   //db->put<int>("linear_solver_monitor_level", 1);
-  solver = LinearSolver::Create(db);
+  SP_solver solver = LinearSolver::Create(db);
 
-  solver->set_operator(test_matrix_1(n));
+  Matrix::SP_matrix A = test_matrix_1(n);
+  solver->set_operator(A);
 
   //Preconditioner::SP_preconditioner pcilu0(new PCILU0(test_matrix_1(n)));
   //solver->set_preconditioner(pcilu0, LinearSolver::LEFT);
@@ -100,16 +101,16 @@ int test_Richardson(int argc, char *argv[])
   {
     TEST(soft_equiv(X[i],  X_ref[i], 1e-9));
   }
-  return 0;
+   return 0;
 }
 
 int test_Jacobi(int argc, char *argv[])
 {
   Vector X(n, 0.0);
   Vector B(n, 1.0);
-  db = get_db();
+  SP_db db = get_db();
   db->put<std::string>("linear_solver_type", "jacobi");
-  solver = LinearSolver::Create(db);
+  SP_solver solver = LinearSolver::Create(db);
   solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);
@@ -124,9 +125,9 @@ int test_GaussSeidel(int argc, char *argv[])
 {
   Vector X(n, 0.0);
   Vector B(n, 1.0);
-  db = get_db();
+  SP_db db = get_db();
   db->put<std::string>("linear_solver_type", "gauss-seidel");
-  solver = LinearSolver::Create(db);
+  SP_solver solver = LinearSolver::Create(db);
   solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);
@@ -141,10 +142,10 @@ int test_SOR(int argc, char *argv[])
 {
   Vector X(n, 0.0);
   Vector B(n, 1.0);
-  db = get_db();
+  SP_db db = get_db();
   db->put<std::string>("linear_solver_type", "gauss-seidel");
   db->put<double>("linear_solver_relaxation", 1.3);
-  solver = LinearSolver::Create(db);
+  SP_solver solver = LinearSolver::Create(db);
   solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);
@@ -162,14 +163,14 @@ int test_GMRES(int argc, char *argv[])
   A = test_matrix_1(n);
   Vector X(n, 0.0);
   Vector B(n, 1.0);
-  db = get_db();
+  SP_db db = get_db();
   db->put<std::string>("linear_solver_type", "gmres");
   db->put<int>("linear_solver_maxit", 50);
   db->put<int>("linear_solver_gmres_restart", 16);
 
   // NO PC
   std::cout << "*** GMRES + NO PC ***" << std::endl;
-  solver = LinearSolver::Create(db);
+  SP_solver solver = LinearSolver::Create(db);
   solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);
@@ -243,12 +244,12 @@ int test_PetscSolver(int argc, char *argv[])
 #ifdef CALLOW_ENABLE_PETSC
   Vector X(n, 0.0);
   Vector B(n, 1.0);
-  db = get_db();
+  SP_db db = get_db();
   db->put<std::string>("linear_solver_type", "petsc");
   db->put<std::string>("pc_type", "ilu0");
 //  db->put<std::string>("pc_type", "petsc_pc");
 //  db->put<std::string>("petsc_pc_type", "ilu");
-  solver = LinearSolver::Create(db);
+  SP_solver solver = LinearSolver::Create(db);
   solver->set_operator(test_matrix_1(n));
   int status = solver->solve(B, X);
   TEST(status == SUCCESS);

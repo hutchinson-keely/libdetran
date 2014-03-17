@@ -56,6 +56,7 @@ private:
   Matrix::SP_matrix d_B;
 };
 
+//----------------------------------------------------------------------------//
 /*
  *  Solves Ax = e*B*x where A is the standard 2nd difference
  *  operator and B is diagonal matrix of 1 through n.
@@ -77,7 +78,13 @@ int test_Davidson_standard(int argc, char *argv[])
     double ref_L = 0.141079562648794;
     double ref_V[] =
     { 1.000000000000000, -2.916559254113351, 4.589758628640770};
-    Davidson solver(1e-10, 100, 20);
+    Davidson::SP_db db(new detran_utilities::InputDB());
+    db->put<double>("eigen_solver_tol",        1e-12);
+    db->put<int>("eigen_solver_monitor_level", 2);
+    db->put<int>("eigen_solver_maxit",         100);
+    Davidson solver(db);
+    //solver.display();
+    //return 0;
     solver.set_operators(M);
     solver.solve(X, X0);
     X.scale(1.0/X[0]);
@@ -93,6 +100,7 @@ int test_Davidson_standard(int argc, char *argv[])
   return 0;
 }
 
+//----------------------------------------------------------------------------//
 int test_Davidson_general(int argc, char *argv[])
 {
   Matrix::SP_matrix M = test_matrix_2(10);
@@ -106,7 +114,10 @@ int test_Davidson_general(int argc, char *argv[])
     double ref_L = 1.243023126562274;
     double ref_V[] =
     { 1.000000000000000, 0.976684255089969, 0.930596388729471};
-    Davidson solver(1e-10, 50, 20);
+    Davidson::SP_db db(new detran_utilities::InputDB());
+    db->put<double>("eigen_solver_tol", 1e-10);
+    db->put<int>("eigen_solver_matit",  100);
+    Davidson solver(db);
     solver.set_operators(F, M);
     solver.solve(X, X0);
     X.scale(1.0/X[0]);

@@ -107,7 +107,6 @@ public:
    *  This allows for the system
    *  @param A      left side operator
    *  @param B      optional right side operator (to be inverted)
-   *  @param db     optional database for solver and preconditioner options
    */
   virtual void set_operators(SP_matrix  A,
                              SP_matrix  B  = SP_matrix(0));
@@ -168,6 +167,12 @@ public:
   double eigenvalue()
   {
     return d_lambda;
+  }
+
+  void display() const
+  {
+    std::cout << " EIGENSOLVER TYPE: " << d_name << std::endl;
+    d_db->display();
   }
 
 protected:

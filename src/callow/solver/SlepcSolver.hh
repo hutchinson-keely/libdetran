@@ -35,17 +35,9 @@ public:
   // PUBLIC FUNCTIONS
   //--------------------------------------------------------------------------//
 
-  /**
-   *  @brief Sets the operators for the problem.
-   *
-   *  This allows for the system
-   *  @param A      left side operator
-   *  @param B      optional right side operator (to be inverted)
-   *  @param db     optional database for solver and preconditioner options
-   */
-  void set_operators(SP_matrix A,
-                     SP_matrix B  = SP_matrix(0),
-                     SP_db     db = SP_db(0));
+  /// Sets the operators for the problem.
+  void set_operators(SP_matrix  A,
+                     SP_matrix  B  = SP_matrix(0));
 
 
   /// Set the preconditioner for a generalized eigenvalue problem

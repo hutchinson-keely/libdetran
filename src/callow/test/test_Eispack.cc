@@ -63,7 +63,11 @@ MatrixDense::SP_matrix get_B()
 //----------------------------------------------------------------------------//
 int test_Eispack_standard(int argc, char *argv[])
 {
-  Eispack S(1.e-5, 1000);
+  Eispack::SP_db db(new detran_utilities::InputDB());
+  db->put<double>("eigen_solver_tol", 1e-5);
+  db->put<int>("eigen_solver_maxit",  1000);
+  db->put<int>("eigen_solver_monitor_level", 0);
+  Eispack S(db);
   S.set_operators(get_A());
 
   // test single eigenvalue and vector
@@ -100,7 +104,12 @@ int test_Eispack_standard(int argc, char *argv[])
 //----------------------------------------------------------------------------//
 int test_Eispack_generalized(int argc, char *argv[])
 {
-  Eispack S(1.e-5, 1000);
+  Eispack::SP_db db(new detran_utilities::InputDB());
+  db->put<double>("eigen_solver_tol", 1e-5);
+  db->put<int>("eigen_solver_maxit",  1000);
+  db->put<int>("eigen_solver_monitor_level", 0);
+
+  Eispack S(db);
   S.set_operators(get_A(), get_B());
 
   // test single eigenvalue and vector

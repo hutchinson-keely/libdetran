@@ -22,13 +22,13 @@ Davidson::Davidson(SP_db db)
   // create projected system solver
   SP_db psdb = detran_utilities::InputDB::Create();
   psdb->put<std::string>("eigen_solver_type",   "eispack");
-  psdb->put<double>("eigen_solver_tol",         d_tolerance/2.0);
+  psdb->put<double>("eigen_solver_tol",         d_tolerance);
   psdb->put<int>("eigen_solver_maxit",          10000);
-  psdb->put<double>("linear_solver_atol",       d_tolerance/2.0);
-  psdb->put<double>("linear_solver_rtol",       d_tolerance/2.0);
+  psdb->put<double>("linear_solver_atol",       d_tolerance);
+  psdb->put<double>("linear_solver_rtol",       d_tolerance);
   psdb->put<int>("linear_solver_monitor_level", 0);
   psdb->put<int>("eigen_solver_monitor_level",  0);
-  d_projected_solver = EigenSolver::Create(db);
+  d_projected_solver = EigenSolver::Create(psdb);
 }
 
 //----------------------------------------------------------------------------//
@@ -99,6 +99,7 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
   Vector r(m, 0.0);
   Vector t(m, 0.0);
 
+  // maximum subspace size
   int subspace_size = 20;
   if (d_db->check("eigen_solver_subspace_size"))
   {
@@ -119,14 +120,23 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
   MatrixDense::SP_matrix A;
   MatrixDense::SP_matrix B;
 
-  // perform outer iterations
+  // total iteration count (start at 1 because we already multiplied by A & B)
   size_t it = 1;
+
+  // number of outers (defined so #outer*#inner ~ maxit)
   size_t outers = d_maximum_iterations / subspace_size + 1;
+
+  //--------------------------------------------------------------------------//
+  // outer iterations
+  //--------------------------------------------------------------------------//
   for (size_t o = 0; o < outers; ++o)
   {
+
+    //------------------------------------------------------------------------//
+    // inner iterations
+    //------------------------------------------------------------------------//
     for (size_t i = 0; i < subspace_size; ++i, ++it)
     {
-      std::cout << "it=" << it << " o=" << o << " i=" << i << std::endl;
       // construct the projected problem, Ax=eBx
       A = new MatrixDense(i+1, i+1, 0.0);
       B = new MatrixDense(i+1, i+1, 0.0);
@@ -139,8 +149,7 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
         }
       }
       d_projected_solver->set_operators(A, B);
-//      A->display();
-//      B->display();
+
       Vector y1(i+1, 0.0);
       Vector y0(i+1, 1.0);
       y0.scale(1.0/y0.norm());
@@ -148,13 +157,12 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
       // solve the projected problem
       d_projected_solver->solve(y1, y0);
       d_lambda = d_projected_solver->eigenvalue();
-      //y1.display("Y");
-      //V[0].display("V0");
+
       // compute ritz vector, V*y1
       u.scale(0.0);
       for (size_t j = 0; j < i + 1; ++j)
         u.add_a_times_x(y1[j], V[j]);
-//     u.display("U");
+
       // update residual  u = Vy,  r = Au = AVy =
       r.scale(0.0);
       for (size_t j = 0; j < i + 1; ++j)
@@ -162,9 +170,6 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
         r.add_a_times_x( y1[j],          V_a[j]);
         r.add_a_times_x(-d_lambda*y1[j], V_b[j]);
       }
-//      r.display("R");
-//      d_A_minus_ritz_times_B->multiply(u, t);
-//      t.display("R part 2");
 
       // check for convergence
       if (monitor(it, d_lambda, r.norm()))
@@ -175,6 +180,7 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
       // restart if necessary (saving u as is)
       t.copy(u);
       if (i == subspace_size - 1) break;
+
       // update the subspace
       d_P->apply(r, u);
       //u.display(" V = P\R");
@@ -188,11 +194,15 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
       V[i+1].copy(u);
       d_A->multiply(V[i+1], V_a[i+1]);
       d_B->multiply(V[i+1], V_b[i+1]);
-    } // end inners
-    if (it == 0)
-    {
-      break;
     }
+
+    //------------------------------------------------------------------------//
+    // end inner iterations
+    //------------------------------------------------------------------------//
+
+    // we set it to zero above if converged or maxit is reached
+    if (it == 0) break;
+
     // otherwise, restart with u
     V[0].copy(t);
     d_A->multiply(V[0], V_a[0]); // aka  Dinv(L)MF
@@ -204,7 +214,11 @@ void Davidson::solve_impl(Vector &u, Vector &x0)
       V_b[i].scale(0.0);
     }
 
-  } // end outers
+  }
+
+  //--------------------------------------------------------------------------//
+  // end outer iterations
+  //--------------------------------------------------------------------------//
 }
 
 } // end namespace callow

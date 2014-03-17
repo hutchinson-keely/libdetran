@@ -74,8 +74,7 @@ void SlepcSolver::solve_impl(Vector &x, Vector &x0)
 
 //----------------------------------------------------------------------------//
 void SlepcSolver::set_operators(SP_matrix    A,
-                                SP_matrix    B,
-                                SP_db        db)
+                                SP_matrix    B)
 {
   Insist(A, "First operator cannot be null");
 

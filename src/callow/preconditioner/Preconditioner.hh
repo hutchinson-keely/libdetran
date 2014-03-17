@@ -68,6 +68,7 @@ public:
   //--------------------------------------------------------------------------//
 
   typedef detran_utilities::SP<Preconditioner>      SP_preconditioner;
+  typedef Vector::SP_vector                         SP_vector;
   typedef MatrixBase::SP_matrix                     SP_matrix;
   typedef detran_utilities::InputDB::SP_input       SP_db;
   typedef detran_utilities::size_t                  size_t;
@@ -106,6 +107,12 @@ public:
   virtual void display(const std::string &name);
   /// size of the operator
   size_t size() const {return d_size;}
+
+  // multiply with SP vectors
+  void apply(SP_vector b,  SP_vector x)
+  {
+    apply(*b, *x);
+  }
 
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL PRECONDITIONERS MUST IMPLEMENT THIS
