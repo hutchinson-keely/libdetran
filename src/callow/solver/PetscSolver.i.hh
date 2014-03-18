@@ -34,7 +34,7 @@ inline PetscErrorCode
 petsc_ksp_monitor(KSP ksp, PetscInt it, PetscReal rnorm, void* ctx)
 {
   PetscSolver* solver = (PetscSolver*)ctx;
-  solver->monitor(it, rnorm); // note, petsc is in charge of terminating
+  solver->monitor(rnorm, it); // note, petsc is in charge of terminating
   return 0;
 }
 

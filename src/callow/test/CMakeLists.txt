@@ -27,7 +27,9 @@ ADD_TEST(test_Richardson                test_LinearSolver 0)
 ADD_TEST(test_Jacobi                    test_LinearSolver 1)
 ADD_TEST(test_GaussSeidel               test_LinearSolver 2)
 ADD_TEST(test_SOR                       test_LinearSolver 3)
-ADD_TEST(test_GMRES                     test_LinearSolver 4)
+ADD_TEST(test_MR1                       test_LinearSolver 4)
+ADD_TEST(test_GMRES                     test_LinearSolver 5)
+ADD_TEST(test_PETSc                     test_LinearSolver 6)
 
 # Eigenvalue Solvers
 ADD_EXECUTABLE(test_EigenSolver         test_EigenSolver.cc)

@@ -96,7 +96,7 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
     if (iteration == 0)
     {
       //cout << "initial..." << endl;
-      if (monitor_init(rho))
+      if (monitor(rho, iteration))
       {
         done = true;
         break;
@@ -220,16 +220,18 @@ void GMRES::solve_impl(const Vector &b, Vector &x0)
       //----------------------------------------------------------------------//
 
       rho = std::abs(g_1);
-      if (monitor(iteration, rho))
+      if (monitor(rho, iteration))
       {
         ++k;
-//        printf("gmres(%3i) terminated at outer iteration %5i ",
-//               d_restart, iteration/d_restart);
-//        printf("(inner iteration %3i) to a solution with residual: %12.8e \n",
-//               k, rho);
+        if (d_monitor_level > 2)
+        {
+          printf("gmres(%3i) terminated at outer iteration %5i ",
+                 d_restart, iteration/d_restart);
+          printf("(inner iteration %3i) to a solution with residual: %12.8e \n",
+                 k, rho);
+        }
         done = true;
         break;
-
       }
 
     } // end inners

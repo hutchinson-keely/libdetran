@@ -41,10 +41,7 @@ void Jacobi::solve_impl(const Vector &b, Vector &x)
   // compute initial residual Ax - b and its norm
   A->multiply((*x0), (*x1));
   double r = x1->norm_residual(b, L2);
-  if (monitor_init(r))
-  {
-    //return;
-  }
+  if (monitor(r, 0)) return;
 
   // perform iterations
   for (iteration = 1; iteration <= d_maximum_iterations; ++iteration)
@@ -100,7 +97,7 @@ void Jacobi::solve_impl(const Vector &b, Vector &x)
     // check convergence
     //----------------------------------------------------//
 
-    if (monitor(iteration, r)) break;
+    if (monitor(r, iteration)) break;
 
   }
 

@@ -12,19 +12,14 @@
         FUNC(test_Jacobi)      \
         FUNC(test_GaussSeidel) \
         FUNC(test_SOR)         \
+        FUNC(test_MR1)         \
         FUNC(test_GMRES)       \
         FUNC(test_PetscSolver)
 
 #include "utilities/TestDriver.hh"
 #include "callow/utils/Initialization.hh"
 // solvers
-#include "callow/solver/Richardson.hh"
-#include "callow/solver/Jacobi.hh"
-#include "callow/solver/GaussSeidel.hh"
-#include "callow/solver/GMRES.hh"
-#ifdef CALLOW_ENABLE_PETSC
-#include "callow/solver/PetscSolver.hh"
-#endif
+#include "callow/solver/LinearSolver.hh"
 // pc
 #include "callow/preconditioner/PCJacobi.hh"
 #include "callow/preconditioner/PCILU0.hh"
@@ -156,10 +151,92 @@ int test_SOR(int argc, char *argv[])
   return 0;
 }
 
+int test_MR1(int argc, char *argv[])
+{
+
+  LinearSolver::SP_matrix A;
+  A = test_matrix_1(n);
+  Vector X(n, 0.0);
+  Vector B(n, 1.0);
+  SP_db db = get_db();
+  db->put<std::string>("linear_solver_type", "mr1");
+  db->put<int>("linear_solver_maxit", 500);
+
+  // NO PC
+  std::cout << "*** MR1 + NO PC ***" << std::endl;
+  SP_solver solver = LinearSolver::Create(db);
+  solver->set_operator(test_matrix_1(n));
+  int status = solver->solve(B, X);
+  //TEST(status == SUCCESS);
+  for (int i = 0; i < 20; ++i)
+  {
+    TEST(soft_equiv(X[i],  X_ref[i], 1e-9));
+  }
+
+  Preconditioner::SP_preconditioner pcilu0;
+  Preconditioner::SP_preconditioner pcjacobi;
+  pcilu0 = new PCILU0(A);
+  pcjacobi = new PCJacobi(A);
+
+  // PCILU0 -- LEFT
+  std::cout << "*** MR1 + ILU(0) on LEFT ***" << std::endl;
+  X.set(0.0);
+  db->put<int>("pc_side", LinearSolver::LEFT);
+  solver->set_parameters(db);
+  solver->set_preconditioner(pcilu0);
+  status = solver->solve(B, X);
+  TEST(status == SUCCESS);
+  for (int i = 0; i < 20; ++i)
+  {
+    TEST(soft_equiv(X[i],  X_ref[i], 1e-9));
+  }
+
+  // PCILU0 -- RIGHT
+  std::cout << "*** MR1 + ILU(0) on RIGHT ***" << std::endl;
+  X.set(0.0);
+  db->put<int>("pc_side", LinearSolver::RIGHT);
+  solver->set_parameters(db);
+  solver->set_preconditioner(pcilu0);
+  status = solver->solve(B, X);
+  TEST(status == SUCCESS);
+  for (int i = 0; i < 20; ++i)
+  {
+    TEST(soft_equiv(X[i],  X_ref[i], 1e-9));
+  }
+
+  // PCJacobi -- LEFT
+  std::cout << "*** MR1 + Jacobi on LEFT ***" << std::endl;
+  X.set(0.0);
+  db->put<int>("pc_side", LinearSolver::LEFT);
+  solver->set_parameters(db);
+  solver->set_preconditioner(pcjacobi);
+  status = solver->solve(B, X);
+  TEST(status == SUCCESS);
+  for (int i = 0; i < 20; ++i)
+  {
+    TEST(soft_equiv(X[i],  X_ref[i], 1e-9));
+  }
+
+  // PCJacobi -- RIGHT
+  std::cout << "*** MR1 + Jacobi on RIGHT ***" << std::endl;
+  X.set(0.0);
+  db->put<int>("pc_side", LinearSolver::RIGHT);
+  solver->set_parameters(db);
+  solver->set_preconditioner(pcjacobi);
+  status = solver->solve(B, X);
+  TEST(status == SUCCESS);
+  for (int i = 0; i < 20; ++i)
+  {
+    TEST(soft_equiv(X[i],  X_ref[i], 1e-9));
+  }
+
+  return 0;
+}
+
 int test_GMRES(int argc, char *argv[])
 {
 
-  GMRES::SP_matrix A;
+  LinearSolver::SP_matrix A;
   A = test_matrix_1(n);
   Vector X(n, 0.0);
   Vector B(n, 1.0);

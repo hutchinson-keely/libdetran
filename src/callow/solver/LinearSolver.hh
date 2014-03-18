@@ -171,7 +171,7 @@ public:
   /// return the residual norms
   std::vector<double> residual_norms()
   {
-    return d_residual;
+    return d_residual_norm;
   }
 
   /// return the number of iterations
@@ -202,7 +202,7 @@ protected:
   /// Maximum number of iterations
   int d_maximum_iterations;
   /// Vector of residual norms at each iteration
-  std::vector<double> d_residual;
+  std::vector<double> d_residual_norm;
   /// Number of iterations performed
   int d_number_iterations;
   /// Linear operator
@@ -233,10 +233,10 @@ protected:
   //--------------------------------------------------------------------------//
 
   /// print out iteration and residual for initial
-  virtual bool monitor_init(double r);
+  //virtual bool monitor_init(double r);
 
   // print out iteration and residual
-  virtual bool monitor(int it, double r);
+  virtual bool monitor(double r, int it);
 
   //--------------------------------------------------------------------------//
   // ABSTRACT INTERFACE -- ALL LINEAR SOLVERS MUST IMPLEMENT THIS

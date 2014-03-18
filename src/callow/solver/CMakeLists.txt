@@ -6,6 +6,7 @@ SET(SOLVER_SRC
   ${SRC_DIR}/Jacobi.cc
   ${SRC_DIR}/GaussSeidel.cc
   ${SRC_DIR}/GMRES.cc
+  ${SRC_DIR}/MR1.cc
   ${SRC_DIR}/PetscSolver.cc
   ${SRC_DIR}/SlepcSolver.cc
   ${SRC_DIR}/EigenSolver.cc

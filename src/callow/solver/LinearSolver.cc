@@ -11,6 +11,7 @@
 #include "Richardson.hh"
 #include "Jacobi.hh"
 #include "GaussSeidel.hh"
+#include "MR1.hh"
 #include "GMRES.hh"
 #include "PetscSolver.hh"
 
@@ -23,6 +24,7 @@ void InitLinearSolverFactory()
   REGISTER_CLASS(LinearSolver, Jacobi,           "jacobi")
   REGISTER_CLASS(LinearSolver, GaussSeidel,      "gauss-seidel")
   REGISTER_CLASS(LinearSolver, GMRES,            "gmres")
+  REGISTER_CLASS(LinearSolver, MR1,              "mr1")
 #ifdef DETRAN_ENABLE_PETSC
   REGISTER_CLASS(LinearSolver, PetscSolver,      "petsc")
 #endif
@@ -89,7 +91,7 @@ void LinearSolver::set_parameters(SP_db db)
     d_pc_side = d_db->get<int>("pc_side");
 
   d_number_iterations = 0;
-  d_residual.resize(d_maximum_iterations, 0.0);
+  d_residual_norm.resize(d_maximum_iterations, 0.0);
 
   Ensure(d_absolute_tolerance >= 0.0);
   Ensure(d_relative_tolerance >= 0.0);
@@ -122,35 +124,36 @@ void LinearSolver::set_preconditioner(SP_preconditioner P)
   }
 }
 
-//----------------------------------------------------------------------------//
-bool LinearSolver::monitor_init(double r)
-{
-  d_residual[0] = r;
-  if (d_monitor_level > 1)
-    printf("iteration: %5i    residual: %12.8e \n", 0, r);
-  if (r < d_absolute_tolerance)
-  {
-    if (d_monitor_level > 0)
-    {
-      printf("*** %s converged in %5i iterations with a residual of %12.8e \n",
-             d_name.c_str(), 0, r );
-    }
-    d_status = SUCCESS;
-    return true;
-  }
-  return false;
-}
+////----------------------------------------------------------------------------//
+//bool LinearSolver::monitor_init(double r)
+//{
+//  d_residual_norm[0] = r;
+//  if (d_monitor_level > 1)
+//    printf("iteration: %5i    residual: %12.8e \n", 0, r);
+//  if (r < d_absolute_tolerance)
+//  {
+//    if (d_monitor_level > 0)
+//    {
+//      printf("*** %s converged in %5i iterations with a residual of %12.8e \n",
+//             d_name.c_str(), 0, r );
+//    }
+//    d_status = SUCCESS;
+//    return true;
+//  }
+//  return false;
+//}
 
 // print out iteration and residual
-bool LinearSolver::monitor(int it, double r)
+bool LinearSolver::monitor(double r, int it)
 {
   d_number_iterations = it;
-  d_residual[it] = r;
+  d_residual_norm[it] = r;
   if (d_monitor_level > 1)
     printf("iteration: %5i    residual: %12.8e \n", it, r);
- // Assert(it > 0);
-  bool value = false;
-  if (r < std::max(d_relative_tolerance * d_residual[0],
+
+  bool game_over = false;
+  d_status = RUNNING;
+  if (r < std::max(d_relative_tolerance * d_residual_norm[0],
                    d_absolute_tolerance))
   {
     if (d_monitor_level)
@@ -159,25 +162,24 @@ bool LinearSolver::monitor(int it, double r)
              d_name.c_str(), it, r );
     }
     d_status = SUCCESS;
-    value = true;
+    game_over = true;
   }
-  else if (d_monitor_diverge && it >  1 && r - d_residual[it - 1] > 0.0)
+  else if (d_monitor_diverge && it > 0)
   {
-    if (d_monitor_level) printf("*** %s diverged \n", d_name.c_str());
-    d_status = DIVERGE;
-    value = true;
+    if (r - d_residual_norm[it - 1] > 0.0)
+    {
+      if (d_monitor_level) printf("*** %s diverged \n", d_name.c_str());
+      d_status = DIVERGE;
+      game_over = true;
+    }
   }
-  else if (it == d_maximum_iterations - 1)
+  else if (it == d_maximum_iterations)
   {
     if (d_monitor_level) printf("*** max it\n");
     d_status = MAXIT;
-    value = true;
+    game_over = true;
   }
-  else
-  {
-    d_status = RUNNING;
-  }
-  return value;
+  return game_over;
 }
 
 
@@ -187,7 +189,7 @@ int LinearSolver::solve(const Vector &b, Vector &x)
   Require(x.size() == b.size());
   Require(x.size() == d_A->number_rows());
   // Resize the norm
-  d_residual.resize(d_maximum_iterations+1, 0.0);
+  d_residual_norm.resize(d_maximum_iterations+1, 0.0);
   d_status = RUNNING;
   solve_impl(b, x);
   if (d_status ==  MAXIT && d_monitor_level > 0)
@@ -196,7 +198,7 @@ int LinearSolver::solve(const Vector &b, Vector &x)
             d_name.c_str());
   }
   // Resize the norm
-  d_residual.resize(d_number_iterations+1);
+  d_residual_norm.resize(d_number_iterations+1);
   return d_status;
 }
 

@@ -4,6 +4,7 @@ import numpy as np
 from detran.utilities import *
 from detran.callow import *
 import detran
+import time
 
 def soft_equiv(a, b, tol = 1.0e-12) :
     if np.abs(a-b) < tol :
@@ -161,21 +162,22 @@ class TestCallow(unittest.TestCase) :
         print np.asarray(res)
         
     def test_solver_performance(self) :
-        A = self.get_matrix(200, 3.0)
-        
-        b = Vector(200, 1.0)
-        x = Vector(200, 0.0)  
+        n = 200
+        A = self.get_matrix(n, 3.0)
+        b = Vector(n, 1.0)
+        x = Vector(n, 0.0)  
                 
         types = ["richardson", "richardson", "jacobi", "gauss-seidel", \
-                 "gauss-seidel", "gmres", "gmres"]
-        pcs   = ["", "jacobi", "", "", "", "", "ilu0"]
-        sor   = [1.0, 1.0, 1.0, 1.0, 1.16, 1.0, 1.0]
+                 "gauss-seidel", "mr1", "mr1", "gmres", "gmres"]
+        pcs   = ["", "jacobi", "", "","","", "ilu0", "", "ilu0"]
+        sor   = [1.0, 1.0, 1.0, 1.0, 1.16, 1.0, 1.0, 1.0, 1.0]
         db = InputDB.Create()
         db.put_int("linear_solver_maxit", 1000)
         db.put_int("linear_solver_monitor_level", 1)
         db.put_dbl("linear_solver_rtol", 1.0e-9)
         num_iters = []
         nrm_resid = []
+        times = []
         for i in range(0, len(types)) :
             x.set(0.0)
             db.put_str("linear_solver_type", types[i])
@@ -184,23 +186,30 @@ class TestCallow(unittest.TestCase) :
             solver = LinearSolver.Create(db)
             solver.set_operator(A)
             solver.set_preconditioner()
+            t = time.time()
             solver.solve(b, x)
+            times.append(time.time()-t)
             num_iters.append(solver.number_iterations())
             nrm_resid.append(np.asarray(solver.residual_norms()))
         print num_iters
+        print times
+        print np.asarray(times) / np.asarray(num_iters)
         try :
             import matplotlib.pyplot as plt
             plt.semilogy(range(num_iters[2]+1), nrm_resid[2], 'k-o',  \
                          range(num_iters[3]+1), nrm_resid[3], 'b->',  \
                          range(num_iters[4]+1), nrm_resid[4], 'b--^', \
-                         range(num_iters[5]+1), nrm_resid[5], 'g-*',  \
-                         range(num_iters[6]+1), nrm_resid[6], 'g--h')
-            plt.legend(['jacobi','g-s','sor(1.16)','gmres','gmres+ilu0'])
+                         range(num_iters[5]+1), nrm_resid[5], 'r-v',  \
+                         range(num_iters[6]+1), nrm_resid[6], 'r--<', \
+                         range(num_iters[7]+1), nrm_resid[7], 'g-*',  \
+                         range(num_iters[8]+1), nrm_resid[8], 'g--h')
+            plt.legend(['jacobi','g-s','sor(1.16)','mr1','mr1+ilu0','gmres','gmres+ilu0'])
             plt.xlabel('iteration')
             plt.ylabel('residual norm')
             plt.grid(True)
             plt.show()
         except :
+            print "no matplotlib"
             pass
         
     def test_pcmatrix(self) :
