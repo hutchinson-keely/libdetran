@@ -18,30 +18,34 @@ namespace callow
  *  @class MR1
  *  @brief One-step, minimum residual iteration
  *
- *  This one-step method seeks to minimize the residual
- *  by eliminating the component of the residual in the
- *  column space of \f$ A \f$.  The residual is
- *  defined
+ *  Given an iterate \f$ x \f$, the residual is defined
  *  @f[
  *     r = b - \mathbf{A}x \, .
  *  @f]
- *  The projection of \f$ r \f$ into the column space  of \f$ A \f$
- *  yields
+ *  Then, we define
  *  @f[
- *     a = (\mathbf{A}r)^T r / [(\mathbf{A}r)^T (\mathbf{A}r))
+ *     p = \mathbf{A}r
  *  @f]
- *  and the correction
+ *  and
  *  @f[
- *     x = x + a r \, .
+ *     a = (p^T r) / (p^T p) \, ,
+ *  @f]
+ *  which give the new iterate
+ *  @f[
+ *     x = x + a r
+ *  @f]
+ *  and updated residual
+ *  @f[
+ *     r = r - a p \, .
  *  @f]
  *
- *  This method requires that \f$ A \f$ is positive definite, but not
+ *  This method requires that \f$ \mathbf{A} \f$ is positive definite, but not
  *  necessarily symmetric.
- *
  *  Either left or right preconditioning is allowed if the resulting
  *  operator remains positive definite.
  *
- *  Ref. Y. Saad, Iterative Methods for Sparse Linear Systems, pp 140-141.
+ *  Reference:
+ *    Y. Saad, Iterative Methods for Sparse Linear Systems, pp 140-141.
  */
 class MR1 : public LinearSolver
 {
