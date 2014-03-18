@@ -15,11 +15,21 @@ class TestCallow(unittest.TestCase) :
     def setUp(self) :
         Callow.initialize(sys.argv)
         
-    def get_matrix(self) :
-        A = Matrix(5, 5, 3)
-        i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
-        j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
-        v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
+    def get_matrix(self, n=5, V=2.0) :
+        A = Matrix(n, n, 3)
+        i = [0, 0]
+        j = [0, 1]
+        v = [V,-1]
+        for k in range(1, n-1) :
+          i += [k,k,k]
+          j += [k-1,k,k+1]
+          v += [-1,V,-1]
+        i += [n-1,n-1]
+        j += [n-V,n-1]
+        v += [-1, V]
+#         i = [0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4]
+#         j = [0, 1, 0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4]
+#         v = [2,-1,-1, 2,-1,-1, 2,-1,-1, 2,-1,-1, 2]
         A.insert(i, j, v)
         A.assemble()
         return A
@@ -58,9 +68,7 @@ class TestCallow(unittest.TestCase) :
             from scipy.sparse import csr_matrix
             B = csr_matrix((vals, cols, rows), 
                            shape=(A.number_rows(), A.number_columns()))
-            print B
             B.setdiag([3,3,3,3,3])
-            A.display()
             del B # all done
             self.assertTrue(A(0, 0) == 3.0)
         except :
@@ -90,20 +98,21 @@ class TestCallow(unittest.TestCase) :
         A.multiply(x, y)
 
         # Shell Option 1 -- set a multiply function.  Transpose not available. 
-        def multiply(x, y) :
+        def fun(x, y) :
             A = self.get_matrix()
             A.multiply(x, y)
-        B = PyMatrixShell(5, 5)
-        B.set_multiply(multiply)
+        #print help(MatrixShellFunction)
+        B = MatrixShellFunction(5, 5)
+        B.set_multiply(fun)
         B.multiply(x, z)
         for i in range(0, y.size()) :
            self.assertTrue(soft_equiv(y[i], z[i]))
-        
+         
         # Shell Option 2 -- Inherit from MatrixShell class and 
         #   provide implementation for multiply and/or transpose.
-        class MyShell(MatrixShell):
+        class MyShell(PyMatrixShell):
             def __init__(self, A) :
-                super(MyShell, self).__init__(None, A.number_rows(), A.number_columns())
+                super(MyShell, self).__init__(A.number_rows(), A.number_columns())
                 self.A = A
             def multiply(self, x, y) :
                 self.A.multiply(x, y) 
@@ -118,14 +127,14 @@ class TestCallow(unittest.TestCase) :
         
         # test solver with regular matrix and a shell matrix
         A = self.get_matrix()
-        
         class MyShell(PyMatrixShell):
             def __init__(self, A) :
                 super(MyShell, self).__init__(A.number_rows(), A.number_columns())
                 self.A = A
-                self.set_multiply(self.my_multiply)
-            def my_multiply(self, x, y) :
+            def multiply(self, x, y) :
                 self.A.multiply(x, y) 
+            def multiply_transpose(self, x, y) :
+                self.A.multiply_transpose(x, y)                
         C = MyShell(A)                
         
         b = Vector(5, 1.0)
@@ -134,18 +143,66 @@ class TestCallow(unittest.TestCase) :
                 
         db = InputDB.Create()
         db.put_str("linear_solver_type", "gmres")
+        #db.put_int("linear_solver_monitor_level", 2)
         solver = LinearSolver.Create(db)
         solver.set_operator(A)
         solver.solve(b, x)
         A.multiply(x, y)
         for i in range(0, y.size()) :
            self.assertTrue(soft_equiv(y[i], 1.0))
+        print solver.number_iterations()
  
         solver.set_operator(C)
+        y.set(0.0)
         solver.solve(b, y)
         for i in range(0, y.size()) :
            self.assertTrue(soft_equiv(y[i], x[i]))        
- 
+        res = solver.residual_norms()
+        print np.asarray(res)
+        
+    def test_solver_performance(self) :
+        A = self.get_matrix(200, 3.0)
+        
+        b = Vector(200, 1.0)
+        x = Vector(200, 0.0)  
+                
+        types = ["richardson", "richardson", "jacobi", "gauss-seidel", \
+                 "gauss-seidel", "gmres", "gmres"]
+        pcs   = ["", "jacobi", "", "", "", "", "ilu0"]
+        sor   = [1.0, 1.0, 1.0, 1.0, 1.16, 1.0, 1.0]
+        db = InputDB.Create()
+        db.put_int("linear_solver_maxit", 1000)
+        db.put_int("linear_solver_monitor_level", 1)
+        db.put_dbl("linear_solver_rtol", 1.0e-9)
+        num_iters = []
+        nrm_resid = []
+        for i in range(0, len(types)) :
+            x.set(0.0)
+            db.put_str("linear_solver_type", types[i])
+            db.put_str("pc_type", pcs[i])
+            db.put_dbl("linear_solver_relaxation", sor[i])
+            solver = LinearSolver.Create(db)
+            solver.set_operator(A)
+            solver.set_preconditioner()
+            solver.solve(b, x)
+            num_iters.append(solver.number_iterations())
+            nrm_resid.append(np.asarray(solver.residual_norms()))
+        print num_iters
+        try :
+            import matplotlib.pyplot as plt
+            plt.semilogy(range(num_iters[2]+1), nrm_resid[2], 'k-o',  \
+                         range(num_iters[3]+1), nrm_resid[3], 'b->',  \
+                         range(num_iters[4]+1), nrm_resid[4], 'b--^', \
+                         range(num_iters[5]+1), nrm_resid[5], 'g-*',  \
+                         range(num_iters[6]+1), nrm_resid[6], 'g--h')
+            plt.legend(['jacobi','g-s','sor(1.16)','gmres','gmres+ilu0'])
+            plt.xlabel('iteration')
+            plt.ylabel('residual norm')
+            plt.grid(True)
+            plt.show()
+        except :
+            pass
+        
     def test_pcmatrix(self) :
         
         x = Vector(5, 1.0)
@@ -153,14 +210,15 @@ class TestCallow(unittest.TestCase) :
         z = Vector(5, 0.0)
         A = self.get_matrix()   
         
-        class MyPyShell(PyMatrixShell) :
-            def __init__(self, n, m, A) :
-                super(MyPyShell, self).__init__(n, m)
+        class MyShell(PyMatrixShell):
+            def __init__(self, A) :
+                super(MyShell, self).__init__(A.number_rows(), A.number_columns())
                 self.A = A
-                self.set_multiply(self.do_multiply)
-            def do_multiply(self, xx, yy) :
-                self.A.multiply(xx, yy) 
-        B = MyPyShell(5, 5, A)
+            def multiply(self, x, y) :
+                self.A.multiply(x, y) 
+            def multiply_transpose(self, x, y) :
+                self.A.multiply_transpose(x, y)  
+        B = MyShell(A)
         
         # we can use a python class in detran...neat.
         P = PCMatrix(B)
@@ -168,18 +226,6 @@ class TestCallow(unittest.TestCase) :
         A.multiply(x, z)
         for i in range(0, y.size()) :
            self.assertTrue(soft_equiv(y[i], z[i]))  
-     
-        class MyShell2(PyShell):
-            def __init__(self, A) :
-                super(MyShell2, self).__init__(A.number_rows(), A.number_columns())
-                self.A = A
-            def multiply(self, x, y) :
-                self.A.multiply(x, y)  
-        C = MyShell2(A)
-        P2 = PCMatrix(C)
-        P2.apply(x, y) #THIS DOES NOT YET WORK, FIGURE IT OUT
-        for i in range(0, y.size()) :
-           self.assertTrue(soft_equiv(y[i], z[i]))
-        
+   
 if __name__ == '__main__':
     unittest.main()

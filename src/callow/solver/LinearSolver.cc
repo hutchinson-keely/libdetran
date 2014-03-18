@@ -116,7 +116,10 @@ void LinearSolver::set_preconditioner(SP_preconditioner P)
   d_P = P;
   if (!d_P)
     d_P = Preconditioner::Create(d_A, d_db);
-  Ensure(d_A->number_rows() == d_P->size());
+  if (d_P)
+  {
+    Ensure(d_A->number_rows() == d_P->size());
+  }
 }
 
 //----------------------------------------------------------------------------//

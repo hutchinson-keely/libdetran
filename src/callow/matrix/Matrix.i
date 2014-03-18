@@ -166,9 +166,9 @@
 // Extensions for shell matrices
 //----------------------------------------------------------------------------//
 
-%feature("director") callow::MatrixShell;
-%feature("director") callow::PyShell;
-%feature("nodirector") callow::PyShell::multiply(const callow::Vector &x, callow::Vector &y);
+%feature("director") callow::MatrixShellFunction;
+%feature("director") callow::PyMatrixShell;
+%feature("nodirector") callow::PyMatrixShell::multiply(const callow::Vector &x, callow::Vector &y);
 
 %feature("director:except") 
 {
@@ -190,7 +190,7 @@
 
 // Set the callback setter for python-based time-dependent materials
 setCallbackMethod(1, // this is a *unique* identifier
-                  callow::PyMatrixShell, 
+                  callow::MatrixShellFunction, 
                   set_multiply, 
                   (void* data, callow::Vector::SP_vector x, callow::Vector::SP_vector y), 
                   (callow::Vector::SP_vector x, callow::Vector::SP_vector y), 
@@ -204,13 +204,12 @@ setCallbackMethod(1, // this is a *unique* identifier
 %shared_ptr(callow::Matrix)
 %shared_ptr(callow::MatrixDense)
 %shared_ptr(callow::MatrixShell)
+%shared_ptr(callow::MatrixShellFunction)
 %shared_ptr(callow::PyMatrixShell)
-%shared_ptr(callow::PyShell)
 %include "MatrixBase.hh"
 %include "Matrix.hh"
 %include "MatrixDense.hh"
 %include "MatrixShell.hh"
-
 
 %apply (double** ARGOUTVIEW_ARRAY2, int* DIM1, int* DIM2)
        {(double** a, int* m, int* n)}

@@ -92,40 +92,26 @@ inline PetscErrorCode shell_multiply_wrapper(Mat A, Vec x, Vec y);
 CALLOW_TEMPLATE_EXPORT(detran_utilities::SP<MatrixShell>)
 
 /**
- *  @class PyMatrixShell
+ *  @class MatrixShellFunction
  *  @brief Expose the matrix shell to Python for user-defined action functions
  */
-class PyMatrixShell: public MatrixShell
+class MatrixShellFunction: public MatrixShell
 {
 public:
 
-  typedef detran_utilities::SP<PyMatrixShell> SP_pymatrix;
+  /// Typedefs
   typedef void (*callback_ptr)(void *, Vector::SP_vector, Vector::SP_vector);
 
-  PyMatrixShell(const int m, const int n);
+  MatrixShellFunction(const int m, const int n);
 
-  SP_pymatrix Create(const int m, const int n);
+//  SP_pymatrix Create(const int m, const int n);
 
-  void set_multiply(callback_ptr f, void* data)
-  {
-    d_multiply = f;
-    d_context  = data;
-  }
-
+  // set the function that provides the action
+  void set_multiply(callback_ptr f, void* data);
   // the client must implement the action y <-- A * x
-  void multiply(const Vector &x, Vector &y)
-  {
-    SP_vector X(new Vector(x.size(), const_cast<double*>(&x[0])));
-    SP_vector Y(new Vector(y.size(), &y[0]));
-    d_multiply(d_context, X, Y);
-  }
-
+  void multiply(const Vector &x, Vector &y);
   // the client must implement the action y <-- A' * x
-  void multiply_transpose(const Vector &x, Vector &y)
-  {
-    THROW("NOT IMPLEMENTED");
-  }
-
+  void multiply_transpose(const Vector &x, Vector &y);
 private:
   callback_ptr d_multiply;
   callback_ptr d_multiply_transpose;
@@ -133,47 +119,27 @@ private:
 };
 
 /**
- *  @class PyShell
- *  @brief Better interface class for matrix shell
+ *  @class PyMatrixShell
+ *  @brief Interface class for matrix shell for Python
  */
-class PyShell: public MatrixShell
+class PyMatrixShell: public MatrixShell
 {
-
 public:
-
-  PyShell(const int m, const int n)
-    : MatrixShell(NULL, m, n) {}
-
-  virtual void multiply(Vector::SP_vector x, Vector::SP_vector y)
-  {
-    THROW("NOT IMPLEMENTED");
-  }
-
-  virtual void multiply_transpose(Vector::SP_vector x, Vector::SP_vector y)
-  {
-    THROW("NOT IMPLEMENTED");
-  }
-
-  void multiply(const Vector &x, Vector &y)
-  {
-    SP_vector  X(new Vector(x.size(), const_cast<double*>(&x[0])));
-    SP_vector  Y(new Vector(y.size(), &y[0]));
-    multiply(X, Y);
-  }
-
-  void multiply_transpose(const Vector &x, Vector &y)
-  {
-    SP_vector  X(new Vector(x.size(), const_cast<double*>(&x[0])));
-    SP_vector  Y(new Vector(y.size(), &y[0]));
-    multiply_transpose(X, Y);
-  }
+  /// constructor
+  PyMatrixShell(const int m, const int n);
+  /// user must implement multiply
+  virtual void multiply(Vector::SP_vector x, Vector::SP_vector y);
+  /// user must implement multiply transpose
+  virtual void multiply_transpose(Vector::SP_vector x, Vector::SP_vector y);
+  /// overloaded multiply that calls the sp version
+  void multiply(const Vector &x, Vector &y);
+  /// overloaded multiply transpose that calls the sp version
+  void multiply_transpose(const Vector &x, Vector &y);
 };
 
 } // end namespace callow
 
 #include "MatrixShell.i.hh"
-
-
 
 #endif /* callow_MATRIXSHELL_HH_ */
 

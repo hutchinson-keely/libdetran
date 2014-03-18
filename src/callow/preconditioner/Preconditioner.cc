@@ -40,7 +40,10 @@ Preconditioner::Create(SP_matrix A, SP_db db)
     db = new detran_utilities::InputDB();
     db->put<std::string>("pc_type", key);
   }
-  return (Factory_T::Instance().GetCreateFunction(key))(A, db);
+  if (key != "")
+    return (Factory_T::Instance().GetCreateFunction(key))(A, db);
+  else
+    return SP_preconditioner(0);
 }
 
 //----------------------------------------------------------------------------//

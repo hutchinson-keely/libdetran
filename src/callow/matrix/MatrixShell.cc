@@ -62,19 +62,79 @@ void MatrixShell::display(bool forceprint) const
 }
 
 //----------------------------------------------------------------------------//
-PyMatrixShell::PyMatrixShell(const int m, const int n)
+MatrixShellFunction::MatrixShellFunction(const int m, const int n)
   : MatrixShell(NULL, m, n)
   , d_multiply(NULL)
+  , d_multiply_transpose(NULL)
 {
   /* ... */
 }
 
-PyMatrixShell::SP_pymatrix
-PyMatrixShell::Create(const int m, const int n)
+//----------------------------------------------------------------------------//
+void MatrixShellFunction::set_multiply(callback_ptr f, void* data)
 {
-  detran_utilities::SP<PyMatrixShell> p(new PyMatrixShell(m, n));
-  return p;
+  d_multiply = f;
+  d_context  = data;
 }
+
+//----------------------------------------------------------------------------//
+void MatrixShellFunction::multiply(const Vector &x, Vector &y)
+{
+  SP_vector X(new Vector(x.size(), const_cast<double*>(&x[0])));
+  SP_vector Y(new Vector(y.size(), &y[0]));
+  d_multiply(d_context, X, Y);
+}
+
+//----------------------------------------------------------------------------//
+void MatrixShellFunction::multiply_transpose(const Vector &x, Vector &y)
+{
+  THROW("NOT IMPLEMENTED");
+}
+
+
+//MatrixShellFunction::SP_pymatrix
+//MatrixShellFunction::Create(const int m, const int n)
+//{
+//  detran_utilities::SP<PyMatrixShell> p(new PyMatrixShell(m, n));
+//  return p;
+//}
+
+//----------------------------------------------------------------------------//
+PyMatrixShell::PyMatrixShell(const int m, const int n)
+  : MatrixShell(NULL, m, n)
+{
+  /* ... */
+}
+
+
+//----------------------------------------------------------------------------//
+void PyMatrixShell::multiply(Vector::SP_vector x, Vector::SP_vector y)
+{
+  THROW("NOT IMPLEMENTED");
+}
+
+//----------------------------------------------------------------------------//
+void PyMatrixShell::multiply_transpose(Vector::SP_vector x, Vector::SP_vector y)
+{
+  THROW("NOT IMPLEMENTED");
+}
+
+//----------------------------------------------------------------------------//
+void PyMatrixShell::multiply(const Vector &x, Vector &y)
+{
+  SP_vector  X(new Vector(x.size(), const_cast<double*>(&x[0])));
+  SP_vector  Y(new Vector(y.size(), &y[0]));
+  multiply(X, Y);
+}
+
+//----------------------------------------------------------------------------//
+void PyMatrixShell::multiply_transpose(const Vector &x, Vector &y)
+{
+  SP_vector  X(new Vector(x.size(), const_cast<double*>(&x[0])));
+  SP_vector  Y(new Vector(y.size(), &y[0]));
+  multiply_transpose(X, Y);
+}
+
 
 } // end namespace callow
 
