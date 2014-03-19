@@ -188,7 +188,7 @@ endif()
 # geometry orthog
 
 set(DETRAN_LIBS "utilities" "callow" "angle" 
-                "orthog" "geometry"
+                "orthog" "geometry" "external_source"
    )
 #                "callow" 
 #                "geometry" "orthog"
