@@ -187,7 +187,9 @@ endif()
 # angle callow material
 # geometry orthog
 
-set(DETRAN_LIBS "utilities" "callow")
+set(DETRAN_LIBS "utilities" "callow" "angle" 
+                "orthog" "geometry"
+   )
 #                "callow" 
 #                "geometry" "orthog"
 #                "external_source"  "boundary"

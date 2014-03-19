@@ -51,38 +51,36 @@
 %import "angle/detran_angle.i"
 //%include "std_vector.i"
 
-%include "Point.hh"
-%include "Ray.hh"
-
 %shared_ptr(detran_geometry::Mesh)
 %shared_ptr(detran_geometry::CartesianMesh)
-%include "Mesh.hh"
-%include "CartesianMesh.hh"
-
 %shared_ptr(detran_geometry::PinCell)
 %shared_ptr(detran_geometry::Assembly)
 %shared_ptr(detran_geometry::Core)
-%include "PinCell.hh"
-%include "Assembly.hh"
-%include "Core.hh"
-
 // CSG 
 %shared_ptr(detran_geometry::Surface)
 %shared_ptr(detran_geometry::QuadraticSurface)
 %shared_ptr(detran_geometry::Region)
 %shared_ptr(detran_geometry::Geometry)
+// MOC
+%shared_ptr(detran_geometry::Track)
+%shared_ptr(detran_geometry::TrackDB)
+%shared_ptr(detran_geometry::Tracker)
+
+%include "Point.hh"
+%include "Ray.hh"
+
+%include "Mesh.hh"
+%include "CartesianMesh.hh"
+%include "PinCell.hh"
+%include "Assembly.hh"
+%include "Core.hh"
 %include "Surface.hh"
-//%include "QuadraticSurface.hh"
+%include "QuadraticSurface.hh"
 %include "QuadraticSurfaceFactory.hh"
 %include "CSG.hh"
 %include "Region.hh"
 %include "Geometry.hh"
 %include "RegionFactory.hh"
-
-// MOC
-%shared_ptr(detran_geometry::Track)
-%shared_ptr(detran_geometry::TrackDB)
-%shared_ptr(detran_geometry::Tracker)
 %include "Segment.hh"
 %include "Track.hh"
 %include "TrackDB.hh"

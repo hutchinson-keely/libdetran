@@ -18,8 +18,10 @@ namespace detran_geometry
  *  @struct QuadraticSurfaceFactory
  *  @brief  Convenience functions for creating simple quadratic surfaces
  */
-struct QuadraticSurfaceFactory
+class QuadraticSurfaceFactory
 {
+
+public:
 
   //--------------------------------------------------------------------------//
   // TYPEDEFS

@@ -11,8 +11,10 @@
 #include <stddef.h>
 #include "orthog/OrthogonalBasisParameters.hh"
 #include "orthog/OrthogonalBasis.hh"
+#include "callow/detran_callow.hh"
 %}
 
+//%include "orthog/orthog_export.hh"
 // Hide templates from SWIG
 %inline
 {
@@ -24,12 +26,11 @@
 %import "utilities/detran_utilities.i"
 %import "callow/detran_callow.i"
 
-// Base angle classes and utilities
-%include "OrthogonalBasisParameters.hh"
-%template(OrthogonalBasisParamsSP) detran_utilities::SP<detran_orthog::OrthogonalBasisParameters>;
+%shared_ptr(detran_orthog::OrthogonalBasis)
+%shared_ptr(detran_orthog::OrthogonalBasisParameters)
 
+%include "OrthogonalBasisParameters.hh"
 %include "OrthogonalBasis.hh"
-%template(OrthogonalBasisSP) detran_utilities::SP<detran_orthog::OrthogonalBasis>;
 
 //---------------------------------------------------------------------------//
 //              end of detran_orthog.i
