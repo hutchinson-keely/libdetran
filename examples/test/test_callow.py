@@ -230,7 +230,9 @@ class TestCallow(unittest.TestCase) :
         B = MyShell(A)
         
         # we can use a python class in detran...neat.
-        P = PCMatrix(B)
+        db = InputDB.Create()
+        db.put_str("pc_type", "matrix")
+        P = Preconditioner.Create(B, db)
         P.apply(x, y)
         A.multiply(x, z)
         for i in range(0, y.size()) :

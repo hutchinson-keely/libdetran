@@ -7,5 +7,5 @@
 //----------------------------------------------------------------------------//
 
 %shared_ptr(callow::Preconditioner)
- 
+
 %include "Preconditioner.hh"
