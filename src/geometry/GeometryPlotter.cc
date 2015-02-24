@@ -11,6 +11,9 @@
 #include <fstream>
 #include <cstdio>
 #include <sstream>
+#ifdef DETRAN_ENABLE_OPENMP
+#include <omp.h>
+#endif
 
 namespace detran_geometry
 {
@@ -53,9 +56,10 @@ bool GeometryPlotter::initialize(SP_cartesianmesh mesh, const size_t n)
   {
     for (size_t i = 0; i < d_nx; ++i)
     {
-      d_cells[i + j * d_ny] =
+      size_t jj = j * d_nx;
+      d_cells[i + jj] =
         mesh->find_cell(detran_geometry::Point(d_x[i], d_y[j]));
-      if (d_cells[i + j * d_ny] < 0.0)
+      if (d_cells[i + jj] < 0.0)
       {
         std::cout << " missing cell for x = " << d_x[i]
                   << " y = " << d_y[j] << std::endl;
@@ -82,27 +86,35 @@ bool GeometryPlotter::initialize(SP_geometry geo, const double delta)
   d_x = detran_utilities::linspace_center(0, geo->width_x(), d_nx);
   d_y = detran_utilities::linspace_center(0, geo->width_y(), d_ny);
   d_cells.resize(d_nx * d_ny);
-  for (size_t j = 0; j < d_ny; ++j)
+
+  size_t i, j;
+  #pragma omp parallel default(shared) private(i, j)
   {
-    size_t jj = d_ny - j - 1;
-    for (size_t i = 0; i < d_nx; ++i)
-    {
-      d_cells[i + jj * d_ny] =
-        geo->find_cell(detran_geometry::Point(d_x[i], d_y[j]));
-      if (d_cells[i + jj * d_ny] < 0.0)
+    #pragma omp for
+      for (j = 0; j < d_ny; ++j)
       {
-        std::cout << " missing cell for x = " << d_x[i]
-                  << " y = " << d_y[j] << std::endl;
+        size_t jj = (d_ny - j - 1) * d_nx;
+        for (i = 0; i < d_nx; ++i)
+        {
+          d_cells[i + jj] =
+            geo->find_cell(detran_geometry::Point(d_x[i], d_y[j]));
+          if (d_cells[i + jj] < 0.0)
+          {
+            std::cout << " missing cell for x = " << d_x[i]
+                      << " y = " << d_y[j] << std::endl;
+          }
+        }
       }
-    }
-  }
+  } // omp parallel
+
   // create plotter
   d_plotter = new detran_utilities::PPMPlotter;
   return true;
 }
 
 //----------------------------------------------------------------------------//
-bool GeometryPlotter::write_mesh_map(SP_cartesianmesh mesh, const std::string &key)
+bool GeometryPlotter::write_mesh_map(SP_cartesianmesh   mesh,
+                                     const std::string &key)
 {
   Require(mesh);
   if (!mesh->mesh_map_exists(key))
@@ -120,6 +132,30 @@ bool GeometryPlotter::write_mesh_map(SP_cartesianmesh mesh, const std::string &k
   }
   d_plotter->set_pixels<double>(data);
   return d_plotter->write();
+}
+
+//----------------------------------------------------------------------------//
+bool GeometryPlotter::draw_geometry(SP_geometry  geo,
+                                    bool         flag,
+                                    const size_t cmap)
+{
+  Require(geo);
+
+  d_plotter->initialize(d_nx, d_ny, d_prefix+"_geometry"+".ppm", cmap);
+  vec_dbl data(d_cells.size());
+  for (size_t i = 0; i < d_cells.size(); ++i)
+  {
+    data[i] = -1.0;
+    if (d_cells[i] < 0) continue;
+    if (flag)
+      data[i] = (double) d_cells[i];
+    else
+      data[i] = (double) geo->region(d_cells[i])->attribute("MATERIAL");
+  }
+  d_plotter->set_pixels<double>(data);
+  return d_plotter->write();
+
+  return true;
 }
 
 //----------------------------------------------------------------------------//
@@ -144,28 +180,6 @@ bool GeometryPlotter::write_mesh_map(SP_cartesianmesh mesh, const std::string &k
 //  }
 //  return true;
 //}
-
-//----------------------------------------------------------------------------//
-bool GeometryPlotter::draw_geometry(SP_geometry geo, bool flag, const size_t cmap)
-{
-  Require(geo);
-
-  d_plotter->initialize(d_nx, d_ny, d_prefix+"_geometry"+".ppm", cmap);
-  vec_dbl data(d_cells.size());
-  for (size_t i = 0; i < d_cells.size(); ++i)
-  {
-    data[i] = -1.0;
-    if (d_cells[i] < 0) continue;
-    if (flag)
-      data[i] = (double) d_cells[i];
-    else
-      data[i] = (double) geo->region(d_cells[i])->attribute("MATERIAL");
-  }
-  d_plotter->set_pixels<double>(data);
-  return d_plotter->write();
-
-  return true;
-}
 
 } // end namespace detran_geometry
 
