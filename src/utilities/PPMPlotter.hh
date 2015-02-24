@@ -9,14 +9,14 @@
 #ifndef detran_ioutils_PPMPLOTTER_HH_
 #define detran_ioutils_PPMPLOTTER_HH_
 
-#include "ioutils/ioutils_export.hh"
-#include "ioutils/ColorMap.hh"
+#include "utilities/utilities_export.hh"
+#include "utilities/ColorMap.hh"
 #include "utilities/DBC.hh"
 #include "utilities/Definitions.hh"
 #include "utilities/SP.hh"
 #include <string>
 
-namespace detran_ioutils
+namespace detran_utilities
 {
 
 /**
@@ -24,7 +24,7 @@ namespace detran_ioutils
  *  @brief Produces 2-D plots in the PPM format
  *  @todo  Add capability to do xz and yz planes for 3-D
  */
-class IOUTILS_EXPORT PPMPlotter
+class UTILITIES_EXPORT PPMPlotter
 {
 
 public:
@@ -97,9 +97,9 @@ private:
 
 };
 
-IOUTILS_TEMPLATE_EXPORT(detran_utilities::SP<PPMPlotter>)
+UTILITIES_TEMPLATE_EXPORT(detran_utilities::SP<PPMPlotter>)
 
-} // end namespace detran_ioutils
+} // end namespace detran_utilities
 
 #endif // detran_ioutils_PPMPLOTTER_HH_
 

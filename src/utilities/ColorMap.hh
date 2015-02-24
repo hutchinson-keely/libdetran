@@ -6,15 +6,15 @@
  */
 //----------------------------------------------------------------------------//
 
-#ifndef detran_ioutils_COLORMAP_HH_
-#define detran_ioutils_COLORMAP_HH_
+#ifndef detran_utilities_COLORMAP_HH_
+#define detran_utilities_COLORMAP_HH_
 
 #include "geometry/Point.hh"
 #include "utilities/Definitions.hh"
 #include "utilities/MathUtilities.hh"
 #include "utilities/Random.hh"
 
-namespace detran_ioutils
+namespace detran_utilities
 {
 
 /**
@@ -53,7 +53,6 @@ public:
     unsigned char r, g, b;
   };
   typedef std::vector<ColorMap::rgb_t>      vec_rgb;
-  typedef detran_geometry::Point            Point;
 
   //--------------------------------------------------------------------------//
   // PUBLIC FUNCTIONS
@@ -122,9 +121,9 @@ struct gray_to_color
   ColorMap::rgb_t   color;
 };
 
-} // end namespace detran_ioutils
+} // end namespace detran_utilities
 
-#endif /* detran_ioutils_COLORMAP_HH_ */
+#endif /* detran_utilities_COLORMAP_HH_ */
 
 //----------------------------------------------------------------------------//
 //              end of file ColorMap.cc

@@ -9,7 +9,7 @@
 #include "ColorMap.hh"
 #include  <cstdio>
 
-namespace detran_ioutils
+namespace detran_utilities
 {
 
 //----------------------------------------------------------------------------//
@@ -190,7 +190,7 @@ ColorMap::rgb_t ColorMap::hex_to_rgb(const int hex)
   return c;
 }
 
-} // end namespace detran_ioutils
+} // end namespace detran_utilities
 
 //----------------------------------------------------------------------------//
 //              end of file ColorMap.cc

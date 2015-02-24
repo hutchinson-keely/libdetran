@@ -1,32 +1,31 @@
 //----------------------------------*-C++-*-----------------------------------//
 /**
- *  @file  PPMOutput.hh
- *  @brief PPMOutput class definition
+ *  @file  GeometryPlotter.hh
+ *  @brief GeometryPlotter class definition
  *  @note  Copyright (C) 2013 Jeremy Roberts
  */
 //----------------------------------------------------------------------------//
 
-#ifndef detran_ioutils_PPMOUTPUT_HH_
-#define detran_ioutils_PPMOUTPUT_HH_
+#ifndef detran_geometry_GeometryPlotter_HH_
+#define detran_geometry_GeometryPlotter_HH_
 
-#include "ioutils/ioutils_export.hh"
-#include "ioutils/PPMPlotter.hh"
-#include "transport/State.hh"
-#include "geometry/Mesh.hh"
+#include "geometry/geometry_export.hh"
+#include "geometry/CartesianMesh.hh"
 #include "geometry/Geometry.hh"
+#include "utilities/PPMPlotter.hh"
 
-namespace detran_ioutils
+namespace detran_geometry
 {
 
 /**
- *  @class PPMOutput
- *  @brief Produces 2-D plots of the mesh, materials, or state.
+ *  @class GeometryPlotter
+ *  @brief Produces 2-D plots of the mesh
  *
  *  This is really limited, as no color bar or other information is
  *  displayed---just colors.  It's mostly as a fast way to plot the
  *  mesh when Python+matplotlib isn't the answer.
  */
-class IOUTILS_EXPORT PPMOutput
+class GEOMETRY_EXPORT GeometryPlotter
 {
 
 public:
@@ -35,26 +34,25 @@ public:
   // TYPEDEFS
   //--------------------------------------------------------------------------//
 
-  typedef PPMPlotter::SP_ppmplotter               SP_ppmplotter;
-  typedef detran_utilities::size_t                size_t;
-  typedef detran_utilities::vec_dbl               vec_dbl;
-  typedef detran_utilities::vec_int               vec_int;
-  typedef detran_geometry::CartesianMesh::SP_mesh          SP_mesh;
-  typedef detran_geometry::Geometry::SP_geometry  SP_geometry;
-  typedef detran::State::SP_state                 SP_state;
+  typedef detran_utilities::PPMPlotter::SP_ppmplotter  	SP_ppmplotter;
+  typedef detran_utilities::size_t                		size_t;
+  typedef detran_utilities::vec_dbl               		vec_dbl;
+  typedef detran_utilities::vec_int               		vec_int;
+  typedef CartesianMesh::SP_cartesianmesh			    SP_cartesianmesh;
+  typedef Geometry::SP_geometry  						SP_geometry;
 
   //--------------------------------------------------------------------------//
   // CONSTRUCTOR AND DESTRUCTOR
   //--------------------------------------------------------------------------//
 
-  PPMOutput(const std::string &prefix = "detran");
+  GeometryPlotter(const std::string &prefix = "detran");
 
   //--------------------------------------------------------------------------//
   // PUBLIC FUNCTIONS
   //--------------------------------------------------------------------------//
 
-  /// Initialize file for writing mesh data
-  bool initialize(SP_mesh mesh, const size_t n = 1);
+  /// Initialize file for writing Cartesian mesh data
+  bool initialize(SP_cartesianmesh mesh, const size_t n = 1);
 
   /// Initialize file for writing geometry data
   bool initialize(SP_geometry geo, const double delta = 0.1);
@@ -64,14 +62,14 @@ public:
    *  @param key  Key of the map to write
    *  @return     True for successful write
    */
-  bool write_mesh_map(SP_mesh mesh, const std::string &key);
+  bool write_mesh_map(SP_cartesianmesh mesh, const std::string &key);
 
   /**
    *  @brief Write the multigroup scalar flux moments to file.
    *  @param state  State vector container
    *  @return     True for successful write
    */
-  bool write_scalar_flux(SP_mesh mesh, SP_state state);
+  //bool write_scalar_flux(SP_cartesianmesh mesh, SP_state state);
 
   /// Draw a geometry (in the xy plane) using region index or material
   bool draw_geometry(SP_geometry geo, bool flag, const size_t cmap = 0);
@@ -87,7 +85,7 @@ private:
   /// Plotter
   SP_ppmplotter d_plotter;
   /// Mesh
-  SP_mesh d_mesh;
+  SP_cartesianmesh d_mesh;
   /// Mesh resolution
   double d_dxyx;
   /// X resolution
@@ -103,10 +101,10 @@ private:
 
 };
 
-} // end namespace detran_ioutils
+} // end namespace detran_geometry
 
-#endif /* detran_ioutils_PPMOUTPUT_HH_ */
+#endif /* detran_geometry_GeometryPlotter_HH_ */
 
 //----------------------------------------------------------------------------//
-//              end of file PPMOutput.hh
+//              end of file GeometryPlotter.hh
 //----------------------------------------------------------------------------//

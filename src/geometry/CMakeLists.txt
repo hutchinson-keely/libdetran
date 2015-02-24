@@ -24,6 +24,7 @@ SET(SRC
     Region.cc
     RegionFactory.cc
     Geometry.cc
+    GeometryPlotter.cc
 )
 
 #-----------------------------------------------------------------------------#

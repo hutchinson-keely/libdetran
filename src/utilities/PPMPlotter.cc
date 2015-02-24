@@ -6,13 +6,13 @@
  */
 //----------------------------------------------------------------------------//
 
-#include "ioutils/PPMPlotter.hh"
+#include "utilities/PPMPlotter.hh"
 #include "utilities/MathUtilities.hh"
 #include "utilities/Random.hh"
 #include <fstream>
 #include <cstdio>
 
-namespace detran_ioutils
+namespace detran_utilities
 {
 
 //----------------------------------------------------------------------------//
@@ -70,7 +70,7 @@ bool PPMPlotter::write()
   return true;
 }
 
-} // end namespace detran_ioutils
+} // end namespace detran_utilities
 
 //----------------------------------------------------------------------------//
 //              end of file PPMPlotter.cc

@@ -33,3 +33,12 @@ ADD_TEST(test_Random                        test_Random 0)
 ADD_EXECUTABLE(test_Factory                 test_Factory.cc)
 TARGET_LINK_LIBRARIES(test_Factory          utilities)
 ADD_TEST(test_Factory                       test_Factory 0)
+
+ADD_EXECUTABLE(test_PPMPlotter              test_PPMPlotter.cc)
+TARGET_LINK_LIBRARIES(test_PPMPlotter       utilities)
+ADD_TEST(test_PPMPlotter                    test_PPMPlotter 0)
+
+ADD_EXECUTABLE(test_ColorMap                test_ColorMap.cc)
+TARGET_LINK_LIBRARIES(test_ColorMap         utilities)
+ADD_TEST(test_ColorMap                      test_ColorMap 0)
+

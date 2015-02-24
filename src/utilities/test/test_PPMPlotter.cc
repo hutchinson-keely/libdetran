@@ -11,14 +11,13 @@
         FUNC(test_PPMPlotter)
 
 #include "utilities/TestDriver.hh"
-#include "ioutils/PPMPlotter.hh"
-#include "ioutils/ColorMap.hh"
+#include "utilities/PPMPlotter.hh"
+#include "utilities/ColorMap.hh"
 
 #include <iostream>
 
 using namespace detran_test;
 using namespace detran_utilities;
-using namespace detran_ioutils;
 using namespace std;
 
 int main(int argc, char *argv[])

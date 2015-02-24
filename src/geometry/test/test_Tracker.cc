@@ -18,7 +18,6 @@
 #include "RegionFactory.hh"
 #include "csg_fixture.hh"
 #include "angle/QuadratureFactory.hh"
-#include "ioutils/PSPlotter.hh"
 #include "callow/utils/Initialization.hh"
 #include <cmath>
 

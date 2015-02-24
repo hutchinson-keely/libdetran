@@ -11,7 +11,6 @@
 #define detran_ioutils_PSPLOTTER_HH_
 
 #include "ioutils/ioutils_export.hh"
-#include "ioutils/ColorMap.hh"
 #include "geometry/Point.hh"
 #include "utilities/DBC.hh"
 #include "utilities/Definitions.hh"

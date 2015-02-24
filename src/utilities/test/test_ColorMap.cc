@@ -11,13 +11,12 @@
         FUNC(test_ColorMap)
 
 #include "utilities/TestDriver.hh"
-#include "ioutils/ColorMap.hh"
+#include "utilities/ColorMap.hh"
 #include <iostream>
 #include <cstdio>
 using namespace detran_test;
 using namespace detran_geometry;
 using namespace detran_utilities;
-using namespace detran_ioutils;
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -32,20 +31,11 @@ int main(int argc, char *argv[])
 int test_ColorMap(int argc, char *argv[])
 {
   vec_dbl values = linspace(0.0, 1.0, 10);
-//  vec_dbl values(3, 0);
-//  values[1] = 0.5;
-//  values[2] = 1.0;
-
   ColorMap::vec_rgb colors = ColorMap::color(ColorMap::HOT, values);
   std::cout << colors.size() << std::endl;
 
   for (int i = 0; i < colors.size(); ++i)
   {
-//    printf(" %12.4f   %4i   %4i  %4i \n",
-//          values[i],
-//          (int)colors[i].r,
-//          (int)colors[i].g,
-//          (int)colors[i].b);
     printf(" %12.4f  %16.8f  %16.8f  %16.8f \n", values[i],
           (double)colors[i].r / 255.,
           (double)colors[i].g / 255.,
