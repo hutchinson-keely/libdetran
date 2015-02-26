@@ -41,8 +41,8 @@ public:
   typedef BoundaryMOC<D>                                Boundary_T;
   typedef typename Boundary_T::SP_boundary              SP_boundary;
   typedef typename Boundary_T::SP_input                 SP_input;
-  typedef typename Boundary_T::SP_mesh                  SP_mesh;
-  typedef typename Boundary_T::SP_quadrature            SP_quadrature;
+  typedef typename Boundary_T::SP_geometry              SP_geometry;
+  typedef typename Boundary_T::SP_trackdb               SP_trackdb;
   typedef detran_utilities::vec_dbl                     boundary_flux_type;
   typedef typename Boundary_T::size_t                   size_t;
 
@@ -51,15 +51,15 @@ public:
   //-------------------------------------------------------------------------//
 
   BoundaryConditionMOC(BoundaryMOC<D>& boundary,
-                       const size_t side,
-                       SP_input input,
-                       SP_mesh mesh,
-                       SP_quadrature quadrature)
+                       const size_t    side,
+                       SP_input        input,
+                       SP_geometry     geo,
+                       SP_trackdb      tracks)
     : d_boundary(boundary)
     , d_side(side)
     , d_input(input)
-    , d_mesh(mesh)
-    , d_quadrature(quadrature)
+    , d_geometry(geo)
+    , d_tracks(tracks)
   {
     Require(d_side <= D::dimension*2);
     Require(d_mesh);
@@ -94,10 +94,10 @@ protected:
   const size_t d_side;
   /// Input
   SP_input d_input;
-  /// Cartesian mesh.
-  SP_mesh d_mesh;
-  /// Angular quadrature.
-  SP_quadrature d_quadrature;
+  /// Geometry
+  SP_geometry d_geometry;
+  /// Track database.
+  SP_trackdb d_tracks;
 
 };
 

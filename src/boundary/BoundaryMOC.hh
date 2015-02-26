@@ -12,6 +12,7 @@
 #include "boundary/BoundaryBase.hh"
 #include "boundary/BoundaryConditionMOC.hh"
 #include "geometry/Geometry.hh"
+#include "geometry/TrackDB.hh"
 #include "angle/ProductQuadrature.hh"
 
 namespace detran
@@ -37,24 +38,26 @@ public:
   // TYPEDEFS
   //--------------------------------------------------------------------------//
 
-  typedef BoundaryBase<D>                       Base;
-  typedef typename Base::SP_boundary            SP_base;
-  typedef detran_utilities::SP<BoundaryMOC<D> > SP_boundary;
-  typedef typename Base::SP_input               SP_input;
-  typedef detran_geometry::Geometry             Mesh;
-  typedef Mesh::SP_geometry                     SP_mesh;
-  typedef detran_angle::ProductQuadrature       QuadratureMOC;
-  typedef detran_utilities::SP<QuadratureMOC>   SP_quadrature;
-  typedef BoundaryConditionMOC<D>               BC_T;
-  typedef typename BC_T::SP_bc                  SP_bc;
-  typedef detran_utilities::size_t              size_t;
-  typedef detran_utilities::vec_int             vec_int;
-  typedef detran_utilities::vec2_int            vec2_int;
-  typedef detran_utilities::vec3_int            vec3_int;
-  typedef detran_utilities::vec2_dbl            vec2_dbl;
-  typedef detran_utilities::vec3_dbl            vec3_dbl;
-  typedef std::vector<vec3_dbl>                 bf_type;
-  typedef D                                     D_T;
+
+  typedef BoundaryBase<D>                      		Base;
+  typedef typename Base::SP_boundary            	SP_base;
+  typedef detran_utilities::SP<BoundaryMOC<D> > 	SP_boundary;
+  typedef typename Base::SP_input               	SP_input;
+  typedef detran_geometry::Geometry             	Mesh;
+  typedef detran_geometry::Geometry::SP_geometry    SP_geometry;
+  typedef detran_geometry::TrackDB::SP_trackdb  	SP_trackdb;
+  typedef detran_angle::ProductQuadrature       	QuadratureMOC;
+  typedef detran_utilities::SP<QuadratureMOC>   	SP_quadrature;
+  typedef BoundaryConditionMOC<D>               	BC_T;
+  typedef typename BC_T::SP_bc                  	SP_bc;
+  typedef detran_utilities::size_t              	size_t;
+  typedef detran_utilities::vec_int             	vec_int;
+  typedef detran_utilities::vec2_int            	vec2_int;
+  typedef detran_utilities::vec3_int            	vec3_int;
+  typedef detran_utilities::vec2_dbl            	vec2_dbl;
+  typedef detran_utilities::vec3_dbl            	vec3_dbl;
+  typedef std::vector<vec3_dbl>                 	bf_type;
+  typedef D                                     	D_T;
 
   using Base::IN;
   using Base::OUT;
@@ -70,8 +73,8 @@ public:
    *  @param    quadrature  Angular quadrature.
    */
   BoundaryMOC(SP_input        input,
-              SP_mesh         mesh,
-              SP_quadrature   quadrature,
+              SP_geometry     geo,
+              SP_trackdb      tracks,
               const size_t    number_groups);
 
   //--------------------------------------------------------------------------//
@@ -137,8 +140,8 @@ public:
    *  @param a2   Outgoing angle within octant
    *  @param t2   Outgoing track
    */
-  void feed_into(const size_t o1, const size_t a1, const size_t t1,
-                 size_t &o2, size_t &a2, size_t &t2);
+//  void feed_into(const size_t o1, const size_t a1, const size_t t1,
+//                 size_t &o2, size_t &a2, size_t &t2);
 
   /**
    *  @brief Assign the octant, angle, and track feeding an octant,
@@ -150,14 +153,14 @@ public:
    *  @param a2   Incident angle within octant
    *  @param t2   Incident track
    */
-  void feed_from(const size_t o1, const size_t a1, const size_t t1,
-                 size_t &o2, size_t &a2, size_t &t2);
+//  void feed_from(const size_t o1, const size_t a1, const size_t t1,
+//                 size_t &o2, size_t &a2, size_t &t2);
 
   /// Return vector of octant, azimuth, track triplets for a side.
-  const vec2_int& side_indices(const size_t side) const
-  {
-    return d_side_index[side];
-  }
+//  const vec2_int& side_indices(const size_t side) const
+//  {
+//    return d_side_index[side];
+//  }
 
 private:
 
@@ -174,10 +177,10 @@ private:
   using Base::d_boundary_flux_size;
 
   /// CSG mesh
-  SP_mesh d_mesh;
+  SP_geometry d_geo;
 
-  /// MOC Quadrature
-  SP_quadrature d_quadrature;
+  /// Track database
+  SP_trackdb d_tracks;
 
   /// Boundary flux [energy, angle, inout, track]
   bf_type d_boundary_flux;

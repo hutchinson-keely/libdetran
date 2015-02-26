@@ -14,6 +14,7 @@
 #include "boundary/BoundaryMOC.hh"
 #include "boundary/BoundaryCondition.hh"
 #include "boundary/FixedBoundary.hh"
+#include "geometry/detran_geometry.hh"
 %}
 
 // Hide templates from SWIG

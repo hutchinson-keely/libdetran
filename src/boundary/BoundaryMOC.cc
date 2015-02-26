@@ -18,18 +18,18 @@ namespace detran
 //---------------------------------------------------------------------------//
 template <class D>
 BoundaryMOC<D>::BoundaryMOC(SP_input        input,
-                            SP_mesh         mesh,
-                            SP_quadrature   quadrature,
+                            SP_geometry     geometry,
+                            SP_trackdb      tracks,
                             const size_t    number_groups)
   : Base(input, number_groups)
-  , d_quadrature(quadrature)
+  , d_tracks(tracks)
   , d_boundary_flux(d_number_groups,
-                    vec3_dbl(quadrature->number_angles(),
+                    vec3_dbl(d_tracks->quadrature()->number_angles(),
                              vec2_dbl(2)))
   , d_bc(2*D::dimension)
 {
-  Require(d_quadrature);
-  Insist(D::dimension == 2, "MOC is for 2D only.");
+  Require(d_tracks);
+  Insist(D::dimension > 1, "MOC is for 2D and 3D only.");
 
   // Allocated the flux container.
   initialize();
@@ -56,23 +56,12 @@ BoundaryMOC<D>::BoundaryMOC(SP_input        input,
     {
       type = d_input->template get<std::string>(names[side]);
     }
-    if (type == "vacuum")
+    if (type != "vacuum")
     {
-      d_bc[side] = new VacuumMOC<D>((*this), side, d_input, d_mesh, d_quadrature);
-      d_has_vacuum = true;
+    	THROW("Currently, only vacuum conditions are allowed for MOC.")
     }
-    else if (type == "reflect")
-    {
-      d_bc[side] = new ReflectiveMOC<D>((*this), side, d_input, d_mesh, d_quadrature);
-      d_is_reflective[side] = true;
-      d_has_reflective = true;
-    }
-    else
-    {
-      type.append(" is not a supported bc type.");
-      THROW(type);
-      break;
-    }
+//    d_bc[side] = new VacuumMOC<D>((*this), side, d_input, d_mesh, d_quadrature);
+//    d_has_vacuum = true;
   }
 
 }
@@ -86,27 +75,25 @@ template<class D>
 void BoundaryMOC<D>::initialize()
 {
 
-//  // The boundary flux array is already
-//  // sized to [groups, angles, 2], where 2 is for inout.
-//
-//  // \todo Sloppy hack; need to specialize boundary so that the
-//  //       quadrature is specialized, too
-//  QuadratureMOC::SP_quadrature q;
-//  q = (QuadratureMOC::SP_quadrature) d_quadrature;
-//
-//  for (int g = 0; g < d_number_groups; g++)
-//  {
-//    for (int o = 0; o < 4; o++)
-//    {
-//      for (int a = 0; a < q->number_angles_octant(); a++)
-//      {
-//        int azimuth = q->azimuth(a);
-//        int angle = q->index(o, a);
-//        d_boundary_flux[g][angle][IN].resize(q->number_tracks(azimuth), 0.0);
-//        d_boundary_flux[g][angle][OUT].resize(q->number_tracks(azimuth), 0.0);
-//      }
-//    }
-//  }
+  // The boundary flux array is already
+  // sized to [groups, angles, 2], where 2 is for inout.
+
+  detran_geometry::TrackDB::SP_quadrature q = d_tracks->quadrature();
+
+  for (int g = 0; g < d_number_groups; ++g)
+  {
+    for (int o = 0; o < q->number_octants(); ++o)
+    {
+      for (int a = 0; a <  q->number_angles_octant(); ++a)
+      {
+        int azimuth = q->azimuth(a);
+        int polar = q->polar(a);
+        int angle = q->index(o, a);
+        d_boundary_flux[g][angle][IN].resize(d_tracks->number_tracks(azimuth, polar), 0.0);
+        d_boundary_flux[g][angle][OUT].resize(d_tracks->number_tracks(azimuth, polar), 0.0);
+      }
+    }
+  }
 
 }
 
@@ -369,7 +356,6 @@ void BoundaryMOC<D>::setup_side_indices()
 // EXPLICIT INSTANTIATIONS
 //---------------------------------------------------------------------------//
 
-BOUNDARY_INSTANTIATE_EXPORT(BoundaryMOC<_1D>)
 BOUNDARY_INSTANTIATE_EXPORT(BoundaryMOC<_2D>)
 BOUNDARY_INSTANTIATE_EXPORT(BoundaryMOC<_3D>)
 

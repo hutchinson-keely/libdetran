@@ -18,29 +18,29 @@ namespace detran
 template <class D>
 void ReflectiveMOC<D>::update(const size_t g)
 {
-  using std::cout;
-  using std::endl;
+//  using std::cout;
+//  using std::endl;
+//
+//  size_t oo = 0;
+//  size_t aa = 0;
+//  size_t tt = 0;
+//
+//  // List of (o, az, t) indices incident on my side
+//  const vec2_int &side_index = d_boundary.side_indices(d_side);
+//
+//  int nt = side_index.size();
 
-  size_t oo = 0;
-  size_t aa = 0;
-  size_t tt = 0;
-
-  // List of (o, az, t) indices incident on my side
-  const vec2_int &side_index = d_boundary.side_indices(d_side);
-
-  int nt = side_index.size();
-
-  for (int i = 0; i < nt; i++)
-  {
-
-    // Incident indices
-    size_t o = side_index[i][0];
-    size_t a = side_index[i][1];
-    size_t t = side_index[i][2];
+//  for (int i = 0; i < nt; i++)
+//  {
+//
+//    // Incident indices
+//    size_t o = side_index[i][0];
+//    size_t a = side_index[i][1];
+//    size_t t = side_index[i][2];
 
     //for (int p = 0; p < d_quadrature->number_polar_octant(); p++)
-    {
-      d_boundary.feed_from(o, a, t, oo, aa, tt);
+//    {
+//      d_boundary.feed_from(o, a, t, oo, aa, tt);
 //      cout << "*** i = " << i
 //           << " o = " << o
 //           << " a = " << a
@@ -52,12 +52,12 @@ void ReflectiveMOC<D>::update(const size_t g)
 //
 //      cout << " out = " << d_boundary(g, oo, aa, BoundaryMOC<D>::OUT, tt) << endl;
 //      cout << "  in = " << d_boundary(g, oo, aa, BoundaryMOC<D>::IN, tt) << endl;
-      d_boundary(g, o, a, BoundaryMOC<D>::IN, t) =
-        d_boundary(g, oo, aa, BoundaryMOC<D>::OUT, tt);
-
-    }
-
-  }
+//      d_boundary(g, o, a, BoundaryMOC<D>::IN, t) =
+//        d_boundary(g, oo, aa, BoundaryMOC<D>::OUT, tt);
+//
+//    }
+//
+//  }
 
 }
 

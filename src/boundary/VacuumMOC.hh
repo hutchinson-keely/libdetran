@@ -36,8 +36,8 @@ public:
   typedef typename Base::SP_bc                SP_bc;
   typedef typename Base::Boundary_T           Boundary_T;
   typedef typename Base::SP_input             SP_input;
-  typedef typename Base::SP_mesh              SP_mesh;
-  typedef typename Base::SP_quadrature        SP_quadrature;
+  typedef typename Base::SP_geometry          SP_geometry;
+  typedef typename Base::SP_trackdb           SP_trackdb;
   typedef typename Base::size_t               size_t;
 
   //-------------------------------------------------------------------------//
@@ -47,9 +47,9 @@ public:
   VacuumMOC(BoundaryMOC<D>& boundary,
             const size_t side,
             SP_input input,
-            SP_mesh mesh,
-            SP_quadrature quadrature)
-    : BoundaryConditionMOC<D>(boundary, side, input, mesh, quadrature)
+            SP_geometry geo,
+            SP_trackdb tracks)
+    : BoundaryConditionMOC<D>(boundary, side, input, geo, tracks)
   {
     /* ... */
   }

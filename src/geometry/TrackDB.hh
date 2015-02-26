@@ -117,6 +117,11 @@ public:
   /// Normalize the tracks given a vector of true region volumes.
   void normalize(const vec_dbl &volume);
 
+  SP_quadrature quadrature()
+  {
+	  return d_quadrature;
+  }
+
   /// Get the number of azimuths stored
   size_t number_azimuths() const;
 

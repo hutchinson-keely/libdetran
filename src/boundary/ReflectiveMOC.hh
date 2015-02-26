@@ -36,8 +36,8 @@ public:
   typedef typename Base::SP_bc                SP_bc;
   typedef typename Base::Boundary_T           Boundary_T;
   typedef typename Base::SP_input             SP_input;
-  typedef typename Base::SP_mesh              SP_mesh;
-  typedef typename Base::SP_quadrature        SP_quadrature;
+  typedef typename Base::SP_geometry          SP_geometry;
+  typedef typename Base::SP_trackdb           SP_trackdb;
   typedef detran_utilities::vec_int           vec_int;
   typedef detran_utilities::vec2_int          vec2_int;
   typedef typename Base::size_t               size_t;
@@ -49,9 +49,9 @@ public:
   ReflectiveMOC(Boundary_T& boundary,
                 const size_t side,
                 SP_input input,
-                SP_mesh mesh,
-                SP_quadrature quadrature)
-    : Base(boundary, side, input, mesh, quadrature)
+                SP_geometry geometry,
+                SP_trackdb tracks)
+    : Base(boundary, side, input, geometry, tracks)
   {
     /* ... */
   }
@@ -79,8 +79,8 @@ private:
   using Base::d_boundary;
   using Base::d_side;
   using Base::d_input;
-  using Base::d_mesh;
-  using Base::d_quadrature;
+  using Base::d_geometry;
+  using Base::d_tracks;
 
 };
 
