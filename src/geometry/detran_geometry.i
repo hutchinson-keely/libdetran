@@ -26,6 +26,7 @@
 #include "geometry/Ray.hh"
 #include "geometry/QuadraticSurfaceFactory.hh"
 #include "geometry/RegionFactory.hh"
+#include "geometry/GeometryPlotter.hh"
 // Fix for missing SWIGPY_SLICE_ARG with some versions of swig.
 #if PY_VERSION_HEX >= 0x03020000
 # define SWIGPY_SLICE_ARG(obj) ((PyObject*) (obj))
@@ -85,7 +86,7 @@
 %include "Track.hh"
 %include "TrackDB.hh"
 %include "Tracker.hh"
-
+%include "GeometryPlotter.hh"
 
 %template(vec_region) std::vector<detran_utilities::SP<detran_geometry::Region> >;
 
