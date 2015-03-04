@@ -186,11 +186,11 @@ int test_Tracker_pin_2d(int argc, char *argv[])
   Tracker::SP_quadrature q = detran_angle::QuadratureFactory::build(db, 2);
 
   COUT(" THIS BOX: " << pin->region(1)->bound_min() << " " << pin->region(1)->bound_max())
-//  Tracker tracker(db, q);
-//
-//  tracker.trackit(pin);
-//
-//  tracker.trackdb()->display();
+  Tracker tracker(db, q);
+
+  tracker.trackit(pin);
+
+//tracker.trackdb()->display();
 
 
   return 0;
