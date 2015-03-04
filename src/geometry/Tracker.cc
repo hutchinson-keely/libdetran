@@ -145,7 +145,7 @@ void Tracker::trackit(SP_geometry geo)
     for (size_t a = 0; a < 4 * d_quadrature->number_azimuths_octant(); ++a)
       for (size_t p = 0; p < d_quadrature->number_polar_octant(); ++p)
         for (size_t t = 0; t < d_tracks->number_tracks(a); ++t)
-          segmentize(d_tracks->track(a, 0, t));
+          segmentize(d_tracks->track(a, p, t));
   }
 }
 
@@ -525,22 +525,28 @@ void Tracker::segmentize(SP_track track)
     {
       continue;
     }
-    COUT("In BBox so need points"
-          << " P0="   << P0
-          << " D=" << D
-          << " ray = " << ray.origin << " " << ray.direction
-          << " min=" << region->bound_min()
-          << " max=" << region->bound_max())
-    COUT(" ")
+
+//    COUT("In BBox so need points"
+//          << " P0="   << P0
+//          << " D=" << D
+//          << " ray = " << ray.origin << " " << ray.direction
+//          << " min=" << region->bound_min()
+//          << " max=" << region->bound_max())
+//    COUT(" ")
+
     // get all intersections with the node constituents
     vec_point points = region->top_node()->intersections(ray, ray_length);
-
-    Assert(points.size() > 0);
+    if (points.size() < 2)
+    {
+      continue;
+    }
+    // at least one region contains the track
     found = true;
+
     // loop through all points (skipping the pathological case of one point)
     for (size_t i = 0; i < points.size() - 1; ++i)
     {
-      COUT(points[i])
+      //COUT(points[i])
       if (soft_equiv(std::abs(distance(points[i], points[i+1])), 0.0)) continue;
 
       // make sure we have proper order

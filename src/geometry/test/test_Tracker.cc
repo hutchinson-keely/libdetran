@@ -190,7 +190,7 @@ int test_Tracker_pin_2d(int argc, char *argv[])
 
   tracker.trackit(pin);
 
-//tracker.trackdb()->display();
+  tracker.trackdb()->display();
 
 
   return 0;
