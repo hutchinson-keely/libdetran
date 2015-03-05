@@ -21,7 +21,8 @@ Region::Region(const size_t mat, const Point &b_min, const Point &b_max)
     d_have_bound = true;
   if (d_have_bound)
   {
-    Require(d_bounds[0] <= d_bounds[1]);
+    Require(d_bounds[0].x() < d_bounds[1].x());
+    Require(d_bounds[0].y() < d_bounds[1].y());
     if (d_bounds[1].z() > d_bounds[0].z())
       d_have_bound_z = true;
   }
@@ -64,12 +65,19 @@ void Region::append(SP_surface s, bool sense)
 bool Region::contains(const Point &r)
 {
   Require(d_node);
-
   // If we have a bounding box, eliminate any points not in the box
   if (d_have_bound)
-    if (r > d_bounds[0] && r < d_bounds[1])
+  {
+    if (r >= d_bounds[0] && r <= d_bounds[1])
       return d_node->contains(r);
-  return d_node->contains(r);
+    else
+      return false;
+  }
+  else
+  {
+	// otherwise, check the node directly
+    return d_node->contains(r);
+  }
 }
 
 //----------------------------------------------------------------------------//
@@ -80,29 +88,37 @@ bool Region::intersects_bounding_box(const Ray &r, const double max_length)
   // Williams et al. "An Efficient and Robust Ray-Box Intersection
   //   Algorithm", Journal of Graphics, GPU, and Game Tools, 10 (2005)
   //
-  double tmin, tmax, tymin, tymax, tzmin, tzmax;
-  tmin  = (d_bounds[    r.sign[0]].x() - r.origin.x()) * r.inv_direction.x();
-  tmax  = (d_bounds[1 - r.sign[0]].x() - r.origin.x()) * r.inv_direction.x();
-  tymin = (d_bounds[    r.sign[1]].y() - r.origin.y()) * r.inv_direction.y();
-  tymax = (d_bounds[1 - r.sign[1]].y() - r.origin.y()) * r.inv_direction.y();
-  if ((tmin > tymax) || (tymin > tmax))
-    return false;
-  if (tymin > tmin)
-    tmin = tymin;
-  if (tymax < tmax)
-    tmax = tymax;
-  if (d_have_bound_z)
+  if (d_have_bound)
   {
-    tzmin = (d_bounds[    r.sign[2]].z() - r.origin.z()) * r.inv_direction.z();
-    tzmax = (d_bounds[1 - r.sign[2]].z() - r.origin.z()) * r.inv_direction.z();
-    if ((tmin > tzmax) || (tzmin > tmax))
-      return false;
-    if (tzmin > tmin)
-      tmin = tzmin;
-    if (tzmax < tmax)
-      tmax = tzmax;
+	double tmin, tmax, tymin, tymax, tzmin, tzmax;
+	tmin  = (d_bounds[  r.sign[0]].x() - r.origin.x()) * r.inv_direction.x();
+	tmax  = (d_bounds[1-r.sign[0]].x() - r.origin.x()) * r.inv_direction.x();
+	tymin = (d_bounds[  r.sign[1]].y() - r.origin.y()) * r.inv_direction.y();
+	tymax = (d_bounds[1-r.sign[1]].y() - r.origin.y()) * r.inv_direction.y();
+	if ((tmin > tymax) || (tymin > tmax))
+	  return false;
+	if (tymin > tmin)
+	  tmin = tymin;
+	if (tymax < tmax)
+	  tmax = tymax;
+	if (d_have_bound_z)
+	{
+	  tzmin = (d_bounds[  r.sign[2]].z() - r.origin.z()) * r.inv_direction.z();
+	  tzmax = (d_bounds[1-r.sign[2]].z() - r.origin.z()) * r.inv_direction.z();
+	  if ((tmin > tzmax) || (tzmin > tmax))
+	    return false;
+	  if (tzmin > tmin)
+	    tmin = tzmin;
+	  if (tzmax < tmax)
+	    tmax = tzmax;
+	}
+	return ((tmin < max_length) && (tmax > 0.0));
   }
-  return ((tmin < max_length) && (tmax > 0.0));
+  else
+  {
+	// if we don't have a bounding box, we can't intersect it...
+	return true;
+  }
 }
 
 //----------------------------------------------------------------------------//

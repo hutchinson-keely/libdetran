@@ -51,6 +51,9 @@ public:
   /// Finalize construction, which computes counts and region maps.
   void finalize();
 
+  /// Is it finalized?
+  bool is_finalized() {return d_finalized;}
+
   /// Get region
   SP_region region(const size_t r);
 

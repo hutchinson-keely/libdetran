@@ -178,7 +178,7 @@ int test_Tracker_pin_2d(int argc, char *argv[])
   Geometry::SP_geometry pin = test_2D_pincell_simple();
 
   InputDB::SP_input db = InputDB::Create();
-  db->put<double>("tracker_maximum_spacing", 0.7);
+  db->put<double>("tracker_maximum_spacing", 0.2);
   db->put<std::string>("tracker_spatial_quad_type", "uniform");
   db->put<std::string>("quad_type", "u-dgl");
   db->put<int>("quad_number_azimuth_octant", 1);

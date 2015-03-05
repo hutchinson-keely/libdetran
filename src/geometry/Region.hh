@@ -54,13 +54,13 @@ public:
 
   /// Constructor with optional bounding box to expedite tracking
   Region(const size_t  mat,
-         const Point  &lower_bound,
-         const Point  &upper_bound);
+         const Point  &lower_bound = Point(0,0,0),
+         const Point  &upper_bound = Point(0,0,0));
 
   /// SP constructor
   static SP_region Create(const size_t  mat,
-                          const Point  &lower_bound,
-                          const Point  &upper_bound);
+                          const Point  &lower_bound = Point(0,0,0),
+                          const Point  &upper_bound = Point(0,0,0));
   /// Add a region
   void append(SP_region region, const size_t op);
   /// Add a new node

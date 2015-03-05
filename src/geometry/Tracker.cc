@@ -111,6 +111,7 @@ Tracker::size_t Tracker::number_points(const double  phi,
 void Tracker::trackit(SP_geometry geo)
 {
   Require(geo);
+  Require(geo->is_finalized());
   d_geometry = geo;
   d_X = d_geometry->width_x();
   d_Y = d_geometry->width_y();
